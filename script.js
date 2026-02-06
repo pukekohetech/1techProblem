@@ -1137,8 +1137,8 @@ function clearClipboard() {
 // ------------------------------------------------------------
 function attachProtection() {
   document.querySelectorAll(".answer-field").forEach(f => {
-//    f.addEventListener("input", () => saveAnswer(f.id.slice(1)));
- //   f.addEventListener("paste", e => { e.preventDefault(); showToast(PASTE_BLOCKED_MESSAGE, false); clearClipboard(); });
+    f.addEventListener("input", () => saveAnswer(f.id.slice(1)));
+    f.addEventListener("paste", e => { e.preventDefault(); showToast(PASTE_BLOCKED_MESSAGE, false); clearClipboard(); });
   });
 }
 
