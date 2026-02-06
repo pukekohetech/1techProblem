@@ -1,126 +1,80 @@
 {
-  "APP_ID": "Pukekohe High School - Design Problem and Brief",
-  "VERSION": "2026",
-  "APP_TITLE": "Writing a Design Problem and Brief",
-  "APP_SUBTITLE": "Knowledge Assessment - Clear Language, Clear Evidence (Semantic Rubric)",
-  "DEADLINE": {
-    "day": 30,
-    "month": 12,
-    "label": "Submission deadline"
-  },
-  "TEACHERS": [
-    {
-      "id": "RY",
-      "name": "Mr Reynolds",
-      "email": "ry@pukekohehigh.school.nz"
-    }
-  ],
-  "ASSESSMENTS": [
-    {
-      "id": "PHS Problem and Brief Assessment",
-      "title": "Stage 1 – Writing a Design Problem and Brief",
-      "subtitle": "Task 1",
-      "usNumber": "",
-      "usVersion": "",
-      "credits": null,
-      "standardType": "internal",
-      "questions": [
-        {
-          "id": "Write a Design Problem and Brief",
-          "text": "Describe the design problem and write a brief for your project.\n\nIn your response, you must:\n- clearly explain what the problem or need is\n- identify who the stakeholder(s) are\n- explain why this is a problem and why it needs to be solved\n- describe the context or situation where the problem exists\n- explain what the design outcome needs to achieve (do not describe your final solution)\n- include any constraints or limitations that will affect the design\n\nYour answer should focus on the need, not the solution, and should guide the rest of your project.",
-          "image": "",
-          "hint": "To PASS, make sure you include ALL of these in your writing:\n\n1) What is wrong, missing, difficult, unsafe, or not working?\n2) Who is affected (name a group OR describe them like “anyone who…”)?\n3) Why does it matter (risk, discomfort, wasted time, frustration, safety, performance, etc.)?\n4) Where/when does it happen (school/home/daily use/throughout the day/between classes etc.)?\n5) What does the outcome need to DO (what it must achieve) — NOT what it will look like.\n6) What limits apply (cost, time, materials, size, rules, safety, sustainability)?\n\nTip: Write in full sentences. Explain links between ideas (e.g., problem → who it affects → why it matters).",
-          "type": "long",
-          "maxPoints": 24,
-          {
+  "id": "Write a Design Problem and Brief",
+  "text": "Describe the design problem and write a brief for your project.\n\nIn your response, you must:\n- clearly explain what the problem or need is\n- identify who the stakeholder(s) are\n- explain why this is a problem and why it needs to be solved\n- describe the context or situation where the problem exists\n- explain what the design outcome needs to achieve (do not describe your final solution)\n- include any constraints or limitations that will affect the design\n\nYour answer should focus on the need, not the solution, and should guide the rest of your project.",
+  "image": "",
+  "hint": "To PASS, make sure you include ALL of these in your writing:\n\n1) What is wrong, missing, difficult, unsafe, or not working?\n2) Who is affected (name a group OR describe them like \u201canyone who\u2026\u201d)?\n3) Why does it matter (risk, discomfort, wasted time, frustration, safety, performance, etc.)?\n4) Where/when does it happen (school/home/daily use/throughout the day/between classes etc.)?\n5) What does the outcome need to DO (what it must achieve) \u2014 NOT what it will look like.\n6) What limits apply (cost, time, materials, size, rules, safety, sustainability)?\n\nTip: Write in full sentences. Explain links between ideas (e.g., problem \u2192 who it affects \u2192 why it matters).",
+  "type": "long",
+  "maxPoints": 24,
   "rubric": [
-
     {
       "points": 2,
       "check": "\\b(problem|issue|something wrong|not good|bad|needs fixing|needs improving|doesn'?t work|doesn'?t do the job|hard|annoying|unsafe|uncomfortable|ineffective|difficult)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(because|so|this means|which causes|this makes|leads to|results in|ends up|causing|due to)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(people|someone|anyone|users?|students?|teachers?|kids|we|us|they|people using it|the person using it)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "(\\b(problem|issue|hard|bad|doesn'?t work|annoying|unsafe|difficult)\\b).{0,180}(\\b(people|students?|teachers?|users?|anyone|someone|we|they)\\b)",
       "flags": "is"
     },
-
     {
       "points": 2,
       "check": "\\b(makes|causes|means|leads to|results in|creates|can cause|can make|ends up)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(waste(s)? time|slow|slows down|frustrating|annoying|stressful|unsafe|pain|discomfort|injury|harder to use|gets in the way|not practical|inefficient)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(where|when|during|while|in class|at school|at home|at lunch|after school|during lessons|between classes)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(daily|every day|often|regularly|a lot|frequently|throughout the day|all the time|repeatedly|every time)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(needs to|should|must|has to|will need to|so that it can|to help|to make it|to reduce|to prevent|to fix|to improve)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "(\\b(needs to|should|must|has to|to help|to fix|to improve)\\b).{0,180}(\\b(problem|issue|safety|time|frustration|discomfort|efficiency|usability)\\b)",
       "flags": "is"
     },
-
     {
       "points": 2,
       "check": "\\b(limit|limited|constraint|rule|school rules|budget|cost|time|materials?|resources?|safe|safety rules|not allowed|can'?t|cannot)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": "\\b(realistic|practical|possible|feasible|suitable|appropriate|able to be used|work in a school|everyday use|real life)\\b",
       "flags": "i"
     },
-
     {
       "points": 2,
       "check": ".{160,}",
       "flags": "s"
     },
-
-   
-              "points": 0,
-              "check": "\\b(i will make|i'?m going to make|my final design|my product will be|it will be made of|i will build|i will create a \\w+ that has|it will look like)\\b",
-              "flags": "i"
-            }
-          ]
-        
-     
+    {
+      "points": 0,
+      "check": "\\b(i will make|i'?m going to make|my final design|my product will be|it will be made of|i will build|i will create a \\w+ that has|it will look like)\\b",
+      "flags": "i"
     }
   ]
 }
