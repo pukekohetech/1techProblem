@@ -32,101 +32,88 @@
           "hint": "To PASS, make sure you include ALL of these in your writing:\n\n1) What is wrong, missing, difficult, unsafe, or not working?\n2) Who is affected (name a group OR describe them like “anyone who…”)?\n3) Why does it matter (risk, discomfort, wasted time, frustration, safety, performance, etc.)?\n4) Where/when does it happen (school/home/daily use/throughout the day/between classes etc.)?\n5) What does the outcome need to DO (what it must achieve) — NOT what it will look like.\n6) What limits apply (cost, time, materials, size, rules, safety, sustainability)?\n\nTip: Write in full sentences. Explain links between ideas (e.g., problem → who it affects → why it matters).",
           "type": "long",
           "maxPoints": 24,
-          "rubric": [
-            {
-              "points": 2,
-              "check": "\\b(problem|design problem|issue|need|needs|lack|missing|absence|shortcoming|limitation|flaw|weakness|failure|gap)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(doesn'?t work|not working|ineffective|inefficient|unreliable|unsafe|uncomfortable|impractical|awkward|hard to use|difficult to|time-consuming|not fit for purpose|not suitable|not good enough|outdated|inconvenient|a hassle|causes trouble|creates issues)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(stakeholder|user|end user|target user|client|audience|customer|community|students?|teachers?|children|kids|adults|elderly|parents?|staff|workers?)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(anyone who|those who|people who|the person using|users who|for people that|for someone who|for those needing to)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(affects?|impacts?|influences?|harms?|creates|causes|leads to|results in|contributes to|increases|reduces)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(consequences?|implications?|risk|danger|hazard|health|safety|injury|pain|discomfort|strain|stress|frustration|annoying|inconvenience|wasted time|slows|reduces performance|discourages|prevents|makes it harder)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(context|situation|environment|setting|conditions|circumstances|scenario)\\b|\\b(where|when|during|while)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(daily|every day|regularly|often|frequently|repeatedly|over time|throughout the day|in class|between classes|at school|at home|indoors?|outdoors?|in public|real world|everyday use|long-term use)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(design outcome|outcome|solution|product|system|design|prototype)\\b|\\b(purpose|function|aim|goal|role|job)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(must|needs to|should|required to|expected to|designed to|has to|will need to)\\b|\\b(allow|help|support|enable|provide|improve|increase|reduce|prevent|address|solve|fix|make it easier|make it safer)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(opportunity to improve|could be improved|needs improvement|address current limitations|addressing limitations|improve usability|improve safety|more practical|more suitable|better way|a more effective approach)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(constraints?|limitations?|restrictions?|requirements?|specifications?|criteria|rules?)\\b|\\b(must not|cannot|not allowed|limited by)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(budget|cost|price|affordable|time|deadline|timeframe|materials?|resources|tools|size|dimensions?|weight|durable|sustainable|environmental|school rules?|safety rules?|legal)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(work within|within a school setting|realistic for everyday use|appropriate for|suitable for|practical for|feasible|able to be used in|fit within)\\b",
-              "flags": "i"
-            },
+          {
+  "rubric": [
 
-            {
-              "points": 2,
-              "check": "(\\b(problem|issue|need|lack|missing|doesn'?t work|ineffective|inefficient|unsafe|uncomfortable|difficult to|hard to use)\\b).{0,120}(\\b(stakeholder|user|students?|teachers?|people|anyone who|those who|people who)\\b)",
-              "flags": "is"
-            },
-            {
-              "points": 2,
-              "check": "(\\b(problem|issue|need|lack|missing|difficult to|hard to use|unsafe|uncomfortable)\\b).{0,140}(\\b(at school|at home|during|while|daily|regularly|often|throughout the day|between classes|everyday use|real world)\\b)",
-              "flags": "is"
-            },
-            {
-              "points": 2,
-              "check": "(\\b(must|needs to|should|required to|designed to|allow|help|support|enable|provide|improve|reduce|prevent)\\b).{0,160}(\\b(risk|safety|health|injury|pain|discomfort|strain|stress|frustration|time|efficiency|performance)\\b)",
-              "flags": "is"
-            },
+    {
+      "points": 2,
+      "check": "\\b(problem|issue|something wrong|not good|bad|needs fixing|needs improving|doesn'?t work|doesn'?t do the job|hard|annoying|unsafe|uncomfortable|ineffective|difficult)\\b",
+      "flags": "i"
+    },
 
-            {
-              "points": 2,
-              "check": ".{180,}",
-              "flags": "s"
-            },
+    {
+      "points": 2,
+      "check": "\\b(because|so|this means|which causes|this makes|leads to|results in|ends up|causing|due to)\\b",
+      "flags": "i"
+    },
 
-            {
+    {
+      "points": 2,
+      "check": "\\b(people|someone|anyone|users?|students?|teachers?|kids|we|us|they|people using it|the person using it)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "(\\b(problem|issue|hard|bad|doesn'?t work|annoying|unsafe|difficult)\\b).{0,180}(\\b(people|students?|teachers?|users?|anyone|someone|we|they)\\b)",
+      "flags": "is"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(makes|causes|means|leads to|results in|creates|can cause|can make|ends up)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(waste(s)? time|slow|slows down|frustrating|annoying|stressful|unsafe|pain|discomfort|injury|harder to use|gets in the way|not practical|inefficient)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(where|when|during|while|in class|at school|at home|at lunch|after school|during lessons|between classes)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(daily|every day|often|regularly|a lot|frequently|throughout the day|all the time|repeatedly|every time)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(needs to|should|must|has to|will need to|so that it can|to help|to make it|to reduce|to prevent|to fix|to improve)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "(\\b(needs to|should|must|has to|to help|to fix|to improve)\\b).{0,180}(\\b(problem|issue|safety|time|frustration|discomfort|efficiency|usability)\\b)",
+      "flags": "is"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(limit|limited|constraint|rule|school rules|budget|cost|time|materials?|resources?|safe|safety rules|not allowed|can'?t|cannot)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": "\\b(realistic|practical|possible|feasible|suitable|appropriate|able to be used|work in a school|everyday use|real life)\\b",
+      "flags": "i"
+    },
+
+    {
+      "points": 2,
+      "check": ".{160,}",
+      "flags": "s"
+    },
+
+   
               "points": 0,
               "check": "\\b(i will make|i'?m going to make|my final design|my product will be|it will be made of|i will build|i will create a \\w+ that has|it will look like)\\b",
               "flags": "i"
