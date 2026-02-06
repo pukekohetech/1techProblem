@@ -2,7 +2,7 @@
   "APP_ID": "Pukekohe High School - Design Problem and Brief",
   "VERSION": "2026",
   "APP_TITLE": "Writing a Design Problem and Brief",
-  "APP_SUBTITLE": "Knowledge Assessment - Clear Language, Clear Evidence (Semantic Rubric)",
+  "APP_SUBTITLE": "Learning Assessment - Clear Language, Clear Evidence",
   "DEADLINE": {
     "day": 6,
     "month": 3,
@@ -17,7 +17,7 @@
   ],
   "ASSESSMENTS": [
     {
-      "id": "PHS Problem and Brief Assessment",
+      "id": "PHS Problem and Brief Activity",
       "title": "Stage 1 – Writing a Design Problem and Brief",
       "subtitle": "Task 1",
       "usNumber": "",
