@@ -13,16 +13,6 @@
       "id": "RY",
       "name": "Mr Reynolds",
       "email": "ry@pukekohehigh.school.nz"
-    },
-    {
-      "id": "RNR",
-      "name": "Mr Ranson",
-      "email": "rnr@pukekohehigh.school.nz"
-    },
-    {
-      "id": "Other",
-      "name": "Other Teacher",
-      "email": "technology@pukekohehigh.school.nz"
     }
   ],
   "ASSESSMENTS": [
@@ -44,84 +34,120 @@
           "maxPoints": 24,
           "rubric": [
 
-    {
-      "points": 2,
-      "check": "\\b(problem|issue|something wrong|not good|bad|needs fixing|needs improving|doesn'?t work|doesn'?t do the job|hard|annoying|unsafe|uncomfortable|ineffective|difficult)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(problem|design problem|issue|need|needs|lack|missing|absence|shortcoming|limitation|limitations|flaw|weakness|failure|gap|challenge|difficulty|trouble|concern|drawback|downside|fault|defect|bug|error|not (good|great)|bad|poor|subpar|needs work|not right|something wrong|could be better)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(because|so|this means|which causes|this makes|leads to|results in|ends up|causing|due to)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(doesn'?t work|does not work|not working|won'?t work|broken|fails?|failing|malfunction(s|ing)?|glitch(y)?|buggy|ineffective|inefficient|unreliable|unsafe|dangerous|uncomfortable|impractical|awkward|clunky|confusing|hard to use|difficult to (use|do)|tricky to (use|do)|time[- ]consuming|takes too long|slow|slows down|not fit[- ]for[- ]purpose|not suitable|not appropriate|not good enough|outdated|inconvenient|a hassle|gets in the way|causes trouble|creates issues|doesn'?t meet (needs|requirements)|doesn'?t solve|doesn'?t help)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(people|someone|anyone|users?|students?|teachers?|kids|we|us|they|people using it|the person using it)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(stakeholder(s)?|user(s)?|end user(s)?|target user(s)?|client(s)?|audience|customer(s)?|community|students?|teachers?|children|kids|teen(s)?|adults|elderly|older people|parents?|caregivers?|whānau|staff|workers?|employees?|visitors?|public|people|someone|anyone|we|us|they)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "(\\b(problem|issue|hard|bad|doesn'?t work|annoying|unsafe|difficult)\\b).{0,180}(\\b(people|students?|teachers?|users?|anyone|someone|we|they)\\b)",
-      "flags": "is"
-    },
+            {
+              "points": 2,
+              "check": "\\b(anyone who|someone who|people who|those who|users who|students who|teachers who|for people who|for someone who|for anyone who|for those who|the person using|the person who uses|people using (it|this)|anyone needing to|for those needing to)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(makes|causes|means|leads to|results in|creates|can cause|can make|ends up)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(affects?|impacts?|influences?|harms?|creates|causes|caused by|leads to|results in|results from|contributes to|makes|means|forces|stops|prevents|reduces|increases|worsens?|improves?|adds to|takes away|makes it (harder|easier))\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(waste(s)? time|slow|slows down|frustrating|annoying|stressful|unsafe|pain|discomfort|injury|harder to use|gets in the way|not practical|inefficient)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(consequences?|implications?|effects?|outcomes?|risk(s)?|danger|hazard|health|safety|unsafe|injury|hurt|harm|pain|discomfort|strain|stress|anxiety|frustration|annoying|inconvenience|embarrassing|wasted time|waste(s)? time|slows?|slows down|reduces performance|less efficient|inefficient|discourages|puts people off|prevents|stops|makes it harder|harder to use|mistakes?|errors?)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(where|when|during|while|in class|at school|at home|at lunch|after school|during lessons|between classes)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(context|situation|environment|setting|conditions|circumstances|scenario|location|place)\\b|\\b(where|when|during|while|in|at)\\b.{0,40}\\b(class|school|home|indoors?|outdoors?|public|bus|car|workshop|tech room|classroom|playground|hallway|lunch|lunchtime|after school|before school)\\b",
+              "flags": "is"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(daily|every day|often|regularly|a lot|frequently|throughout the day|all the time|repeatedly|every time)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(daily|every day|each day|regularly|often|frequently|a lot|all the time|most days|repeatedly|over time|throughout the day|during the day|in class|every lesson|between classes|real[- ]world|everyday use|long[- ]term use|ongoing)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(needs to|should|must|has to|will need to|so that it can|to help|to make it|to reduce|to prevent|to fix|to improve)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(design outcome|outcome|solution|product|system|design|prototype|tool|device|app|website|service|process)\\b|\\b(purpose|function|aim|goal|role|job|what it does|what it needs to do|intended to)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "(\\b(needs to|should|must|has to|to help|to fix|to improve)\\b).{0,180}(\\b(problem|issue|safety|time|frustration|discomfort|efficiency|usability)\\b)",
-      "flags": "is"
-    },
+            {
+              "points": 2,
+              "check": "\\b(must|needs to|need to|should|required to|has to|have to|expected to|designed to|will need to|aims to|intended to)\\b|\\b(allow|help|support|enable|provide|improve|increase|reduce|prevent|avoid|address|solve|fix|make it easier|make it safer|ensure)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(limit|limited|constraint|rule|school rules|budget|cost|time|materials?|resources?|safe|safety rules|not allowed|can'?t|cannot)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(opportunity to improve|could be improved|can be improved|needs improvement|should be improved|better|better way|a better way|more effective|more efficient|more suitable|more practical|more usable|improve usability|improve safety|fix the issue|address the problem|remove limitations)\\b",
+              "flags": "i"
+            },
 
-    {
-      "points": 2,
-      "check": "\\b(realistic|practical|possible|feasible|suitable|appropriate|able to be used|work in a school|everyday use|real life)\\b",
-      "flags": "i"
-    },
+            {
+              "points": 2,
+              "check": "\\b(constraints?|limitations?|limits?|restrictions?|requirements?|specifications?|specs|criteria|rules?|guidelines|boundaries|conditions)\\b|\\b(must not|mustn'?t|cannot|can'?t|not allowed|not permitted|limited by|restricted by|only allowed|not possible)\\b",
+              "flags": "i"
+            },
 
+            {
+              "points": 2,
+              "check": "\\b(budget|cost|costs|price|affordable|money|time|deadline|due date|timeframe|materials?|resources?|tools?|equipment|size|dimension(s)?|width|height|length|weight|portable|durable|safe|safety|sustainable|eco[- ]friendly|environmental|school rules?|health and safety|legal|privacy|maintenance|power|battery)\\b",
+              "flags": "i"
+            },
+
+            {
+              "points": 2,
+              "check": "\\b(work within|fit within|within a school setting|school setting|realistic|practical|feasible|doable|possible|manageable|appropriate for|suitable for|usable for|able to be used in|can be used in|fit for|works for|reasonable for|everyday use|real world use)\\b",
+              "flags": "i"
+            },
+
+            {
+              "points": 2,
+              "check": "(\\b(problem|issue|need|lack|missing|challenge|difficulty|doesn'?t work|broken|unsafe|uncomfortable|hard to use|annoying|frustrating)\\b).{0,180}(\\b(stakeholder(s)?|user(s)?|students?|teachers?|people|someone|anyone|we|us|they|those who|people who)\\b)",
+              "flags": "is"
+            },
+
+            {
+              "points": 2,
+              "check": "(\\b(problem|issue|need|lack|missing|challenge|difficulty|hard|unsafe|uncomfortable|annoying|broken|doesn'?t work)\\b).{0,200}(\\b(at school|in class|during class|between classes|at lunch|lunchtime|after school|before school|at home|daily|often|regularly|every day|real world|everyday use)\\b)",
+              "flags": "is"
+            },
+
+            {
+              "points": 2,
+              "check": "(\\b(must|needs to|need to|should|required to|has to|have to|designed to|intended to|allow|help|support|enable|provide|improve|reduce|prevent|avoid|ensure)\\b).{0,220}(\\b(risk|safety|unsafe|health|injury|hurt|pain|discomfort|stress|frustration|waste(s)? time|slow|efficiency|performance|mistakes?|errors?)\\b)",
+              "flags": "is"
+            },
+
+            {
+              "points": 2,
+              "check": ".{180,}",
+              "flags": "s"
+            },
 
             {
               "points": 0,
-              "check": "\\b(i will make|i'?m going to make|my final design|my product will be|it will be made of|i will build|i will create a \\w+ that has|it will look like)\\b",
+              "check": "^.{0,120}\\b(i will make|i'?m going to make|my final design|my product will be|it will be made of|i will build|i will create|it will look like)\\b",
               "flags": "i"
             }
+
           ]
         }
       ]
