@@ -77,7 +77,8 @@
           "id": "Write a Specification",
           "text": "Write a specification for your design outcome.\n\nYour specification must:\n- be written as a list of clear criteria\n- use measurable or testable language\n- describe what the outcome must achieve\n- include constraints and requirements\n\nDo NOT describe your final solution.",
           "image": "",
-          "hint": "Start each point with 'The outcome must…' and include numbers where possible.",
+          "hint": "To PASS, your specification must be written as a clear list of criteria (bullet points or numbered).\n\nEach point should:\n• Start with: “The outcome must…” or “It must…”\n• Be measurable or testable (include numbers where possible)\n• Focus on what it must DO or achieve — NOT what it will look like\n\nA strong specification usually includes criteria for:\n1) Function – What must it do? (e.g., The outcome must securely hold 4 textbooks.)\n2) User – Who must it work for? (e.g., The outcome must be suitable for Year 9–10 students.)\n3) Size – Dimensions or limits (e.g., Must be no larger than 400mm x 300mm.)\n4) Materials – What is allowed or restricted (e.g., Must use sustainable timber available in the workshop.)\n5) Safety – What risks must be reduced or avoided (e.g., Must have no sharp edges.)\n6) Durability – How strong or long-lasting (e.g., Must support at least 10kg without bending.)\n7) Cost/Time – Budget or deadline limits (e.g., Must cost under $30 and be completed within 3 weeks.)\n8) Sustainability – Waste, reuse, environmental impact.\n9) Testing – How you will check success (e.g., It will be tested by loading it with 10kg for 1 minute.)\n\nAvoid vague statements like:\n✗ It should look cool.\n✗ It should be good quality.\n✗ I will make it out of plywood.\n\nInstead, make every point specific and measurable.",
+
           "type": "long",
           "maxPoints": 14,
           "rubric": [
