@@ -80,44 +80,51 @@
           "hint": "To PASS, your specification must be written as a clear list of criteria (bullet points or numbered).\n\nEach point should:\n• Start with: “The outcome must…” or “It must…”\n• Be measurable or testable (include numbers where possible)\n• Focus on what it must DO or achieve — NOT what it will look like\n\nA strong specification usually includes criteria for:\n1) Function – What must it do? (e.g., The outcome must securely hold 4 textbooks.)\n2) User – Who must it work for? (e.g., The outcome must be suitable for Year 9–10 students.)\n3) Size – Dimensions or limits (e.g., Must be no larger than 400mm x 300mm.)\n4) Materials – What is allowed or restricted (e.g., Must use sustainable timber available in the workshop.)\n5) Safety – What risks must be reduced or avoided (e.g., Must have no sharp edges.)\n6) Durability – How strong or long-lasting (e.g., Must support at least 10kg without bending.)\n7) Cost/Time – Budget or deadline limits (e.g., Must cost under $30 and be completed within 3 weeks.)\n8) Sustainability – Waste, reuse, environmental impact.\n9) Testing – How you will check success (e.g., It will be tested by loading it with 10kg for 1 minute.)\n\nAvoid vague statements like:\n✗ It should look cool.\n✗ It should be good quality.\n✗ I will make it out of plywood.\n\nInstead, make every point specific and measurable.",
 
           "type": "long",
-          "maxPoints": 14,
-          "rubric": [
-            {
-              "points": 2,
-              "check": "\\b(must|needs to|required to|shall|should)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(mm|cm|m|kg|g|%|hours?|minutes?|\\$|dollars?)\\b|\\b\\d+\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(test|measure|measurable|verify|check|validated?)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(size|dimensions?|width|height|length|weight|maximum|minimum)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(materials?|wood|metal|plastic|fabric|recycled|sustainable)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "\\b(safe|safety|hazard|risk|durable|strong|stable)\\b",
-              "flags": "i"
-            },
-            {
-              "points": 2,
-              "check": "(?:\\n|\\-|\\d+\\.).{0,400}(?:\\n|\\-|\\d+\\.).{0,400}",
-              "flags": "s"
-            }
-          ]
+          "maxPoints": 16,
+  "rubric": [
+  {
+    "points": 2,
+    "check": "\\b(must|needs\\s*to|required\\s*to|shall|should)\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "\\b(mm|cm|m|metre(s)?|meter(s)?|kg|g|%|hours?|minutes?|weeks?|\\$|dollars?)\\b|\\b\\d+(\\.\\d+)?\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "\\b(test|testing|tested|measure|measurable|verify|validated?|check|evidence|demonstrate)\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "\\b(size|dimension(s)?|width|height|length|depth|thickness|weight|maximum|max|min(imum)?|limit(s)?|fit\\s*within|no\\s*(larger|bigger|greater)\\s*than|no\\s*more\\s*than|at\\s*most|up\\s*to|under)\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "\\b(material(s)?|wood|metal|plastic|fabric|plywood|acrylic|cardboard|recycled|reuse(d)?|sustainable|environmentally\\s*friendly|eco(-|\\s)?friendly)\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "\\b(safe|safety|hazard(s)?|risk(s)?|stable|durable|durability|strong|strength|sturdy|robust|resist(s|ed|ing)?\\s*damage|damage\\s*resistant|withstand(s|ing)?|impact|drop(ping)?|regular\\s*use|long(-|\\s)?lasting)\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "\\b(function|purpose|do(es)?|perform(s|ance)?|operate(s|ion)?|allow(s)?|enable(s)?|support(s)?|provide(s|d)?|hold(s|ing)?|store(s|d|age)?|organis(e|z)(s|ed|ing)?|keep(s|ing)?|contain(s|ed|ing)?|fit(s|ted|ting)?|secure(s|d|ing)?)\\b",
+    "flags": "i"
+  },
+  {
+    "points": 2,
+    "check": "(?:\\n|\\-|\\d+\\.).{0,400}(?:\\n|\\-|\\d+\\.).{0,400}",
+    "flags": "s"
+  }
+]
+
+           
         }
       ]
     }
