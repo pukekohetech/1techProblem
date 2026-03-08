@@ -618,6 +618,14 @@ function disablePdfMode() {
 const __te = new TextEncoder();
 const __td = new TextDecoder();
 
+async function sha256Hex(text) {
+  const bytes = __te.encode((text || "").trim().toLowerCase());
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 const __b64 = {
   fromBytes: (bytes) => btoa(String.fromCharCode(...bytes)),
   toBytes: (b64str) => Uint8Array.from(atob(b64str), (c) => c.charCodeAt(0)),
@@ -638,17 +646,22 @@ async function __deriveAesKeyFromPassword(password, saltBytes, iterations = 1500
 }
 
 async function __encryptWithStudentId(obj, studentId) {
+  const cleanId = (studentId || "").trim();
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const key = await __deriveAesKeyFromPassword(studentId, salt);
+  const key = await __deriveAesKeyFromPassword(cleanId, salt);
 
   const plaintext = __te.encode(JSON.stringify(obj));
-  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext));
+  const ct = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext)
+  );
+
+  const studentIdHash = await sha256Hex(cleanId);
 
   return {
-    format: "PHS_SID_ENC_V1",
+    format: "PHS_SID_ENC_V2",
     savedAt: new Date().toISOString(),
-    studentId: studentId, // used for match check (not secret)
+    studentIdHash,
     salt: __b64.fromBytes(salt),
     iv: __b64.fromBytes(iv),
     ct: __b64.fromBytes(ct),
@@ -656,7 +669,9 @@ async function __encryptWithStudentId(obj, studentId) {
 }
 
 async function __decryptWithStudentId(payload, studentId) {
-  if (!payload || payload.format !== "PHS_SID_ENC_V1") throw new Error("Not a valid progress file.");
+  if (!payload || payload.format !== "PHS_SID_ENC_V2") {
+    throw new Error("Not a valid progress file.");
+  }
 
   const salt = __b64.toBytes(payload.salt);
   const iv = __b64.toBytes(payload.iv);
@@ -745,9 +760,8 @@ async function loadProgressEncryptedFile(file) {
     return showToast("Invalid file.", false);
   }
 
-  // ✅ Match check BEFORE decrypt
-  const fileId = (payload.studentId || "").trim();
-  if (!fileId || fileId !== studentId) {
+  const enteredHash = await sha256Hex(studentId);
+  if (!payload.studentIdHash || payload.studentIdHash !== enteredHash) {
     return showToast("Student ID mismatch — not loaded.", false);
   }
 
@@ -758,7 +772,7 @@ async function loadProgressEncryptedFile(file) {
     return showToast(e.message || "Decryption failed.", false);
   }
 
-  // ✅ Safety: confirm decrypted id too
+  // Safety: confirm decrypted id too
   if ((restored.id || "").trim() !== studentId) {
     return showToast("Decrypted ID mismatch — refusing to load.", false);
   }
@@ -767,7 +781,6 @@ async function loadProgressEncryptedFile(file) {
 
   // IMPORTANT: STORAGE_KEY must already be initialised by loadQuestions()
   if (!STORAGE_KEY) {
-    // Still restore UI so teacher can see it, but warn.
     if (DEBUG) console.warn("STORAGE_KEY not set yet; loadQuestions may not have run.");
   } else {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -810,7 +823,6 @@ document.addEventListener("keydown", (e) => {
     __ensureProgressFileInput().click();
   }
 });
-
 // ------------------------------------------------------------
 // Deadline helpers
 // ------------------------------------------------------------
