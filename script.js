@@ -1303,14 +1303,14 @@ function clearClipboard() {
 // Attach protection to inputs (softened anti-cheat)
 // ------------------------------------------------------------
 function attachProtection() {
-  document.querySelectorAll(".answer-field").forEach((f) => {
-    f.addEventListener("input", () => saveAnswer(f.id.slice(1)));
-   f.addEventListener("paste", (e) => {
+//  document.querySelectorAll(".answer-field").forEach((f) => {
+    //f.addEventListener("input", () => saveAnswer(f.id.slice(1)));
+//   f.addEventListener("paste", (e) => {
     //  e.preventDefault();
       showToast(PASTE_BLOCKED_MESSAGE, false);
    //   clearClipboard();
-    });
-  });
+  //  });
+//  });
 }
 
 // Limit context menu blocking to the question area only (still allow on inputs)
