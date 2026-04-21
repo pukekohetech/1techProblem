@@ -52,7 +52,10 @@
 
     h1, h2, h3 { margin-top: 0; }
 
-    .sub { color: var(--muted); line-height: 1.6; }
+    .sub {
+      color: var(--muted);
+      line-height: 1.6;
+    }
 
     .grid {
       display: grid;
@@ -106,11 +109,15 @@
       padding: 12px 16px;
       cursor: pointer;
       font-weight: 700;
+      transition: transform 0.05s ease, opacity 0.2s ease;
     }
 
+    button:hover { opacity: 0.95; }
+    button:active { transform: translateY(1px); }
+
     .primary { background: var(--primary); color: white; }
-    .secondary { background: #e5e7eb; }
-    .ghost { background: white; border: 1px solid var(--border); }
+    .secondary { background: #e5e7eb; color: #111827; }
+    .ghost { background: white; border: 1px solid var(--border); color: #111827; }
 
     .scorebox {
       font-weight: 700;
@@ -157,6 +164,7 @@
       padding: 10px 12px;
       background: #fafafa;
       cursor: pointer;
+      user-select: none;
     }
 
     .feedback {
@@ -165,6 +173,7 @@
       border-radius: 12px;
       font-size: 0.95rem;
       display: none;
+      line-height: 1.5;
     }
 
     .feedback.good { background: var(--good-bg); color: var(--good); display: block; }
@@ -182,8 +191,29 @@
 
     .results.show { display: block; }
 
-    .big-score { font-size: 2rem; font-weight: 800; margin: 8px 0; }
+    .big-score {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 8px 0;
+    }
+
     .muted { color: var(--muted); }
+
+    .legend {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 700px) {
+      .container { padding: 14px; }
+      .hero, .card { padding: 16px; }
+      .toolbar { align-items: stretch; }
+      .left-tools, .right-tools { width: 100%; }
+      button { width: 100%; }
+      .scorebox { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -191,29 +221,29 @@
     <section class="hero">
       <h1>Functional vs Physical Specifications Quiz</h1>
       <p class="sub">
-        Decide whether each specification is <strong>Functional</strong> (what the product does) or
-        <strong>Physical</strong> (what the product is like).
+        Decide whether each specification is <strong>Functional</strong> (what the product does or must achieve)
+        or <strong>Physical</strong> (what the product is like in size, form, weight, surface, or appearance).
       </p>
 
       <div class="grid">
         <div class="mini">
           <span class="chip functional-chip">Functional = Does</span>
-          <p>What the product must do</p>
+          <p>Performance, safety, usability, reliability, sustainability in use, cost targets, maintenance, transport, and operation.</p>
         </div>
         <div class="mini">
           <span class="chip physical-chip">Physical = Is</span>
-          <p>What the product is like</p>
+          <p>Size, weight, shape, texture, finish, compactness, stability of form, visual qualities, and measurable physical features.</p>
         </div>
       </div>
 
       <div class="toolbar">
         <div class="left-tools">
-          <label><strong>Questions:</strong></label>
+          <label for="questionCount"><strong>Questions:</strong></label>
           <select id="questionCount">
-            <option value="10">10</option>
-            <option value="15" selected>15</option>
-            <option value="20">20</option>
+            <option value="15">15</option>
+            <option value="20" selected>20</option>
             <option value="30">30</option>
+            <option value="40">40</option>
           </select>
           <button class="secondary" id="newQuizBtn">New Quiz</button>
         </div>
@@ -221,15 +251,22 @@
           <div class="scorebox" id="liveScore">Answered: 0 / 0</div>
         </div>
       </div>
+
+      <div class="legend">
+        These examples are deliberately more realistic and sometimes trickier. Many use phrasing like
+        <strong>must</strong>, <strong>should</strong>, <strong>at least</strong>, <strong>no more than</strong>,
+        and <strong>no bigger than</strong> to model stronger design specification writing.
+      </div>
     </section>
 
     <section class="card">
       <h2>Classify the Specifications</h2>
+      <p class="sub">Choose Functional or Physical for each one, then mark the quiz to see your result.</p>
       <div id="quizArea"></div>
 
       <div class="toolbar">
         <div class="left-tools">
-          <button class="primary" id="markBtn">Mark</button>
+          <button class="primary" id="markBtn">Mark Quiz</button>
           <button class="ghost" id="showAnswersBtn">Show Answers</button>
           <button class="ghost" id="resetBtn">Reset</button>
         </div>
@@ -240,52 +277,162 @@
   </div>
 
   <script>
-    const specBank = [
-      { text: 'Must be waterproof to 1 metre', answer: 'F' },
-      { text: 'Height is 25 cm', answer: 'P' },
-      { text: 'Must support 80 kg', answer: 'F' },
-      { text: 'Made from recycled plastic', answer: 'P' },
-      { text: 'Must cut paper cleanly', answer: 'F' },
-      { text: 'Weight less than 300 g', answer: 'P' },
-      { text: 'Must display temperature clearly', answer: 'F' },
-      { text: 'Width is 10 cm', answer: 'P' },
-      { text: 'Must be safe for children under 5', answer: 'F' },
-      { text: 'Colour is bright red', answer: 'P' },
-      { text: 'Must store 1 litre of liquid', answer: 'F' },
-      { text: 'Made from aluminium', answer: 'P' },
-      { text: 'Must connect via Bluetooth', answer: 'F' },
-      { text: 'Length is 1.2 metres', answer: 'P' },
-      { text: 'Must be easy to clean', answer: 'F' }
+    const specs = [
+      // CLEAR FUNCTIONAL
+      {t:"Product must support a load of at least 100 kg without failure",a:"F"},
+      {t:"Product should operate continuously for at least 6 hours without overheating",a:"F"},
+      {t:"Product must prevent water leakage under normal use",a:"F"},
+      {t:"Product should assemble in no more than 10 minutes using standard tools",a:"F"},
+      {t:"Product must function reliably after at least 5000 uses",a:"F"},
+      {t:"Product should operate at no more than 50 dB during normal use",a:"F"},
+      {t:"Product must maintain performance between 0°C and 40°C",a:"F"},
+      {t:"Product must hold at least 2 litres of liquid",a:"F"},
+      {t:"Product should be easy to clean in under 2 minutes",a:"F"},
+      {t:"Product must remain stable when loaded to its maximum capacity",a:"F"},
+      {t:"Product should switch on in no more than 2 seconds",a:"F"},
+      {t:"Product must be safe for users aged 5 years and older",a:"F"},
+      {t:"Product should reduce energy use by at least 20% compared with a standard model",a:"F"},
+      {t:"Product must withstand outdoor weather conditions for at least 24 months",a:"F"},
+      {t:"Product should be portable enough to be carried by one person",a:"F"},
+      {t:"Product must maintain full function after being dropped from 1 metre",a:"F"},
+      {t:"Product should require no more than 5 steps to begin use",a:"F"},
+      {t:"Product must provide clear feedback to the user when operating",a:"F"},
+      {t:"Product should be intuitive enough for first-time users to operate without guidance",a:"F"},
+      {t:"Product must minimise user fatigue during at least 20 minutes of continuous use",a:"F"},
+      {t:"Product should prevent accidental activation during transport",a:"F"},
+      {t:"Product must be easy to maintain using commonly available replacement parts",a:"F"},
+      {t:"Product should allow damaged parts to be replaced in under 15 minutes",a:"F"},
+      {t:"Product must continue to operate safely after minor surface wear",a:"F"},
+      {t:"Product should resist corrosion during normal use for at least 3 years",a:"F"},
+      {t:"Product must deliver consistent results over repeated use",a:"F"},
+      {t:"Product should improve user comfort compared with an existing alternative",a:"F"},
+      {t:"Product must prevent sharp contact points during operation",a:"F"},
+      {t:"Product should be suitable for indoor and outdoor use",a:"F"},
+      {t:"Product must be capable of being stored safely when not in use",a:"F"},
+
+      // CLEAR PHYSICAL
+      {t:"Product must weigh no more than 1 kg",a:"P"},
+      {t:"Product should fit within a space no bigger than 30 cm x 30 cm x 30 cm",a:"P"},
+      {t:"Product must have rounded edges with no sharp corners",a:"P"},
+      {t:"Product should have a non-slip outer surface",a:"P"},
+      {t:"Product must have a thickness of no more than 20 mm",a:"P"},
+      {t:"Product should be lightweight yet durable",a:"P"},
+      {t:"Product must have a smooth, consistent surface finish",a:"P"},
+      {t:"Product should have an ergonomic shape suited to hand use",a:"P"},
+      {t:"Product must be no taller than 40 cm",a:"P"},
+      {t:"Product should have a visually appealing appearance for the target market",a:"P"},
+      {t:"Product must be compact enough to fit on a standard desk",a:"P"},
+      {t:"Product should have a stable base wider than its top section",a:"P"},
+      {t:"Product must have a surface texture that provides grip",a:"P"},
+      {t:"Product should have a form that allows easy storage",a:"P"},
+      {t:"Product must occupy no more than 5 litres of volume",a:"P"},
+      {t:"Product should use the minimum amount of material needed to maintain strength",a:"P"},
+      {t:"Product must have clearly visible controls through contrast or size",a:"P"},
+      {t:"Product should include sufficient surface area for safe handling",a:"P"},
+      {t:"Product must have a balanced form that does not topple easily",a:"P"},
+      {t:"Product should have no gaps larger than 5 mm where fingers could get trapped",a:"P"},
+      {t:"Product must have a durable outer finish resistant to scratching",a:"P"},
+      {t:"Product should use standardised component sizes where possible",a:"P"},
+      {t:"Product must be no wider than 25 cm",a:"P"},
+      {t:"Product should have a neutral appearance suitable for multiple environments",a:"P"},
+      {t:"Product must have a clearly defined gripping area",a:"P"},
+      {t:"Product should have a surface finish that is easy to wipe clean",a:"P"},
+      {t:"Product must have a form that allows stacked storage",a:"P"},
+      {t:"Product should have an appearance that matches current design trends",a:"P"},
+      {t:"Product must be no longer than 60 cm",a:"P"},
+      {t:"Product should be robust while remaining visually simple",a:"P"},
+
+      // SUSTAINABILITY
+      {t:"Product must have a usable lifespan of at least 5 years",a:"F"},
+      {t:"Product should minimise environmental impact across its full lifecycle",a:"F"},
+      {t:"Product must be designed so major parts can be separated for recycling",a:"F"},
+      {t:"Product should reduce energy consumption during use",a:"F"},
+      {t:"Product must minimise waste during manufacture",a:"F"},
+      {t:"Product should use no more material than necessary to achieve required strength",a:"P"},
+      {t:"Product must allow worn parts to be replaced instead of discarding the whole product",a:"F"},
+      {t:"Product should minimise packaging volume during transport",a:"P"},
+      {t:"Product must be durable enough to reduce replacement frequency",a:"F"},
+      {t:"Product should be easy to disassemble using basic tools",a:"F"},
+      {t:"Product must be suitable for reuse, repair, or recycling at end of life",a:"F"},
+      {t:"Product should avoid unnecessary layers, coatings, or decorative additions",a:"P"},
+
+      // COST AND MANUFACTURE
+      {t:"Product must be manufactured at a cost of no more than $20 per unit",a:"F"},
+      {t:"Product should minimise production time while maintaining quality",a:"F"},
+      {t:"Product must be suitable for batch or mass production",a:"F"},
+      {t:"Product should use processes that reduce manufacturing waste",a:"F"},
+      {t:"Product must be capable of being assembled using standard workshop equipment",a:"F"},
+      {t:"Product should use a limited number of parts to reduce assembly cost",a:"F"},
+      {t:"Product must fit within packaging no bigger than 35 cm x 25 cm x 15 cm",a:"P"},
+      {t:"Product should be easy to quality-check during production",a:"F"},
+      {t:"Product must allow efficient storage and transport before sale",a:"F"},
+      {t:"Product should reduce the need for specialist finishing processes",a:"F"},
+
+      // TRICKIER EDGE CASES
+      {t:"Product should balance strength and low weight efficiently",a:"P"},
+      {t:"Product must maintain structural integrity over time",a:"F"},
+      {t:"Product should feel stable during normal use",a:"F"},
+      {t:"Product must be comfortable to use for extended periods",a:"F"},
+      {t:"Product should be compact for storage",a:"P"},
+      {t:"Product must be easy to transport by one person",a:"F"},
+      {t:"Product should align with modern design preferences",a:"P"},
+      {t:"Product must resist accidental damage during normal handling",a:"F"},
+      {t:"Product should provide enough grip to prevent slipping in wet conditions",a:"P"},
+      {t:"Product must remain safe and functional after exposure to dust",a:"F"},
+      {t:"Product should allow the user to identify its orientation immediately",a:"P"},
+      {t:"Product must maintain stability when used on a slightly uneven surface",a:"F"},
+      {t:"Product should have a shape that discourages incorrect use",a:"P"},
+      {t:"Product must be easy to inspect for damage before use",a:"F"},
+      {t:"Product should maintain a professional appearance after 12 months of use",a:"F"},
+      {t:"Product must protect the user from contact with moving parts",a:"F"},
+      {t:"Product should include enough internal space for safe component placement",a:"P"},
+      {t:"Product must remain effective when used repeatedly throughout the day",a:"F"},
+      {t:"Product should be no bigger than necessary for its intended function",a:"P"},
+      {t:"Product must be easy to store in a home, classroom, or workshop environment",a:"F"}
     ];
 
     const quizArea = document.getElementById('quizArea');
     const resultsBox = document.getElementById('resultsBox');
     const liveScore = document.getElementById('liveScore');
+    const questionCountSelect = document.getElementById('questionCount');
 
     let currentQuiz = [];
 
     function shuffle(arr) {
-      return arr.sort(() => Math.random() - 0.5);
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
     }
 
     function buildQuiz() {
-      const count = Number(document.getElementById('questionCount').value);
-      currentQuiz = shuffle([...specBank]).slice(0, count);
+      const count = Number(questionCountSelect.value);
+      currentQuiz = shuffle(specs).slice(0, count);
       quizArea.innerHTML = '';
+      resultsBox.className = 'results';
+      resultsBox.innerHTML = '';
 
       currentQuiz.forEach((item, index) => {
         const q = document.createElement('div');
         q.className = 'question';
-        q.dataset.answer = item.answer;
+        q.dataset.answer = item.a;
 
         q.innerHTML = `
           <div class="q-head">
             <div class="q-num">${index + 1}.</div>
-            <div class="spec-text">${item.text}</div>
+            <div class="spec-text">${item.t}</div>
           </div>
           <div class="options">
-            <label class="option"><input type="radio" name="q${index}" value="F"/> Functional</label>
-            <label class="option"><input type="radio" name="q${index}" value="P"/> Physical</label>
+            <label class="option">
+              <input type="radio" name="q${index}" value="F" />
+              Functional
+            </label>
+            <label class="option">
+              <input type="radio" name="q${index}" value="P" />
+              Physical
+            </label>
           </div>
           <div class="feedback"></div>
         `;
@@ -296,60 +443,79 @@
     }
 
     function updateLiveScore() {
-      const qs = document.querySelectorAll('.question');
-      const answered = [...qs].filter(q => q.querySelector('input:checked')).length;
-      liveScore.textContent = `Answered: ${answered} / ${qs.length}`;
+      const questions = [...document.querySelectorAll('.question')];
+      const answered = questions.filter(q => q.querySelector('input[type="radio"]:checked')).length;
+      liveScore.textContent = `Answered: ${answered} / ${questions.length}`;
     }
 
-    function markQuiz(showAnswers=false) {
-      const qs = document.querySelectorAll('.question');
+    function markQuiz(showAnswers = false) {
+      const questions = [...document.querySelectorAll('.question')];
       let correct = 0;
+      let answered = 0;
 
-      qs.forEach(q => {
-        const chosen = q.querySelector('input:checked');
+      questions.forEach((q) => {
+        q.classList.remove('correct', 'incorrect');
+        const chosen = q.querySelector('input[type="radio"]:checked');
+        const feedback = q.querySelector('.feedback');
         const right = q.dataset.answer;
-        const fb = q.querySelector('.feedback');
 
-        q.classList.remove('correct','incorrect');
+        if (chosen) answered++;
 
         if (!chosen) {
-          fb.className = 'feedback warn';
-          fb.textContent = 'No answer selected';
+          feedback.className = 'feedback warn';
+          feedback.textContent = showAnswers
+            ? `No answer selected. Correct answer: ${right === 'F' ? 'Functional' : 'Physical'}.`
+            : 'No answer selected yet.';
           return;
         }
 
         if (chosen.value === right) {
           correct++;
           q.classList.add('correct');
-          fb.className = 'feedback good';
-          fb.textContent = 'Correct';
+          feedback.className = 'feedback good';
+          feedback.textContent = `Correct — ${right === 'F' ? 'Functional' : 'Physical'}.`;
         } else {
           q.classList.add('incorrect');
-          fb.className = 'feedback bad';
-          fb.textContent = showAnswers ? `Correct answer: ${right}` : 'Incorrect';
+          feedback.className = 'feedback bad';
+          feedback.textContent = `Not quite. Correct answer: ${right === 'F' ? 'Functional' : 'Physical'}.`;
         }
       });
 
+      const percent = questions.length ? Math.round((correct / questions.length) * 100) : 0;
+      let message = 'Keep practising the difference between performance and physical characteristics.';
+      if (percent >= 90) message = 'Excellent work — strong understanding of specifications.';
+      else if (percent >= 75) message = 'Great job — you are classifying most of these accurately.';
+      else if (percent >= 60) message = 'Good start — review the trickier edge cases and mixed considerations.';
+
       resultsBox.className = 'results show';
-      resultsBox.innerHTML = `<div class="big-score">${correct}/${qs.length}</div>`;
+      resultsBox.innerHTML = `
+        <h3>Results</h3>
+        <div class="big-score">${correct} / ${questions.length} (${percent}%)</div>
+        <p class="muted">${message} You answered ${answered} of ${questions.length} questions.</p>
+      `;
     }
 
-    function resetQuiz() {
-      document.querySelectorAll('input').forEach(i => i.checked = false);
-      document.querySelectorAll('.feedback').forEach(f => f.style.display='none');
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('correct','incorrect'));
+    function resetChoices() {
+      document.querySelectorAll('.question').forEach(q => {
+        q.classList.remove('correct', 'incorrect');
+        q.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+        const feedback = q.querySelector('.feedback');
+        feedback.className = 'feedback';
+        feedback.textContent = '';
+      });
       resultsBox.className = 'results';
+      resultsBox.innerHTML = '';
       updateLiveScore();
     }
 
-    document.addEventListener('change', e => {
-      if (e.target.matches('input')) updateLiveScore();
+    document.getElementById('newQuizBtn').addEventListener('click', buildQuiz);
+    document.getElementById('markBtn').addEventListener('click', () => markQuiz(false));
+    document.getElementById('showAnswersBtn').addEventListener('click', () => markQuiz(true));
+    document.getElementById('resetBtn').addEventListener('click', resetChoices);
+    questionCountSelect.addEventListener('change', buildQuiz);
+    document.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="radio"]')) updateLiveScore();
     });
-
-    document.getElementById('newQuizBtn').onclick = buildQuiz;
-    document.getElementById('markBtn').onclick = () => markQuiz(false);
-    document.getElementById('showAnswersBtn').onclick = () => markQuiz(true);
-    document.getElementById('resetBtn').onclick = resetQuiz;
 
     buildQuiz();
   </script>
