@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Functional vs Physical Specifications Quiz</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --good: #166534;
+      --good-bg: #dcfce7;
+      --bad: #991b1b;
+      --bad-bg: #fee2e2;
+      --warn: #92400e;
+      --warn-bg: #fef3c7;
+      --border: #d1d5db;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero, .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(209, 213, 219, 0.7);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    h1, h2, h3 { margin-top: 0; }
+
+    .sub { color: var(--muted); line-height: 1.6; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin: 18px 0 22px;
+    }
+
+    .mini {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fafcff;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .functional-chip { background: var(--primary-soft); color: #1d4ed8; }
+    .physical-chip { background: #ede9fe; color: #6d28d9; }
+
+    .card { padding: 22px; margin-bottom: 20px; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+
+    .left-tools, .right-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button, select { font: inherit; }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary { background: var(--primary); color: white; }
+    .secondary { background: #e5e7eb; }
+    .ghost { background: white; border: 1px solid var(--border); }
+
+    .scorebox {
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .question {
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      background: #fff;
+    }
+
+    .question.correct { border-color: #86efac; background: #f0fdf4; }
+    .question.incorrect { border-color: #fca5a5; background: #fff7f7; }
+
+    .q-head {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .q-num { font-weight: 700; color: var(--muted); min-width: 28px; }
+    .spec-text { font-size: 1.03rem; line-height: 1.5; flex: 1; }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fafafa;
+      cursor: pointer;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .feedback.good { background: var(--good-bg); color: var(--good); display: block; }
+    .feedback.bad { background: var(--bad-bg); color: var(--bad); display: block; }
+    .feedback.warn { background: var(--warn-bg); color: var(--warn); display: block; }
+
+    .results {
+      display: none;
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .results.show { display: block; }
+
+    .big-score { font-size: 2rem; font-weight: 800; margin: 8px 0; }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Functional vs Physical Specifications Quiz</h1>
+      <p class="sub">
+        Decide whether each specification is <strong>Functional</strong> (what the product does) or
+        <strong>Physical</strong> (what the product is like).
+      </p>
+
+      <div class="grid">
+        <div class="mini">
+          <span class="chip functional-chip">Functional = Does</span>
+          <p>What the product must do</p>
+        </div>
+        <div class="mini">
+          <span class="chip physical-chip">Physical = Is</span>
+          <p>What the product is like</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="left-tools">
+          <label><strong>Questions:</strong></label>
+          <select id="questionCount">
+            <option value="10">10</option>
+            <option value="15" selected>15</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </select>
+          <button class="secondary" id="newQuizBtn">New Quiz</button>
+        </div>
+        <div class="right-tools">
+          <div class="scorebox" id="liveScore">Answered: 0 / 0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Classify the Specifications</h2>
+      <div id="quizArea"></div>
+
+      <div class="toolbar">
+        <div class="left-tools">
+          <button class="primary" id="markBtn">Mark</button>
+          <button class="ghost" id="showAnswersBtn">Show Answers</button>
+          <button class="ghost" id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <div class="results" id="resultsBox"></div>
+    </section>
+  </div>
+
+  <script>
+    const specBank = [
+      { text: 'Must be waterproof to 1 metre', answer: 'F' },
+      { text: 'Height is 25 cm', answer: 'P' },
+      { text: 'Must support 80 kg', answer: 'F' },
+      { text: 'Made from recycled plastic', answer: 'P' },
+      { text: 'Must cut paper cleanly', answer: 'F' },
+      { text: 'Weight less than 300 g', answer: 'P' },
+      { text: 'Must display temperature clearly', answer: 'F' },
+      { text: 'Width is 10 cm', answer: 'P' },
+      { text: 'Must be safe for children under 5', answer: 'F' },
+      { text: 'Colour is bright red', answer: 'P' },
+      { text: 'Must store 1 litre of liquid', answer: 'F' },
+      { text: 'Made from aluminium', answer: 'P' },
+      { text: 'Must connect via Bluetooth', answer: 'F' },
+      { text: 'Length is 1.2 metres', answer: 'P' },
+      { text: 'Must be easy to clean', answer: 'F' }
+    ];
+
+    const quizArea = document.getElementById('quizArea');
+    const resultsBox = document.getElementById('resultsBox');
+    const liveScore = document.getElementById('liveScore');
+
+    let currentQuiz = [];
+
+    function shuffle(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    function buildQuiz() {
+      const count = Number(document.getElementById('questionCount').value);
+      currentQuiz = shuffle([...specBank]).slice(0, count);
+      quizArea.innerHTML = '';
+
+      currentQuiz.forEach((item, index) => {
+        const q = document.createElement('div');
+        q.className = 'question';
+        q.dataset.answer = item.answer;
+
+        q.innerHTML = `
+          <div class="q-head">
+            <div class="q-num">${index + 1}.</div>
+            <div class="spec-text">${item.text}</div>
+          </div>
+          <div class="options">
+            <label class="option"><input type="radio" name="q${index}" value="F"/> Functional</label>
+            <label class="option"><input type="radio" name="q${index}" value="P"/> Physical</label>
+          </div>
+          <div class="feedback"></div>
+        `;
+        quizArea.appendChild(q);
+      });
+
+      updateLiveScore();
+    }
+
+    function updateLiveScore() {
+      const qs = document.querySelectorAll('.question');
+      const answered = [...qs].filter(q => q.querySelector('input:checked')).length;
+      liveScore.textContent = `Answered: ${answered} / ${qs.length}`;
+    }
+
+    function markQuiz(showAnswers=false) {
+      const qs = document.querySelectorAll('.question');
+      let correct = 0;
+
+      qs.forEach(q => {
+        const chosen = q.querySelector('input:checked');
+        const right = q.dataset.answer;
+        const fb = q.querySelector('.feedback');
+
+        q.classList.remove('correct','incorrect');
+
+        if (!chosen) {
+          fb.className = 'feedback warn';
+          fb.textContent = 'No answer selected';
+          return;
+        }
+
+        if (chosen.value === right) {
+          correct++;
+          q.classList.add('correct');
+          fb.className = 'feedback good';
+          fb.textContent = 'Correct';
+        } else {
+          q.classList.add('incorrect');
+          fb.className = 'feedback bad';
+          fb.textContent = showAnswers ? `Correct answer: ${right}` : 'Incorrect';
+        }
+      });
+
+      resultsBox.className = 'results show';
+      resultsBox.innerHTML = `<div class="big-score">${correct}/${qs.length}</div>`;
+    }
+
+    function resetQuiz() {
+      document.querySelectorAll('input').forEach(i => i.checked = false);
+      document.querySelectorAll('.feedback').forEach(f => f.style.display='none');
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('correct','incorrect'));
+      resultsBox.className = 'results';
+      updateLiveScore();
+    }
+
+    document.addEventListener('change', e => {
+      if (e.target.matches('input')) updateLiveScore();
+    });
+
+    document.getElementById('newQuizBtn').onclick = buildQuiz;
+    document.getElementById('markBtn').onclick = () => markQuiz(false);
+    document.getElementById('showAnswersBtn').onclick = () => markQuiz(true);
+    document.getElementById('resetBtn').onclick = resetQuiz;
+
+    buildQuiz();
+  </script>
+</body>
+</html>
