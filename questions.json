@@ -1119,7 +1119,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The teacher's desk$",
+              "check": "^The teacher's desk",
               "flags": "i"
             }
           ],
