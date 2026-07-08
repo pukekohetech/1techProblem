@@ -1,96 +1,1409 @@
-<!DOCTYPE html> 
-<html lang="en">
-  <head>
-    <link rel="manifest" href="manifest.webmanifest">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Loading…</title>
-    <!-- Add a favicon for better browser tab appearance -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="stylesheet" href="styles.css">
-
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <!-- Replace this src with your actual crest image if needed -->
-        <img src="icon-192.png" alt="School Crest" class="crest" />
-        <div class="header-text">
-          <h1 id="app-title">Pukekohe High School</h1>
-          <p id="app-subtitle">Technology Assessment</p>
-        </div>
-      </header>
-
-      <div id="deadline-banner" class="deadline-banner hidden">
-        <span id="deadline-text"></span>
-      </div>
-
-      <section class="info">
-        <h2>Student Information</h2>
-        <div class="info-grid">
-          <div>
-            <label for="name">Student Name</label>
-            <input id="name" type="text" placeholder="Enter your full name">
-          </div>
-          <div>
-            <label for="id">Student ID</label>
-            <input id="id" type="text" placeholder="Enter your ID">
-            <div id="locked-msg" class="locked-msg hidden">
-              ID locked as <span id="locked-id"></span> for this device.
-            </div>
-          </div>
-          <div>
-            <label for="teacher">Teacher</label>
-            <select id="teacher">
-              <option value="">Select teacher</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <section class="assessment">
-        <h2>Assessment</h2>
-        <div id="loading" class="loading">Loading questions…</div>
-        <div class="info-grid">
-          <div>
-            <label for="assessmentSelector">Assessment</label>
-            <select id="assessmentSelector">
-              <option value="">Select assessment</option>
-            </select>
-          </div>
-          
-        </div>
-
-        <div class="btn-group">
-          <button class="btn" onclick="loadAssessment()">Load Assessment</button>
-        </div>
-
-        <section class="form-section" id="form">
-          <div id="questions"></div>
-
-          <div class="btn-group">
-            <button class="btn" onclick="submitWork()">Submit &amp; Grade</button>
-          </div>
-        </section>
-      </section>
-
-      <section class="result-section hidden" id="result">
-        <div class="result-header">
-          <h2>Assessment Complete!</h2>
-          <p><strong id="student"></strong> to <span id="teacher-name"></span></p>
-          <div class="grade" id="grade"></div>
-        </div>
-        <div id="answers"></div>
-        <div class="btn-group">
-          <button class="btn" id="emailBtn" onclick="emailWork()" disabled>
-            Email via Default App
-          </button>
-          <button class="btn btn-secondary" onclick="back()">Back to Form</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- Load the application logic. Using a regular script tag avoids issues with ES module loading via the file:// protocol. -->
-    <script src="script.js?=v11" defer></script>
-  </body>
-</html>
+{
+  "APP_ID": "Pukekohe High School - Design Problem and Brief",
+  "VERSION": "2026.5",
+  "APP_TITLE": "Writing a Design Problem, Brief and Specification",
+  "APP_SUBTITLE": "Learning Assessment - Clear Language, Clear Evidence",
+  "DEADLINE": {
+    "day": 6,
+    "month": 6,
+    "label": "Submission deadline"
+  },
+  "TEACHERS": [
+    {
+      "id": "RY",
+      "name": "Mr Reynolds",
+      "email": "ry@pukekohehigh.school.nz"
+    }
+  ],
+  "ASSESSMENTS": [
+    {
+      "id": "PHS Problem and Brief Activity",
+      "title": "Stage 1 \u2013 Writing a Design Problem and Brief",
+      "subtitle": "Task 1",
+      "usNumber": "",
+      "usVersion": "",
+      "credits": null,
+      "standardType": "internal",
+      "questions": [
+        {
+          "id": "Write a Design Problem and Brief",
+          "text": "Describe the design problem and write a brief for your project.\n\nIn your response, you must:\n- clearly explain what the problem or need is\n- identify who the stakeholder(s) are\n- explain why this is a problem and why it needs to be solved\n- describe the context or situation where the problem exists\n- explain what the design outcome needs to achieve (do not describe your final solution)\n- include any constraints or limitations that will affect the design\n\nYour answer should focus on the need, not the solution, and should guide the rest of your project.",
+          "image": "",
+          "hint": "To PASS, your response must clearly show that you understand the PROBLEM and the BRIEF.\n\nCheck your work against these questions:\n\nDESIGN PROBLEM\n\u2022 Have you clearly stated what the problem or need is?\n\u2022 Have you said who is affected by the problem?\n\u2022 Have you explained WHY this is a problem and why it needs to be solved?\n\u2022 Have you described where or when the problem occurs?\n\nDESIGN BRIEF\n\u2022 Have you explained what the outcome needs to achieve?\n\u2022 Have you used phrases like: \u201cThe outcome needs to\u2026\u201d, \u201cIt must\u2026\u201d, or \u201cIt is required to\u2026\u201d?\n\u2022 Have you avoided describing what your final solution looks like?\n\nCONSTRAINTS\n\u2022 Have you mentioned at least one limitation (time, cost, materials, tools, size, safety, or school rules)?\n\nBefore submitting, check that:\n\u2713 You mention the problem, the users, and the context\n\u2713 You explain why the problem matters\n\u2713 You focus on NEEDS, not your solution idea\n\nIf any of these are missing, you are unlikely to pass.",
+          "type": "long",
+          "maxPoints": 10,
+          "rubric": [
+            {
+              "points": 2,
+              "check": "\\b(problem|issue|need|lack|missing|challenge|difficulty)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(stakeholder|user|client|students?|teachers?|people|anyone|someone|community)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(why|because|causes|results in|leads to|affects?|impacts?)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(where|when|during|at school|at home|in class|daily|regularly)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(must|needs to|required to|should|aims to|intended to)\\b",
+              "flags": "i"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHS Specification Activity",
+      "title": "Stage 2 \u2013 Writing a Specification",
+      "subtitle": "Task 2",
+      "usNumber": "",
+      "usVersion": "",
+      "credits": null,
+      "standardType": "internal",
+      "questions": [
+        {
+          "id": "Write a Specification",
+          "text": "Write a specification for your design outcome.\n\nYour specification must:\n- be written as a list of clear criteria\n- use measurable or testable language\n- describe what the outcome must achieve\n- include constraints and requirements\n\nDo NOT describe your final solution.",
+          "image": "",
+          "hint": "To PASS, your specification must be written as a clear list of criteria (bullet points or numbered).\n\nEach point should:\n\u2022 Start with: \u201cThe outcome must\u2026\u201d or \u201cIt must\u2026\u201d\n\u2022 Be measurable or testable (include numbers where possible)\n\u2022 Focus on what it must DO or achieve \u2014 NOT what it will look like\n\nA strong specification usually includes criteria for:\n1) Function \u2013 What must it do? (e.g., The outcome must securely hold 4 textbooks.)\n2) User \u2013 Who must it work for? (e.g., The outcome must be suitable for Year 9\u201310 students.)\n3) Size \u2013 Dimensions or limits (e.g., Must be no larger than 400mm x 300mm.)\n4) Materials \u2013 What is allowed or restricted (e.g., Must use sustainable timber available in the workshop.)\n5) Safety \u2013 What risks must be reduced or avoided (e.g., Must have no sharp edges.)\n6) Durability \u2013 How strong or long-lasting (e.g., Must support at least 10kg without bending.)\n7) Cost/Time \u2013 Budget or deadline limits (e.g., Must cost under $30 and be completed within 3 weeks.)\n8) Sustainability \u2013 Waste, reuse, environmental impact.\n9) Testing \u2013 How you will check success (e.g., It will be tested by loading it with 10kg for 1 minute.)\n\nAvoid vague statements like:\n\u2717 It should look cool.\n\u2717 It should be good quality.\n\u2717 I will make it out of plywood.\n\nInstead, make every point specific and measurable.",
+          "type": "long",
+          "maxPoints": 16,
+          "rubric": [
+            {
+              "points": 2,
+              "check": "\\b(must|needs\\s*to|required\\s*to|shall|should)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(mm|cm|m|metre(s)?|meter(s)?|kg|g|%|hours?|minutes?|weeks?|\\$|dollars?)\\b|\\b\\d+(\\.\\d+)?\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(test|testing|tested|measure|measurable|verify|validated?|check|evidence|demonstrate)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(size|dimension(s)?|width|height|length|depth|thickness|weight|maximum|max|min(imum)?|limit(s)?|fit\\s*within|no\\s*(larger|bigger|greater)\\s*than|no\\s*more\\s*than|at\\s*most|up\\s*to|under)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(material(s)?|wood|metal|plastic|fabric|plywood|acrylic|cardboard|recycled|reuse(d)?|sustainable|environmentally\\s*friendly|eco(-|\\s)?friendly)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(safe|safety|hazard(s)?|risk(s)?|stable|durable|durability|strong|strength|sturdy|robust|resist(s|ed|ing)?\\s*damage|damage\\s*resistant|withstand(s|ing)?|impact|drop(ping)?|regular\\s*use|long(-|\\s)?lasting)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(function|purpose|do(es)?|perform(s|ance)?|operate(s|ion)?|allow(s)?|enable(s)?|support(s)?|provide(s|d)?|hold(s|ing)?|store(s|d|age)?|organis(e|z)(s|ed|ing)?|keep(s|ing)?|contain(s|ed|ing)?|fit(s|ted|ting)?|secure(s|d|ing)?)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "(?:\\n|\\-|\\d+\\.).{0,400}(?:\\n|\\-|\\d+\\.).{0,400}",
+              "flags": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHS Hard Materials Keyword MC Quiz Part 1",
+      "title": "Stage 3A \u2013 Hard Materials Key Word Multiple Choice Quiz",
+      "subtitle": "Materials and Processing Technology \u2013 Key Vocabulary | Questions 1\u201330",
+      "usNumber": "92012 / 92013 / 92014 / 92015",
+      "usVersion": "v1",
+      "credits": null,
+      "standardType": "practice",
+      "questions": [
+        {
+          "id": "q01_authentic_context",
+          "text": "What does authentic context mean in Technology?",
+          "image": "",
+          "hint": "Think about whether the need is connected to a real person, place or situation.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A real-life situation where a product is needed$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A made-up activity with no real user",
+            "A drawing copied from the internet",
+            "A real-life situation where a product is needed",
+            "A list of tools in the workshop"
+          ]
+        },
+        {
+          "id": "q02_end_user",
+          "text": "Who is the end user?",
+          "image": "",
+          "hint": "Think about who the final product is actually for.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The person or group who will use the final outcome$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The machine used to make the product",
+            "The person who sells the materials",
+            "The teacher who marks the work",
+            "The person or group who will use the final outcome"
+          ]
+        },
+        {
+          "id": "q03_stakeholder",
+          "text": "What is a stakeholder?",
+          "image": "",
+          "hint": "Stakeholders can help shape the outcome during development.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Someone who has an interest in the outcome or can give useful feedback$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Someone who has an interest in the outcome or can give useful feedback",
+            "A tool used to hold timber",
+            "A type of material property",
+            "A safety rule in the workshop"
+          ]
+        },
+        {
+          "id": "q04_brief",
+          "text": "What is a brief?",
+          "image": "",
+          "hint": "The brief guides the project.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A short statement explaining what needs to be made and why$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A list of unrelated ideas",
+            "A final photo of the product",
+            "A short statement explaining what needs to be made and why",
+            "A tool safety checklist"
+          ]
+        },
+        {
+          "id": "q05_specification",
+          "text": "What is a specification?",
+          "image": "",
+          "hint": "Specifications help you test success.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A clear and measurable requirement the outcome must meet$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A random material choice",
+            "A finished product only",
+            "A clear and measurable requirement the outcome must meet",
+            "A rough sketch with no labels"
+          ]
+        },
+        {
+          "id": "q06_best_specification",
+          "text": "Which of these is the best example of a specification?",
+          "image": "",
+          "hint": "Look for the option that is specific and testable.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It must hold at least four whiteboard markers$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It must hold at least four whiteboard markers",
+            "It should look cool",
+            "I will use plywood",
+            "It should be good"
+          ]
+        },
+        {
+          "id": "q07_outcome",
+          "text": "In Technology, what does outcome mean?",
+          "image": "",
+          "hint": "The outcome is what is developed to meet the brief.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The final product, model, design or solution being developed$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Only the teacher\u2019s feedback",
+            "The final product, model, design or solution being developed",
+            "Only the first sketch",
+            "The workshop rules"
+          ]
+        },
+        {
+          "id": "q08_fit_for_purpose",
+          "text": "What does fit for purpose mean?",
+          "image": "",
+          "hint": "Think about whether the outcome successfully does the job it was designed for.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The product works for the user, purpose and environment$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The product is finished quickly",
+            "The product uses the most expensive material",
+            "The product works for the user, purpose and environment",
+            "The product is the most colourful"
+          ]
+        },
+        {
+          "id": "q09_intended_environment",
+          "text": "What is the intended environment?",
+          "image": "",
+          "hint": "Think about where the product needs to work.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The place or situation where the outcome will be used$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The place or situation where the outcome will be used",
+            "The storage cupboard",
+            "The place where the teacher marks the work",
+            "The workshop bin"
+          ]
+        },
+        {
+          "id": "q10_material",
+          "text": "What is a material?",
+          "image": "",
+          "hint": "Materials include things like timber, acrylic and mild steel.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^What an outcome is made from$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The method used to shape a product",
+            "A type of stakeholder",
+            "A design problem",
+            "What an outcome is made from"
+          ]
+        },
+        {
+          "id": "q11_material_example",
+          "text": "Which of these is a material?",
+          "image": "",
+          "hint": "Choose the option that is something an outcome could be made from.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Plywood$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Testing",
+            "Drilling",
+            "Filing",
+            "Plywood"
+          ]
+        },
+        {
+          "id": "q12_material_property",
+          "text": "What is a material property?",
+          "image": "",
+          "hint": "Properties help you choose suitable materials.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A quality or characteristic of a material$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A quality or characteristic of a material",
+            "The name of the teacher",
+            "A tool used for cutting",
+            "A final stakeholder comment"
+          ]
+        },
+        {
+          "id": "q13_property_example",
+          "text": "Which of these is a material property?",
+          "image": "",
+          "hint": "A property describes how a material behaves or performs.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Durability$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Centre punching",
+            "Durability",
+            "Riveting",
+            "Hacksawing"
+          ]
+        },
+        {
+          "id": "q14_technique",
+          "text": "What is a technique?",
+          "image": "",
+          "hint": "Techniques are practical making processes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A method or process used to make, shape or join something$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The final mark for an assessment",
+            "The person using the product",
+            "A material property only",
+            "A method or process used to make, shape or join something"
+          ]
+        },
+        {
+          "id": "q15_technique_example",
+          "text": "Which of these is a technique?",
+          "image": "",
+          "hint": "Choose the making process.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Drilling$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Drilling",
+            "Plywood",
+            "Acrylic",
+            "Strength"
+          ]
+        },
+        {
+          "id": "q16_materials_group",
+          "text": "Which group contains only materials?",
+          "image": "",
+          "hint": "Materials are what the outcome is made from.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Plywood, acrylic, mild steel$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Plywood, acrylic, mild steel",
+            "Cutting, folding, riveting",
+            "Strength, stability, durability",
+            "Testing, feedback, refine"
+          ]
+        },
+        {
+          "id": "q17_techniques_group",
+          "text": "Which group contains only techniques?",
+          "image": "",
+          "hint": "Techniques are processes used to make or modify the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Cutting, folding, riveting$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Cutting, folding, riveting",
+            "Stakeholder, user, client",
+            "Plywood, acrylic, mild steel",
+            "Brief, context, need"
+          ]
+        },
+        {
+          "id": "q18_functional_attributes_group",
+          "text": "Which group contains functional attributes?",
+          "image": "",
+          "hint": "Functional attributes describe what the outcome needs to do or how it performs.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Stability, strength, water resistance$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Brief, stakeholder, context",
+            "Stability, strength, water resistance",
+            "Plywood, acrylic, MDF",
+            "Scriber, ruler, drill press"
+          ]
+        },
+        {
+          "id": "q19_functional_attribute_meaning",
+          "text": "What does functional attribute mean?",
+          "image": "",
+          "hint": "Think about function and performance.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Something the outcome must be able to do or achieve$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Something the outcome must be able to do or achieve",
+            "The name of a tool",
+            "A teacher comment",
+            "A colour choice only"
+          ]
+        },
+        {
+          "id": "q20_phone_stand_attribute",
+          "text": "Which is a functional attribute for a phone stand?",
+          "image": "",
+          "hint": "A functional attribute links to what the product needs to do.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It holds a phone upright safely$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The teacher likes it",
+            "It holds a phone upright safely",
+            "It is made on Tuesday",
+            "It is stored in a cupboard"
+          ]
+        },
+        {
+          "id": "q21_refine",
+          "text": "What does refine mean?",
+          "image": "",
+          "hint": "Refining means improving the outcome during development.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^To improve or change something after feedback or testing$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "To improve or change something after feedback or testing",
+            "To ignore stakeholder feedback",
+            "To copy the first idea exactly",
+            "To stop the project"
+          ]
+        },
+        {
+          "id": "q22_justify",
+          "text": "What does justify mean?",
+          "image": "",
+          "hint": "Justifying is stronger than just naming what you did.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Give clear reasons for a decision using evidence$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "List tools only",
+            "Draw without labels",
+            "Give clear reasons for a decision using evidence",
+            "Choose randomly"
+          ]
+        },
+        {
+          "id": "q23_evaluate",
+          "text": "What does evaluate mean?",
+          "image": "",
+          "hint": "Evaluation should include a clear judgement.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Make a judgement using evidence$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Copy a sentence from the internet",
+            "Use the quickest tool",
+            "Only name a material",
+            "Make a judgement using evidence"
+          ]
+        },
+        {
+          "id": "q24_analyse",
+          "text": "What does analyse mean?",
+          "image": "",
+          "hint": "Analysis explains relationships and reasons.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Break something down and explain the connections$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Break something down and explain the connections",
+            "Only describe the colour",
+            "Finish without feedback",
+            "Guess without testing"
+          ]
+        },
+        {
+          "id": "q25_kaitiakitanga",
+          "text": "What does kaitiakitanga mean in a Technology project?",
+          "image": "",
+          "hint": "Think about guardianship and responsible decisions.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Care for people, place, resources and the environment$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Use the newest tool every time",
+            "Make the biggest possible product",
+            "Care for people, place, resources and the environment",
+            "Ignore material waste"
+          ]
+        },
+        {
+          "id": "q26_reusing_offcuts",
+          "text": "Reusing offcuts is an example of what?",
+          "image": "",
+          "hint": "Think about reducing waste.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainable practice$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A brief",
+            "Material testing only",
+            "Stakeholder feedback",
+            "Sustainable practice"
+          ]
+        },
+        {
+          "id": "q27_smallest_sheet",
+          "text": "Choosing the smallest suitable sheet size to reduce waste is mainly about what?",
+          "image": "",
+          "hint": "This links to efficient material use.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainability$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Ignoring specifications",
+            "Sustainability",
+            "Making the task harder",
+            "Decoration only"
+          ]
+        },
+        {
+          "id": "q28_feasible",
+          "text": "What does feasible mean?",
+          "image": "",
+          "hint": "Feasible means achievable in the real situation.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The outcome can realistically be made with the available time, tools, skills and materials$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The outcome can realistically be made with the available time, tools, skills and materials",
+            "The outcome has no user",
+            "The outcome is impossible to make",
+            "The outcome has no purpose"
+          ]
+        },
+        {
+          "id": "q29_testing_example",
+          "text": "Which is the best example of testing?",
+          "image": "",
+          "hint": "Testing checks whether the outcome performs as required.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Measuring how much weight a shelf can hold$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Measuring how much weight a shelf can hold",
+            "Putting tools away",
+            "Writing your name on the page",
+            "Choosing a colour because it looks nice"
+          ]
+        },
+        {
+          "id": "q30_trialling_technique",
+          "text": "Which is the best example of trialling a technique?",
+          "image": "",
+          "hint": "Trialling helps compare possible making methods.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Testing screws and rivets to see which joint is stronger$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Asking no one for feedback",
+            "Testing screws and rivets to see which joint is stronger",
+            "Picking the first idea and never changing it",
+            "Only drawing a title page"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHS Hard Materials Keyword MC Quiz Part 2",
+      "title": "Stage 3B \u2013 Hard Materials Key Word Multiple Choice Quiz",
+      "subtitle": "Materials and Processing Technology \u2013 Key Vocabulary | Questions 31\u201360",
+      "usNumber": "92012 / 92013 / 92014 / 92015",
+      "usVersion": "v1",
+      "credits": null,
+      "standardType": "practice",
+      "questions": [
+        {
+          "id": "q31_feedback",
+          "text": "Which is the best example of stakeholder feedback?",
+          "image": "",
+          "hint": "Feedback should come from someone connected to the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The product user says, \u201cThe handle is too small for my hand\\.\u201d$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The material is called plywood",
+            "The product user says, \u201cThe handle is too small for my hand.\u201d",
+            "The drill bit is 4.5 mm",
+            "The product was made in the workshop"
+          ]
+        },
+        {
+          "id": "q32_feedback_refine",
+          "text": "Which action shows using feedback to refine an outcome?",
+          "image": "",
+          "hint": "Refining means making an informed improvement.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Changing the handle size after the user says it is uncomfortable$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Ignoring the user and keeping the same design",
+            "Choosing a material without testing",
+            "Deleting all specifications",
+            "Changing the handle size after the user says it is uncomfortable"
+          ]
+        },
+        {
+          "id": "q33_kaitiakitanga_example",
+          "text": "Which option best shows kaitiakitanga?",
+          "image": "",
+          "hint": "Think about responsible care for resources.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Choosing materials carefully and reducing waste$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Throwing away usable offcuts",
+            "Using more material than needed",
+            "Choosing materials carefully and reducing waste",
+            "Ignoring environmental impact"
+          ]
+        },
+        {
+          "id": "q34_standard_context",
+          "text": "A project focused on a real person, brief, specifications and final outcome connects most strongly to which area?",
+          "image": "",
+          "hint": "Think about the full design and development process.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Developing an outcome in an authentic context$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Only copying a drawing",
+            "Developing an outcome in an authentic context",
+            "Only cleaning the workshop",
+            "Only naming PPE"
+          ]
+        },
+        {
+          "id": "q35_standard_materials",
+          "text": "Comparing plywood, MDF and acrylic through testing connects most strongly to which area?",
+          "image": "",
+          "hint": "This focuses on material testing and selection.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Experimenting with materials$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Submitting without evidence",
+            "Writing only a title",
+            "Cleaning the bench",
+            "Experimenting with materials"
+          ]
+        },
+        {
+          "id": "q36_standard_sustainability",
+          "text": "Reducing waste, reusing offcuts and considering kaitiakitanga connects most strongly to which area?",
+          "image": "",
+          "hint": "Think about environmental and resource decisions.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainable practices$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Sustainable practices",
+            "Only stakeholder names",
+            "Only workshop rules",
+            "Only final decoration"
+          ]
+        },
+        {
+          "id": "q37_standard_techniques",
+          "text": "Trialling screws and rivets to choose a suitable joint connects most strongly to which area?",
+          "image": "",
+          "hint": "This focuses on practical making processes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Techniques selected for a feasible outcome$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Only naming the end user",
+            "Techniques selected for a feasible outcome",
+            "Only storing materials",
+            "Only writing the date"
+          ]
+        },
+        {
+          "id": "q38_achieved_thinking",
+          "text": "Which statement is closest to Achieved-level thinking?",
+          "image": "",
+          "hint": "Achieved often identifies or describes what was done.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^I used plywood\\.$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "I compared plywood and acrylic, then refined my choice after testing.",
+            "I used plywood.",
+            "I evaluated three materials and justified plywood as the best choice because of test results.",
+            "I analysed how the material choice affected strength, cost and sustainability."
+          ]
+        },
+        {
+          "id": "q39_merit_thinking",
+          "text": "Which statement is closest to Merit-level thinking?",
+          "image": "",
+          "hint": "Merit usually explains how or why a decision improved the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^I changed from nails to screws because testing showed screws were stronger and easier to remove for repair\\.$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "I used screws.",
+            "Wood is a material.",
+            "I changed from nails to screws because testing showed screws were stronger and easier to remove for repair.",
+            "My project is finished."
+          ]
+        },
+        {
+          "id": "q40_excellence_thinking",
+          "text": "Which statement is closest to Excellence-level thinking?",
+          "image": "",
+          "hint": "Excellence includes judgement, evidence and justification.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^I evaluated my final box against the brief and justified my final material and joining method using test results and stakeholder feedback\\.$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "I used MDF.",
+            "I evaluated my final box against the brief and justified my final material and joining method using test results and stakeholder feedback.",
+            "I drew a sketch.",
+            "I cleaned my bench."
+          ]
+        },
+        {
+          "id": "q41_identify",
+          "text": "What does identify usually ask you to do?",
+          "image": "",
+          "hint": "Identify is usually a simple naming task.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Say what something is$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Build the final product",
+            "Ignore evidence",
+            "Say what something is",
+            "Give a detailed evaluation"
+          ]
+        },
+        {
+          "id": "q42_describe",
+          "text": "What does describe usually ask you to do?",
+          "image": "",
+          "hint": "Describe adds detail.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Give details about something$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Only write one unrelated word",
+            "Delete your evidence",
+            "Give details about something",
+            "Make a final judgement"
+          ]
+        },
+        {
+          "id": "q43_explain",
+          "text": "What does explain usually ask you to do?",
+          "image": "",
+          "hint": "Explain is about reasons and cause/effect.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Say how or why something happened$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Choose randomly",
+            "Say how or why something happened",
+            "Write nothing",
+            "Only name a material"
+          ]
+        },
+        {
+          "id": "q44_compare",
+          "text": "What does compare usually ask you to do?",
+          "image": "",
+          "hint": "Compare means looking at more than one thing.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Show similarities and differences$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Submit the same answer twice",
+            "Only name the first option",
+            "Ignore all test results",
+            "Show similarities and differences"
+          ]
+        },
+        {
+          "id": "q45_evaluate_command",
+          "text": "Which command word is most likely to require a strong evidence-based judgement?",
+          "image": "",
+          "hint": "Evaluation usually includes a judgement supported by evidence.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Evaluate$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Evaluate",
+            "Identify",
+            "Name",
+            "List"
+          ]
+        },
+        {
+          "id": "q46_scenario_end_user",
+          "text": "Scenario: A student designs and makes a desk organiser for a teacher. Who is the end user?",
+          "image": "",
+          "hint": "The end user is the person who will use the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The teacher$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The drill press",
+            "The school bell",
+            "The teacher",
+            "The offcut bin"
+          ]
+        },
+        {
+          "id": "q47_scenario_environment",
+          "text": "Scenario: The desk organiser will sit on a teacher\u2019s desk. What is the intended environment?",
+          "image": "",
+          "hint": "The intended environment is where the outcome will be used.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The teacher\u2019s desk$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The car park",
+            "The teacher\u2019s desk",
+            "The rubbish bin",
+            "The metal rack"
+          ]
+        },
+        {
+          "id": "q48_scenario_brief",
+          "text": "Which is the best brief for the desk organiser scenario?",
+          "image": "",
+          "hint": "A brief should explain what is needed and why.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Design and make a desk organiser for a teacher to store classroom items neatly$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Design and make a desk organiser for a teacher to store classroom items neatly",
+            "Draw a random box",
+            "Make anything you want",
+            "Use wood because it is there"
+          ]
+        },
+        {
+          "id": "q49_scenario_specification",
+          "text": "Which is the best specification for the desk organiser?",
+          "image": "",
+          "hint": "Look for a clear, measurable requirement.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It must hold at least six whiteboard markers$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It might be cool",
+            "It will be made somehow",
+            "It should be nice",
+            "It must hold at least six whiteboard markers"
+          ]
+        },
+        {
+          "id": "q50_scenario_size_spec",
+          "text": "Which is another useful specification for the desk organiser?",
+          "image": "",
+          "hint": "A size specification can be measured.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It must fit within 250 mm \u00d7 200 mm of desk space$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It should be awesome",
+            "It must fit within 250 mm \u00d7 200 mm of desk space",
+            "It exists in the room",
+            "It will use tools"
+          ]
+        },
+        {
+          "id": "q51_scenario_property",
+          "text": "Which material property would be useful for a desk organiser?",
+          "image": "",
+          "hint": "A property describes how a material performs.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Strength$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Context",
+            "Stakeholder",
+            "Strength",
+            "Brief"
+          ]
+        },
+        {
+          "id": "q52_scenario_technique",
+          "text": "Which option is a technique used when making the desk organiser?",
+          "image": "",
+          "hint": "A technique is a making process.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Drilling holes for dividers$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The teacher\u2019s desk",
+            "The design problem",
+            "Drilling holes for dividers",
+            "The stakeholder"
+          ]
+        },
+        {
+          "id": "q53_scenario_functional_attribute",
+          "text": "Which is a functional attribute of the desk organiser?",
+          "image": "",
+          "hint": "Functional attributes describe what the outcome must do.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It stays stable when holding items$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It was placed near a pencil",
+            "It was made in Term 1",
+            "It has a title",
+            "It stays stable when holding items"
+          ]
+        },
+        {
+          "id": "q54_scenario_test",
+          "text": "Which is the most useful test for the desk organiser?",
+          "image": "",
+          "hint": "Testing should check performance against requirements.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Check whether it tips over when full$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Choose a random colour",
+            "Ask what day it is",
+            "Count the classroom windows",
+            "Check whether it tips over when full"
+          ]
+        },
+        {
+          "id": "q55_scenario_feedback",
+          "text": "Which is useful stakeholder feedback for the desk organiser?",
+          "image": "",
+          "hint": "Useful feedback helps improve the outcome for the user.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The phone slot needs to be wider for my phone with its case on$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Plywood is brown",
+            "The phone slot needs to be wider for my phone with its case on",
+            "The bell rang",
+            "The drill is on the bench"
+          ]
+        },
+        {
+          "id": "q56_common_mistake_property",
+          "text": "Which statement is correct?",
+          "image": "",
+          "hint": "Some words can connect to more than one part of the project.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Strength can be a functional attribute or material property depending on how it is used$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Strength means the product is colourful",
+            "Strength is always the name of a tool",
+            "Strength can be a functional attribute or material property depending on how it is used",
+            "Strength means the stakeholder is happy"
+          ]
+        },
+        {
+          "id": "q57_common_mistake_sustainability",
+          "text": "Which statement about sustainability is correct?",
+          "image": "",
+          "hint": "Sustainability is broader than just recycling.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainability can include reducing waste, choosing suitable materials and considering disposal$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Sustainability means using the most expensive material",
+            "Sustainability only means painting something green",
+            "Sustainability is not part of Technology",
+            "Sustainability can include reducing waste, choosing suitable materials and considering disposal"
+          ]
+        },
+        {
+          "id": "q58_common_mistake_feedback",
+          "text": "Why is feedback useful during development?",
+          "image": "",
+          "hint": "Feedback can guide refinements.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It helps improve the design before the final outcome is completed$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It is only used after marking",
+            "It replaces testing completely",
+            "It helps improve the design before the final outcome is completed",
+            "It must always be ignored"
+          ]
+        },
+        {
+          "id": "q59_common_mistake_feasible",
+          "text": "What does it mean if an outcome is feasible?",
+          "image": "",
+          "hint": "Feasible means realistic and achievable.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It has the potential to be made successfully with available time, tools, skills and materials$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It cannot be tested",
+            "It is impossible to make",
+            "It has no specifications",
+            "It has the potential to be made successfully with available time, tools, skills and materials"
+          ]
+        },
+        {
+          "id": "q60_common_mistake_fit_for_purpose",
+          "text": "What does fit for purpose mean?",
+          "image": "",
+          "hint": "Fit for purpose means successful in the real situation.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The product works for the user, purpose and environment$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The product uses the most material",
+            "The product was finished first",
+            "The product is only decorative",
+            "The product works for the user, purpose and environment"
+          ]
+        }
+      ]
+    }
+  ]
+}
