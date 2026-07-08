@@ -1,1355 +1,1409 @@
-// ============================================================
-// assessment.js — PHS Safety Knowledge (single-file logic)
-// Preserves all existing features from your LAST working version,
-// and ADDS:
-//   ✅ Ctrl+S  -> export encrypted progress file (.puk)
-//   ✅ Ctrl+L  -> import encrypted progress file (.puk) ONLY if Student ID matches
-// Encryption: AES-GCM with PBKDF2 key derived from Student ID
-// ============================================================
-
-// ------------------------------------------------------------
-// Local storage – now dynamic & versioned
-// ------------------------------------------------------------
-let STORAGE_KEY;                // set after questions load
-let data = { answers: {} };     // default
-let currentAssessmentId = null; // track which assessment is loaded
-
-function initStorage(appId, version = "noversion") {
-  STORAGE_KEY = `${appId}_${version}_DATA`;
-
-  // Migrate from previous version key (if new key missing)
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    const prevKey = findMostRecentStorageKeyForApp(appId, STORAGE_KEY);
-
-    if (prevKey) {
-      try {
-        const prev = JSON.parse(localStorage.getItem(prevKey));
-        if (prev && typeof prev === "object") {
-          prev.migratedFrom = prevKey;
-          prev.migratedAt = new Date().toISOString();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(prev));
-        }
-      } catch (e) {
-        console.warn("Migration from previous version failed:", e);
-      }
+{
+  "APP_ID": "Pukekohe High School - Design Problem and Brief",
+  "VERSION": "2026.2-split-mc",
+  "APP_TITLE": "Writing a Design Problem, Brief and Specification",
+  "APP_SUBTITLE": "Learning Assessment - Clear Language, Clear Evidence",
+  "DEADLINE": {
+    "day": 6,
+    "month": 6,
+    "label": "Submission deadline"
+  },
+  "TEACHERS": [
+    {
+      "id": "RY",
+      "name": "Mr Reynolds",
+      "email": "ry@pukekohehigh.school.nz"
     }
-  }
-
-  // Load data from current key
-  data = { answers: {} };
-
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === "object") data = parsed;
-    }
-  } catch (e) {
-    console.warn("Failed to parse stored data:", e);
-  }
-
-  // OPTIONAL cleanup (⚠️ see warning below)
-  // cleanupOldVersionsKeepLatest(appId, 3, STORAGE_KEY);
-  // cleanupOldVersionsDeleteAll(appId, STORAGE_KEY);
-}
-
-// ------------------------------------------------------------
-// XOR obfuscation helpers (existing behaviour preserved)
-// ------------------------------------------------------------
-const XOR_KEY = 47;
-
-const xorEncode = (s) => {
-  if (!s) return "";
-  return btoa(
-    s
-      .split("")
-      .map((c) => String.fromCharCode(c.charCodeAt(0) ^ XOR_KEY))
-      .join("")
-  );
-};
-
-const xorDecode = (s) => {
-  if (!s) return "";
-  try {
-    return atob(s)
-      .split("")
-      .map((c) => String.fromCharCode(c.charCodeAt(0) ^ XOR_KEY))
-      .join("");
-  } catch (_) {
-    return "";
-  }
-};
-
-// ------------------------------------------------------------
-// Globals
-// ------------------------------------------------------------
-let APP_TITLE, APP_SUBTITLE, TEACHERS, ASSESSMENTS;
-let DEADLINE = null; // from questions.json.DEADLINE
-
-// ------------------------------------------------------------
-// DEBUG MODE
-// ------------------------------------------------------------
-const DEBUG = false; // ← Debug logging off in production
-
-// ------------------------------------------------------------
-// Requirements
-// ------------------------------------------------------------
-const MIN_PCT_FOR_SUBMIT = 100; // Change to e.g. 80 if you want 80% or better
-
-function findMostRecentStorageKeyForApp(appId, currentKey) {
-  try {
-    const prefix = `${appId}_`;
-    let bestKey = null;
-    let bestLastSaved = 0;
-
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (!k) continue;
-
-      if (k.startsWith(prefix) && k.endsWith("_DATA") && k !== currentKey) {
-        const raw = localStorage.getItem(k);
-        let lastSaved = 0;
-
-        try {
-          const parsed = JSON.parse(raw);
-          lastSaved = parsed?.lastSaved ? Date.parse(parsed.lastSaved) : 0;
-        } catch {}
-
-        if (!bestKey || lastSaved > bestLastSaved) {
-          bestKey = k;
-          bestLastSaved = lastSaved;
-        }
-      }
-    }
-
-    return bestKey;
-  } catch (e) {
-    console.warn("findMostRecentStorageKeyForApp failed:", e);
-    return null;
-  }
-}
-
-function cleanupOldVersionsDeleteAll(appId, currentKey) {
-  try {
-    const prefix = `${appId}_`;
-
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const k = localStorage.key(i);
-      if (!k) continue;
-
-      if (k.startsWith(prefix) && k.endsWith("_DATA") && k !== currentKey) {
-        localStorage.removeItem(k);
-      }
-    }
-  } catch (e) {
-    console.warn("cleanupOldVersionsDeleteAll failed:", e);
-  }
-}
-
-// ------------------------------------------------------------
-// Load questions.json (also extracts APP_ID & VERSION & DEADLINE)
-// ------------------------------------------------------------
-async function loadScriptOnce(src) {
-  if (document.querySelector(`script[src="${src}"]`)) return;
-  await new Promise((res, rej) => {
-    const s = document.createElement("script");
-    s.src = src;
-    s.onload = res;
-    s.onerror = rej;
-    document.head.appendChild(s);
-  });
-}
-
-async function fetchOptionalPdfBytes(url) {
-  try {
-    const res = await fetch(url, { cache: "no-cache" });
-    if (!res.ok) return null;
-    const buf = await res.arrayBuffer();
-    if (!buf || buf.byteLength < 100) return null;
-    return buf;
-  } catch {
-    return null;
-  }
-}
-
-function getStudentEmail(studentId) {
-  const id = (studentId || "").trim();
-  if (!id) return "";
-  return `${id}@pukekohehigh.school.nz`;
-}
-
-async function fillPdfForm(pdfBytes, finalData) {
-  if (!window.PDFLib) {
-    await loadScriptOnce(
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"
-    );
-  }
-  if (!window.PDFLib) throw new Error("pdf-lib failed to load");
-
-  const { PDFDocument } = window.PDFLib;
-
-  const doc = await PDFDocument.load(pdfBytes);
-  const form = doc.getForm();
-
-  const safeSetMany = (nameLike, value) => {
-    try {
-      form.getFields().forEach((f) => {
-        try {
-          const n = f.getName();
-          if (n.toLowerCase().includes(nameLike.toLowerCase())) {
-            if (typeof f.setText === "function") {
-              f.setText(value || "");
+  ],
+  "ASSESSMENTS": [
+    {
+      "id": "PHS Problem and Brief Activity",
+      "title": "Stage 1 – Writing a Design Problem and Brief",
+      "subtitle": "Task 1",
+      "usNumber": "",
+      "usVersion": "",
+      "credits": null,
+      "standardType": "internal",
+      "questions": [
+        {
+          "id": "Write a Design Problem and Brief",
+          "text": "Describe the design problem and write a brief for your project.\n\nIn your response, you must:\n- clearly explain what the problem or need is\n- identify who the stakeholder(s) are\n- explain why this is a problem and why it needs to be solved\n- describe the context or situation where the problem exists\n- explain what the design outcome needs to achieve (do not describe your final solution)\n- include any constraints or limitations that will affect the design\n\nYour answer should focus on the need, not the solution, and should guide the rest of your project.",
+          "image": "",
+          "hint": "To PASS, your response must clearly show that you understand the PROBLEM and the BRIEF.\n\nCheck your work against these questions:\n\nDESIGN PROBLEM\n• Have you clearly stated what the problem or need is?\n• Have you said who is affected by the problem?\n• Have you explained WHY this is a problem and why it needs to be solved?\n• Have you described where or when the problem occurs?\n\nDESIGN BRIEF\n• Have you explained what the outcome needs to achieve?\n• Have you used phrases like: “The outcome needs to…”, “It must…”, or “It is required to…”?\n• Have you avoided describing what your final solution looks like?\n\nCONSTRAINTS\n• Have you mentioned at least one limitation (time, cost, materials, tools, size, safety, or school rules)?\n\nBefore submitting, check that:\n✓ You mention the problem, the users, and the context\n✓ You explain why the problem matters\n✓ You focus on NEEDS, not your solution idea\n\nIf any of these are missing, you are unlikely to pass.",
+          "type": "long",
+          "maxPoints": 10,
+          "rubric": [
+            {
+              "points": 2,
+              "check": "\\b(problem|issue|need|lack|missing|challenge|difficulty)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(stakeholder|user|client|students?|teachers?|people|anyone|someone|community)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(why|because|causes|results in|leads to|affects?|impacts?)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(where|when|during|at school|at home|in class|daily|regularly)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(must|needs to|required to|should|aims to|intended to)\\b",
+              "flags": "i"
             }
-          }
-        } catch {}
-      });
-    } catch (e) {
-      console.warn(`safeSetMany failed for: ${nameLike}`, e);
-    }
-  };
-
-  // (kept for compatibility / logs)
-  const safeSet = (fieldName, value) => {
-    try {
-      form.getTextField(fieldName).setText(value || "");
-    } catch (e) {
-      console.warn(`Field not found: ${fieldName}`);
-    }
-  };
-
-  const studentEmail = getStudentEmail(finalData.studentId);
-  const studentCombined = `${finalData.studentName} ${studentEmail}`.trim();
-
-  safeSetMany("StudentName", studentCombined);
-  safeSetMany("AssessorName", finalData.teacherName);
-  safeSetMany("Date", new Date().toLocaleDateString("en-NZ"));
-  safeSetMany("Result", finalData.pct >= 100 ? "A" : "N");
-
-  form.flatten();
-  return await doc.save();
-}
-
-async function appendPdfBytesToBlob(mainPdfBlob, extraPdfBytes) {
-  if (!window.PDFLib) {
-    await loadScriptOnce(
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"
-    );
-  }
-  if (!window.PDFLib) throw new Error("pdf-lib failed to load");
-
-  const { PDFDocument } = window.PDFLib;
-
-  const mainBytes = await mainPdfBlob.arrayBuffer();
-  const mainDoc = await PDFDocument.load(mainBytes);
-  const extraDoc = await PDFDocument.load(extraPdfBytes);
-
-  const merged = await PDFDocument.create();
-
-  const mainPages = await merged.copyPages(mainDoc, mainDoc.getPageIndices());
-  mainPages.forEach((p) => merged.addPage(p));
-
-  const extraPages = await merged.copyPages(extraDoc, extraDoc.getPageIndices());
-  extraPages.forEach((p) => merged.addPage(p));
-
-  const mergedBytes = await merged.save();
-  return new Blob([mergedBytes], { type: "application/pdf" });
-}
-
-async function loadQuestions() {
-  const loadingEl = document.getElementById("loading");
-  if (loadingEl) loadingEl.textContent = "Loading questions…";
-  try {
-    const res = await fetch("questions.json", { cache: "no-cache" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    if (DEBUG) console.log("JSON loaded:", json);
-
-    const appId = json.APP_ID;
-    const version = json.VERSION || "noversion";
-    if (!appId) throw new Error("questions.json missing APP_ID");
-    initStorage(appId, version);
-
-    APP_TITLE = json.APP_TITLE;
-    APP_SUBTITLE = json.APP_SUBTITLE;
-    TEACHERS = json.TEACHERS;
-    DEADLINE = json.DEADLINE || null;
-
-    ASSESSMENTS = (json.ASSESSMENTS || []).map((ass) => ({
-      ...ass,
-      questions: ass.questions.map((q) => ({
-        ...q,
-        rubric: (q.rubric || []).map((r) => ({
-          ...r,
-          check: new RegExp(r.check, r.flags || "i"),
-        })),
-      })),
-    }));
-
-    if (DEBUG) console.log("ASSESSMENTS ready:", ASSESSMENTS);
-  } catch (err) {
-    console.error("Failed to load questions.json:", err);
-    const msg = `
-      <div style="text-align:center;padding:40px;color:#e74c3c;font-family:sans-serif;">
-        <h2>Failed to load assessment</h2>
-        <p><strong>Error:</strong> ${err.message}</p>
-        <p>Check: <code>questions.json</code> exists, valid JSON, and you're using a web server.</p>
-      </div>`;
-    document.body.innerHTML = msg;
-    throw err;
-  } finally {
-    if (loadingEl) loadingEl.remove();
-  }
-}
-
-// ------------------------------------------------------------
-// initApp
-// ------------------------------------------------------------
-function initApp() {
-  document.getElementById("page-title").textContent = APP_TITLE;
-  document.getElementById("app-title").textContent = APP_TITLE;
-  document.getElementById("app-subtitle").textContent = APP_SUBTITLE;
-
-  // Teacher dropdown
-  const teacherSel = document.getElementById("teacher");
-  TEACHERS.forEach((t) => {
-    const opt = document.createElement("option");
-    opt.value = t.id;
-    opt.textContent = t.name;
-    teacherSel.appendChild(opt);
-  });
-
-  // Assessment dropdown
-  const assSel = document.getElementById("assessmentSelector");
-  ASSESSMENTS.forEach((ass, idx) => {
-    const opt = document.createElement("option");
-    opt.value = idx;
-    opt.textContent = ass.title;
-    assSel.appendChild(opt);
-  });
-
-  // Restore stored basic info
-  if (data.name) document.getElementById("name").value = data.name;
-  if (data.id) {
-    const idEl = document.getElementById("id");
-    idEl.value = data.id;
-
-    // ✅ Only lock if we've actually locked it before (after first assessment load)
-    if (data.idLocked) {
-      idEl.readOnly = true;
-      idEl.classList.add("locked-field");
-      document.getElementById("locked-msg").classList.remove("hidden");
-      document.getElementById("locked-id").textContent = data.id;
-    }
-  }
-  if (data.teacher) teacherSel.value = data.teacher;
-
-  setupDeadlineBanner();
-}
-
-// ------------------------------------------------------------
-// Save / load answers (per-assessment)
-// ------------------------------------------------------------
-function saveAnswer(qid) {
-  if (!currentAssessmentId) return;
-  const field = document.getElementById("q" + qid);
-  if (!field) return;
-
-  const val = field.value;
-
-  if (!data.answers[currentAssessmentId]) {
-    data.answers[currentAssessmentId] = {};
-  }
-
-  data.answers[currentAssessmentId][qid] = xorEncode(val);
-  data.lastSaved = new Date().toISOString();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function getAnswer(qid) {
-  if (!currentAssessmentId) return "";
-  const encVal = data.answers[currentAssessmentId]?.[qid];
-  return xorDecode(encVal || "");
-}
-
-// ------------------------------------------------------------
-// Toast
-// ------------------------------------------------------------
-let toastTimeout;
-function showToast(msg, ok = true) {
-  let toast = document.getElementById("toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    toast.className = "toast";
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
-  toast.classList.remove("error", "show");
-  if (!ok) toast.classList.add("error");
-  void toast.offsetWidth;
-  toast.classList.add("show");
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove("show"), 3000);
-}
-
-const PASTE_BLOCKED_MESSAGE = "Pasting blocked – please type your own answer.";
-
-// ------------------------------------------------------------
-// Student info
-// ------------------------------------------------------------
-function saveStudentInfo() {
-  data.name = document.getElementById("name").value.trim();
-  data.id = document.getElementById("id").value.trim();
-  data.teacher = document.getElementById("teacher").value;
-  data.lastSaved = new Date().toISOString();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function loadAssessment() {
-  const idx = document.getElementById("assessmentSelector").value;
-  if (idx === "") return;
-
-  const idEl = document.getElementById("id");
-  if (!idEl.value.trim()) {
-    showToast("Please enter your Student ID first.", false);
-    return;
-  }
-
-  saveStudentInfo();
-
-  // ✅ Lock ID to device after the FIRST assessment load
-  if (data.id && !data.idLocked) {
-    data.idLocked = true;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    idEl.readOnly = true;
-    idEl.classList.add("locked-field");
-    document.getElementById("locked-msg").classList.remove("hidden");
-    document.getElementById("locked-id").textContent = data.id;
-    showToast("Student ID locked for this device.");
-  }
-
-  const ass = ASSESSMENTS[idx];
-  currentAssessmentId = ass.id;
-
-  const questionsDiv = document.getElementById("questions");
-  questionsDiv.innerHTML = "";
-
-  ass.questions.forEach((q) => {
-    const wrap = document.createElement("div");
-    wrap.className = "question";
-    wrap.id = "q-" + q.id.toLowerCase();
-
-    const header = document.createElement("div");
-    header.className = "question-header";
-
-    const markSpan = document.createElement("span");
-
-    let displayId;
-    const simpleMatch = q.id.match(/^q(\d+)$/i);
-    if (simpleMatch) displayId = "Q" + simpleMatch[1];
-    else displayId = q.id.toUpperCase();
-
-    markSpan.textContent = `${displayId} – ${q.maxPoints} mark${q.maxPoints !== 1 ? "s" : ""}`;
-    header.appendChild(markSpan);
-
-    const typeSpan = document.createElement("span");
-    typeSpan.textContent =
-      q.type === "mc"
-        ? "Multi-choice"
-        : q.type === "short"
-        ? "Short answer"
-        : "Extended answer";
-    header.appendChild(typeSpan);
-
-    wrap.appendChild(header);
-
-    const p = document.createElement("p");
-    p.innerHTML = q.text;
-    wrap.appendChild(p);
-
-    if (q.image) {
-      const img = document.createElement("img");
-      img.alt = "Question image";
-      img.loading = "lazy";
-
-      img.onerror = function () {
-        if (!this.dataset.fallbackTried) {
-          this.dataset.fallbackTried = "1";
-          this.src = "blank.jpg";
-        } else {
-          this.style.display = "none";
+          ]
         }
-      };
-
-      img.src = q.image;
-      wrap.appendChild(img);
-    }
-
-    let field;
-    const fieldId = "q" + q.id;
-
-    if (q.type === "mc") {
-      field = document.createElement("select");
-      field.id = fieldId;
-      field.className = "answer-field";
-      const blankOpt = document.createElement("option");
-      blankOpt.value = "";
-      blankOpt.textContent = "Select an answer";
-      field.appendChild(blankOpt);
-      (q.options || []).forEach((opt) => {
-        const o = document.createElement("option");
-        o.value = opt;
-        o.textContent = opt;
-        field.appendChild(o);
-      });
-    } else if (q.type === "short") {
-      field = document.createElement("input");
-      field.type = "text";
-      field.id = fieldId;
-      field.className = "answer-field";
-      field.placeholder = "Type your answer";
-    } else {
-      field = document.createElement("textarea");
-      field.id = fieldId;
-      field.className = "answer-field";
-      field.rows = 4;
-      field.placeholder = "Write your answer here";
-    }
-
-    const prev = getAnswer(q.id);
-    if (prev) field.value = prev;
-
-    wrap.appendChild(field);
-    questionsDiv.appendChild(wrap);
-  });
-
-  attachProtection();
-  showToast("Assessment loaded.");
-}
-
-function gradeIt() {
-  const idx = document.getElementById("assessmentSelector").value;
-  if (idx === "") return { total: 0, results: [], totalPoints: 0 };
-
-  const ass = ASSESSMENTS[idx];
-  let total = 0;
-  let totalPoints = 0;
-
-  const results = ass.questions.map((q) => {
-    const field = document.getElementById("q" + q.id);
-    const ans = (field?.value || "").trim();
-    saveAnswer(q.id);
-
-    let earned = 0;
-    let bestHint = q.hint || "";
-
-    (q.rubric || []).forEach((rule) => {
-      if (rule.check.test(ans)) {
-        if (q.maxPoints === 1) earned = Math.max(earned, Math.min(rule.points, q.maxPoints));
-        else earned += rule.points;
-        if (rule.hint) bestHint = rule.hint;
-      }
-    });
-
-    if (earned > q.maxPoints) earned = q.maxPoints;
-
-    total += earned;
-    totalPoints += q.maxPoints;
-
-    return {
-      id: q.id.toUpperCase(),
-      earned,
-      max: q.maxPoints,
-      answer: ans,
-      text: q.text,
-      hint: bestHint,
-    };
-  });
-
-  return { total, results, totalPoints };
-}
-
-// ------------------------------------------------------------
-// Colour question cards + show hints UNDER questions only
-// ------------------------------------------------------------
-function colourQuestions(results) {
-  results.forEach((r) => {
-    const qid = r.id.toLowerCase();
-    const box = document.getElementById("q-" + qid);
-    if (!box) return;
-
-    box.classList.remove("correct", "partial", "wrong");
-
-    const status = r.earned === r.max ? "correct" : r.earned > 0 ? "partial" : "wrong";
-    box.classList.add(status);
-
-    const hintClass = "hint-inline";
-    let hintEl = box.querySelector("." + hintClass);
-
-    if (r.earned < r.max && r.hint) {
-      if (!hintEl) {
-        hintEl = document.createElement("div");
-        hintEl.className = hintClass;
-        box.appendChild(hintEl);
-      }
-      hintEl.innerHTML = `<strong>Hint:</strong> ${r.hint}`;
-      hintEl.style.display = "block";
-    } else if (hintEl) {
-      hintEl.style.display = "none";
-    }
-  });
-}
-
-function enablePdfMode() {
-  const result = document.getElementById("result");
-  if (result) result.classList.add("pdf-mode");
-}
-
-function disablePdfMode() {
-  const result = document.getElementById("result");
-  if (result) result.classList.remove("pdf-mode");
-}
-
-// ------------------------------------------------------------
-// Encrypted progress save/load (ADDED)
-// Ctrl+S = save progress (.puk)
-// Ctrl+L = load progress (.puk) ONLY if student ID matches
-// ------------------------------------------------------------
-const __te = new TextEncoder();
-const __td = new TextDecoder();
-
-async function sha256Hex(text) {
-  const bytes = __te.encode((text || "").trim().toLowerCase());
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-const __b64 = {
-  fromBytes: (bytes) => btoa(String.fromCharCode(...bytes)),
-  toBytes: (b64str) => Uint8Array.from(atob(b64str), (c) => c.charCodeAt(0)),
-};
-
-async function __deriveAesKeyFromPassword(password, saltBytes, iterations = 150000) {
-  const baseKey = await crypto.subtle.importKey("raw", __te.encode(password), "PBKDF2", false, [
-    "deriveKey",
-  ]);
-
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: saltBytes, iterations, hash: "SHA-256" },
-    baseKey,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt", "decrypt"]
-  );
-}
-
-async function __encryptWithStudentId(obj, studentId) {
-  const cleanId = (studentId || "").trim();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const key = await __deriveAesKeyFromPassword(cleanId, salt);
-
-  const plaintext = __te.encode(JSON.stringify(obj));
-  const ct = new Uint8Array(
-    await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext)
-  );
-
-  const studentIdHash = await sha256Hex(cleanId);
-
-  return {
-    format: "PHS_SID_ENC_V2",
-    savedAt: new Date().toISOString(),
-    studentIdHash,
-    salt: __b64.fromBytes(salt),
-    iv: __b64.fromBytes(iv),
-    ct: __b64.fromBytes(ct),
-  };
-}
-
-async function __decryptWithStudentId(payload, studentId) {
-  if (!payload || payload.format !== "PHS_SID_ENC_V2") {
-    throw new Error("Not a valid progress file.");
-  }
-
-  const salt = __b64.toBytes(payload.salt);
-  const iv = __b64.toBytes(payload.iv);
-  const ct = __b64.toBytes(payload.ct);
-  const key = await __deriveAesKeyFromPassword(studentId, salt);
-
-  let pt;
-  try {
-    pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ct);
-  } catch {
-    throw new Error("Cannot decrypt (wrong ID or corrupted file).");
-  }
-
-  return JSON.parse(__td.decode(new Uint8Array(pt)));
-}
-
-function __safeFilePart(s) {
-  return (s || "").trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_\-]/g, "");
-}
-
-function __getCurrentStudentId() {
-  return (data.id || document.getElementById("id")?.value || "").trim();
-}
-
-let __progressFileInput = null;
-
-function __ensureProgressFileInput() {
-  if (__progressFileInput) return __progressFileInput;
-
-  const inp = document.createElement("input");
-  inp.type = "file";
-  inp.accept = ".puk,application/json,.json";
-  inp.style.display = "none";
-
-  (document.body || document.documentElement).appendChild(inp);
-
-  inp.addEventListener("change", async (e) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    await loadProgressEncryptedFile(file);
-  });
-
-  __progressFileInput = inp;
-  return __progressFileInput;
-}
-
-async function saveProgressEncrypted() {
-  const studentId = __getCurrentStudentId();
-  if (!studentId) return showToast("Enter Student ID first.", false);
-
-  // Ensure latest info is stored
-  saveStudentInfo();
-
-  // Ensure latest answers are persisted
-  if (currentAssessmentId) {
-    const idx = document.getElementById("assessmentSelector")?.value;
-    const ass = ASSESSMENTS?.[idx];
-    (ass?.questions || []).forEach((q) => saveAnswer(q.id));
-  }
-
-  const payload = await __encryptWithStudentId(data, studentId);
-
-  const filename = `${__safeFilePart(studentId)}_${__safeFilePart(APP_TITLE || "assessment")}.puk`;
-  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-
-  showToast("Progress saved (encrypted).");
-}
-
-async function loadProgressEncryptedFile(file) {
-  if (!file) return;
-
-  const studentId = __getCurrentStudentId();
-  if (!studentId) return showToast("Enter Student ID first.", false);
-
-  let payload;
-  try {
-    payload = JSON.parse(await file.text());
-  } catch {
-    return showToast("Invalid file.", false);
-  }
-
-  const enteredHash = await sha256Hex(studentId);
-  if (!payload.studentIdHash || payload.studentIdHash !== enteredHash) {
-    return showToast("Student ID mismatch — not loaded.", false);
-  }
-
-  let restored;
-  try {
-    restored = await __decryptWithStudentId(payload, studentId);
-  } catch (e) {
-    return showToast(e.message || "Decryption failed.", false);
-  }
-
-  // Safety: confirm decrypted id too
-  if ((restored.id || "").trim() !== studentId) {
-    return showToast("Decrypted ID mismatch — refusing to load.", false);
-  }
-
-  data = restored;
-
-  // IMPORTANT: STORAGE_KEY must already be initialised by loadQuestions()
-  if (!STORAGE_KEY) {
-    if (DEBUG) console.warn("STORAGE_KEY not set yet; loadQuestions may not have run.");
-  } else {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  // Restore UI
-  if (data.name) document.getElementById("name").value = data.name;
-  if (data.id) document.getElementById("id").value = data.id;
-  if (data.teacher) document.getElementById("teacher").value = data.teacher;
-
-  // Re-apply lock
-  const idEl = document.getElementById("id");
-  if (data.idLocked) {
-    idEl.readOnly = true;
-    idEl.classList.add("locked-field");
-    document.getElementById("locked-msg").classList.remove("hidden");
-    document.getElementById("locked-id").textContent = data.id;
-  }
-
-  // Reload the assessment UI (uses restored answers)
-  loadAssessment();
-  showToast("Progress loaded (encrypted).");
-}
-
-// Keyboard shortcuts
-document.addEventListener("keydown", (e) => {
-  const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-  const mod = isMac ? e.metaKey : e.ctrlKey;
-  if (!mod) return;
-
-  const k = (e.key || "").toLowerCase();
-
-  if (k === "s") {
-    e.preventDefault();
-    saveProgressEncrypted();
-  }
-
-  if (k === "l") {
-    e.preventDefault();
-    __ensureProgressFileInput().click();
-  }
-});
-// ------------------------------------------------------------
-// Deadline helpers
-// ------------------------------------------------------------
-function getDeadlineStatus(now = new Date()) {
-  if (!DEADLINE) return null;
-
-  const year = now.getFullYear();
-  const d = parseInt(DEADLINE.day, 10);
-  const m = parseInt(DEADLINE.month, 10) - 1;
-  const label = DEADLINE.label || "Assessment deadline";
-
-  const deadlineDate = new Date(year, m, d);
-  const todayMid = new Date(year, now.getMonth(), now.getDate());
-
-  const diffMs = deadlineDate - todayMid;
-  const diffDays = Math.round(diffMs / 86400000);
-
-  if (diffDays > 0) {
-    return { status: "upcoming", daysLeft: diffDays, label, dateStr: deadlineDate.toLocaleDateString() };
-  } else if (diffDays === 0) {
-    return { status: "today", daysLeft: 0, label, dateStr: deadlineDate.toLocaleDateString() };
-  } else {
-    return { status: "overdue", overdueDays: Math.abs(diffDays), label, dateStr: deadlineDate.toLocaleDateString() };
-  }
-}
-
-function lockAllFieldsForDeadline() {
-  const questionsDiv = document.getElementById("questions");
-  if (questionsDiv) {
-    questionsDiv.querySelectorAll("input, textarea, select").forEach((el) => {
-      el.readOnly = true;
-      if (el.tagName === "SELECT") el.disabled = true;
-      el.classList.add("locked-field");
-    });
-  }
-
-  const nameEl = document.getElementById("name");
-  const idEl = document.getElementById("id");
-  const teacherEl = document.getElementById("teacher");
-  const assSel = document.getElementById("assessmentSelector");
-  const emailBtn = document.getElementById("emailBtn");
-
-  [nameEl, idEl].forEach((el) => {
-    if (el) {
-      el.readOnly = true;
-      el.classList.add("locked-field");
-    }
-  });
-
-  [teacherEl, assSel].forEach((el) => {
-    if (el) el.disabled = true;
-  });
-
-  if (emailBtn) emailBtn.disabled = true;
-}
-
-function setupDeadlineBanner() {
-  const banner = document.getElementById("deadline-banner");
-  if (!banner) return;
-
-  const stored = (() => {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || data;
-    } catch {
-      return data;
-    }
-  })();
-
-  if (!stored.deadlineInfo) stored.deadlineInfo = {};
-
-  if (!stored.deadlineInfo.firstSeen) {
-    stored.deadlineInfo.firstSeen = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
-  }
-
-  const now = new Date();
-  const deadlineStatus = getDeadlineStatus(now);
-  if (!deadlineStatus) {
-    banner.classList.add("hidden");
-    return;
-  }
-
-  const firstSeen = new Date(stored.deadlineInfo.firstSeen);
-  const daysSinceStart = Math.floor((now - firstSeen) / 86400000);
-
-  let cls = "info";
-  let text = "";
-
-  const { status: st, label, dateStr, daysLeft, overdueDays } = {
-    status: deadlineStatus.status,
-    label: deadlineStatus.label,
-    dateStr: deadlineStatus.dateStr,
-    daysLeft: deadlineStatus.daysLeft ?? null,
-    overdueDays: deadlineStatus.overdueDays ?? null,
-  };
-
-  if (st === "upcoming") {
-    if (daysLeft <= 7) cls = "hot";
-    else if (daysLeft <= 28) cls = "warn";
-    else cls = "info";
-
-    text = `${label}: ${dateStr} – ${daysLeft} day${daysLeft === 1 ? "" : "s"} left.`;
-    if (daysSinceStart !== null && daysSinceStart >= 0) {
-      text += ` You started ${daysSinceStart} day${daysSinceStart === 1 ? "" : "s"} ago.`;
-    }
-
-    if (daysLeft > 0 && daysLeft <= 7) {
-      showToast(`Only ${daysLeft} day${daysLeft === 1 ? "" : "s"} left to complete this assessment.`, false);
-    }
-  } else if (st === "today") {
-    cls = "hot";
-    text = `${label}: ${dateStr} – Deadline is today!`;
-    showToast("Deadline is today – make sure you submit your work.", false);
-  } else if (st === "overdue") {
-    cls = "over";
-    text = `${label}: ${dateStr} – Deadline has passed. You are ${overdueDays} day${overdueDays === 1 ? "" : "s"} late.`;
-    lockAllFieldsForDeadline();
-  }
-
-  banner.className = `deadline-banner ${cls}`;
-  banner.textContent = text;
-  banner.classList.remove("hidden");
-}
-
-function applyDeadlineLockIfNeeded() {
-  const status = getDeadlineStatus(new Date());
-  if (status && status.status === "overdue") lockAllFieldsForDeadline();
-}
-
-// ------------------------------------------------------------
-// Submit / result rendering
-// ------------------------------------------------------------
-let finalData = null;
-
-function submitWork() {
-  const teacherSel = document.getElementById("teacher");
-  const assSel = document.getElementById("assessmentSelector");
-
-  if (!document.getElementById("name").value.trim()) return showToast("Please enter your name.", false);
-  if (!document.getElementById("id").value.trim()) return showToast("Please enter your Student ID.", false);
-  if (!teacherSel.value) return showToast("Please select your teacher.", false);
-  if (!assSel.value) return showToast("Please select an assessment.", false);
-
-  const { total, results, totalPoints } = gradeIt();
-  const pct = totalPoints > 0 ? Math.round((total / totalPoints) * 100) : 0;
-
-  colourQuestions(results);
-
-  const studentName = document.getElementById("name").value.trim();
-  const teacherName = TEACHERS.find((t) => t.id === teacherSel.value)?.name || "";
-
-  document.getElementById("student").textContent = studentName;
-  document.getElementById("teacher-name").textContent = teacherName;
-  document.getElementById("grade").innerHTML = `${total}/${totalPoints} <small>(${pct}%)</small>`;
-
-  const answersDiv = document.getElementById("answers");
-  answersDiv.innerHTML = "";
-
-  results.forEach((r) => {
-    const fb = document.createElement("div");
-
-    const status = r.earned === r.max ? "correct" : r.earned > 0 ? "partial" : "wrong";
-    fb.className = `feedback ${status}`;
-
-    const h3 = document.createElement("h3");
-    h3.innerHTML = `${r.id}: ${r.text}`;
-    fb.appendChild(h3);
-
-    const pAns = document.createElement("p");
-    const strongAns = document.createElement("strong");
-    strongAns.textContent = "Your answer: ";
-    pAns.appendChild(strongAns);
-
-    const ansSpan = document.createElement("span");
-    ansSpan.textContent = r.answer ? r.answer : "No answer provided";
-    pAns.appendChild(ansSpan);
-    fb.appendChild(pAns);
-
-    const pRes = document.createElement("p");
-    const strongRes = document.createElement("strong");
-    strongRes.textContent = "Result: ";
-    pRes.appendChild(strongRes);
-
-    const statusText = status === "correct" ? "Correct" : status === "partial" ? "Partially correct" : "Incorrect";
-
-    const resSpan = document.createElement("span");
-    resSpan.textContent = `${statusText} (${r.earned}/${r.max} marks)`;
-    pRes.appendChild(resSpan);
-
-    fb.appendChild(pRes);
-    answersDiv.appendChild(fb);
-  });
-
-  const deadlineNow = getDeadlineStatus(new Date());
-
-  finalData = {
-    studentName,
-    studentId: document.getElementById("id").value.trim(),
-    teacherName,
-    assessmentTitle: ASSESSMENTS[assSel.value].title,
-    assessmentSubtitle: ASSESSMENTS[assSel.value].subtitle || "",
-    attachSignoff: !!ASSESSMENTS[assSel.value].attachSignoff,
-    points: total,
-    totalPoints,
-    pct,
-    deadlineInfo: deadlineNow,
-  };
-
-  const emailBtn = document.getElementById("emailBtn");
-  if (pct >= MIN_PCT_FOR_SUBMIT && (!deadlineNow || deadlineNow.status !== "overdue")) {
-    emailBtn.disabled = false;
-    showToast("Great job! You can now email your work.", true);
-  } else {
-    emailBtn.disabled = true;
-    if (pct < MIN_PCT_FOR_SUBMIT) {
-      showToast(`You have ${pct}%. You need at least ${MIN_PCT_FOR_SUBMIT}% to email your work.`, false);
-    } else if (deadlineNow && deadlineNow.status === "overdue") {
-      showToast("The deadline has passed – emailing is disabled.", false);
-    }
-  }
-
-  document.getElementById("form").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
-}
-
-function back() {
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("form").classList.remove("hidden");
-}
-
-// ------------------------------------------------------------
-// Email / PDF (existing behaviour preserved)
-// ------------------------------------------------------------
-async function emailWork() {
-  if (!finalData) return alert("Submit first!");
-
-  if (finalData.pct < MIN_PCT_FOR_SUBMIT) {
-    return alert(`You must reach at least ${MIN_PCT_FOR_SUBMIT}% before emailing your work.`);
-  }
-
-  const deadlineNow = getDeadlineStatus(new Date());
-  if (deadlineNow && deadlineNow.status === "overdue") {
-    return alert("The submission deadline has passed – emailing is now disabled until next year.");
-  }
-
-  const safePart = (s) =>
-    (s || "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .replace(/[^a-zA-Z0-9_\-]/g, "");
-
-  if (!(window.jspdf && window.html2canvas)) {
-    await loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
-    await loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
-  }
-
-  if (!window.jspdf || !window.html2canvas) {
-    alert("PDF libraries failed to load. Please check your internet connection.");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  const crestImg = document.querySelector("header img.crest");
-  let crestDataUrl = null;
-
-  if (crestImg && crestImg.src) {
-    try {
-      const crestCanvas = document.createElement("canvas");
-      crestCanvas.width = 60;
-      crestCanvas.height = 60;
-      const ctx = crestCanvas.getContext("2d");
-      const tmpImg = new Image();
-      tmpImg.crossOrigin = "anonymous";
-      tmpImg.src = crestImg.src;
-      await new Promise((res, rej) => {
-        tmpImg.onload = res;
-        tmpImg.onerror = rej;
-      });
-      ctx.drawImage(tmpImg, 0, 0, 60, 60);
-      crestDataUrl = crestCanvas.toDataURL("image/png");
-    } catch (e) {
-      if (DEBUG) console.log("Crest image failed, continuing without:", e);
-    }
-  }
-
-  const drawHeader = (isFirstPage = false) => {
-    pdf.setFillColor(110, 24, 24);
-    pdf.rect(0, 0, pageWidth, 30, "F");
-
-    if (crestDataUrl) pdf.addImage(crestDataUrl, "PNG", 10, 5, 20, 20);
-
-    pdf.setTextColor(255, 255, 255);
-    pdf.setFontSize(16);
-    pdf.text(APP_TITLE || "Pukekohe High School", 35, 15);
-    pdf.setFontSize(12);
-    pdf.text(APP_SUBTITLE || "Technology Assessment", 35, 22);
-
-    pdf.setTextColor(0, 0, 0);
-    pdf.setFontSize(12);
-
-    const y = 40;
-
-    if (isFirstPage) {
-      pdf.text(`Student: ${finalData.studentName}`, 10, y);
-      pdf.text(`ID: ${finalData.studentId}`, 10, y + 7);
-      pdf.text(`Teacher: ${finalData.teacherName}`, 110, y);
-      pdf.text(`Assessment: ${finalData.assessmentTitle}`, 10, y + 15);
-      if (finalData.assessmentSubtitle) pdf.text(`Part: ${finalData.assessmentSubtitle}`, 10, y + 22);
-      pdf.text(`Score: ${finalData.points}/${finalData.totalPoints} (${finalData.pct}%)`, 10, y + 29);
-
-      const infoY = y + 38;
-      const info = finalData.deadlineInfo;
-
-      if (info) {
-        pdf.setFontSize(11);
-        pdf.setTextColor(0, 0, 0);
-
-        if (info.status === "upcoming") {
-          pdf.text(
-            `Submitted early: ${info.daysLeft} day${info.daysLeft === 1 ? "" : "s"} before deadline (${info.dateStr}).`,
-            10,
-            infoY
-          );
-        } else if (info.status === "today") {
-          pdf.text(`Submitted on the deadline date (${info.dateStr}).`, 10, infoY);
-        } else if (info.status === "overdue") {
-          pdf.text(
-            `Late submission: ${info.overdueDays} day${info.overdueDays === 1 ? "" : "s"} after deadline (${info.dateStr}).`,
-            10,
-            infoY
-          );
+      ]
+    },
+    {
+      "id": "PHS Specification Activity",
+      "title": "Stage 2 – Writing a Specification",
+      "subtitle": "Task 2",
+      "usNumber": "",
+      "usVersion": "",
+      "credits": null,
+      "standardType": "internal",
+      "questions": [
+        {
+          "id": "Write a Specification",
+          "text": "Write a specification for your design outcome.\n\nYour specification must:\n- be written as a list of clear criteria\n- use measurable or testable language\n- describe what the outcome must achieve\n- include constraints and requirements\n\nDo NOT describe your final solution.",
+          "image": "",
+          "hint": "To PASS, your specification must be written as a clear list of criteria (bullet points or numbered).\n\nEach point should:\n• Start with: “The outcome must…” or “It must…”\n• Be measurable or testable (include numbers where possible)\n• Focus on what it must DO or achieve — NOT what it will look like\n\nA strong specification usually includes criteria for:\n1) Function – What must it do? (e.g., The outcome must securely hold 4 textbooks.)\n2) User – Who must it work for? (e.g., The outcome must be suitable for Year 9–10 students.)\n3) Size – Dimensions or limits (e.g., Must be no larger than 400mm x 300mm.)\n4) Materials – What is allowed or restricted (e.g., Must use sustainable timber available in the workshop.)\n5) Safety – What risks must be reduced or avoided (e.g., Must have no sharp edges.)\n6) Durability – How strong or long-lasting (e.g., Must support at least 10kg without bending.)\n7) Cost/Time – Budget or deadline limits (e.g., Must cost under $30 and be completed within 3 weeks.)\n8) Sustainability – Waste, reuse, environmental impact.\n9) Testing – How you will check success (e.g., It will be tested by loading it with 10kg for 1 minute.)\n\nAvoid vague statements like:\n✗ It should look cool.\n✗ It should be good quality.\n✗ I will make it out of plywood.\n\nInstead, make every point specific and measurable.",
+          "type": "long",
+          "maxPoints": 16,
+          "rubric": [
+            {
+              "points": 2,
+              "check": "\\b(must|needs\\s*to|required\\s*to|shall|should)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(mm|cm|m|metre(s)?|meter(s)?|kg|g|%|hours?|minutes?|weeks?|\\$|dollars?)\\b|\\b\\d+(\\.\\d+)?\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(test|testing|tested|measure|measurable|verify|validated?|check|evidence|demonstrate)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(size|dimension(s)?|width|height|length|depth|thickness|weight|maximum|max|min(imum)?|limit(s)?|fit\\s*within|no\\s*(larger|bigger|greater)\\s*than|no\\s*more\\s*than|at\\s*most|up\\s*to|under)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(material(s)?|wood|metal|plastic|fabric|plywood|acrylic|cardboard|recycled|reuse(d)?|sustainable|environmentally\\s*friendly|eco(-|\\s)?friendly)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(safe|safety|hazard(s)?|risk(s)?|stable|durable|durability|strong|strength|sturdy|robust|resist(s|ed|ing)?\\s*damage|damage\\s*resistant|withstand(s|ing)?|impact|drop(ping)?|regular\\s*use|long(-|\\s)?lasting)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "\\b(function|purpose|do(es)?|perform(s|ance)?|operate(s|ion)?|allow(s)?|enable(s)?|support(s)?|provide(s|d)?|hold(s|ing)?|store(s|d|age)?|organis(e|z)(s|ed|ing)?|keep(s|ing)?|contain(s|ed|ing)?|fit(s|ted|ting)?|secure(s|d|ing)?)\\b",
+              "flags": "i"
+            },
+            {
+              "points": 2,
+              "check": "(?:\\n|\\-|\\d+\\.).{0,400}(?:\\n|\\-|\\d+\\.).{0,400}",
+              "flags": "s"
+            }
+          ]
         }
-      }
-    } else {
-      pdf.text(`Student: ${finalData.studentName} (${finalData.studentId})`, 10, y);
-      pdf.text(`Assessment: ${finalData.assessmentTitle}`, 10, y + 7);
-      if (finalData.assessmentSubtitle) {
-        pdf.setFontSize(11);
-        pdf.text(`Part: ${finalData.assessmentSubtitle}`, 10, y + 14);
-        pdf.setFontSize(12);
-      }
+      ]
+    },
+    {
+      "id": "PHS Hard Materials Keyword MC Quiz Part 1",
+      "title": "Stage 3A – Hard Materials Key Word Multiple Choice Quiz",
+      "subtitle": "Materials and Processing Technology – Key Vocabulary | Questions 1–30",
+      "usNumber": "92012 / 92013 / 92014 / 92015",
+      "usVersion": "v1",
+      "credits": null,
+      "standardType": "practice",
+      "questions": [
+        {
+          "id": "q01_authentic_context",
+          "text": "What does authentic context mean in Technology?",
+          "image": "",
+          "hint": "Think about whether the need is connected to a real person, place or situation.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A\\ real\\-life\\ situation\\ where\\ a\\ product\\ is\\ needed$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A made-up activity with no real user",
+            "A real-life situation where a product is needed",
+            "A drawing copied from the internet",
+            "A list of tools in the workshop"
+          ]
+        },
+        {
+          "id": "q02_end_user",
+          "text": "Who is the end user?",
+          "image": "",
+          "hint": "Think about who the final product is actually for.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ person\\ or\\ group\\ who\\ will\\ use\\ the\\ final\\ outcome$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The person or group who will use the final outcome",
+            "The teacher who marks the work",
+            "The person who sells the materials",
+            "The machine used to make the product"
+          ]
+        },
+        {
+          "id": "q03_stakeholder",
+          "text": "What is a stakeholder?",
+          "image": "",
+          "hint": "Stakeholders can help shape the outcome during development.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Someone\\ who\\ has\\ an\\ interest\\ in\\ the\\ outcome\\ or\\ can\\ give\\ useful\\ feedback$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A tool used to hold timber",
+            "Someone who has an interest in the outcome or can give useful feedback",
+            "A type of material property",
+            "A safety rule in the workshop"
+          ]
+        },
+        {
+          "id": "q04_brief",
+          "text": "What is a brief?",
+          "image": "",
+          "hint": "The brief guides the project.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A\\ short\\ statement\\ explaining\\ what\\ needs\\ to\\ be\\ made\\ and\\ why$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A short statement explaining what needs to be made and why",
+            "A final photo of the product",
+            "A list of unrelated ideas",
+            "A tool safety checklist"
+          ]
+        },
+        {
+          "id": "q05_specification",
+          "text": "What is a specification?",
+          "image": "",
+          "hint": "Specifications help you test success.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A\\ clear\\ and\\ measurable\\ requirement\\ the\\ outcome\\ must\\ meet$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A clear and measurable requirement the outcome must meet",
+            "A rough sketch with no labels",
+            "A random material choice",
+            "A finished product only"
+          ]
+        },
+        {
+          "id": "q06_best_specification",
+          "text": "Which of these is the best example of a specification?",
+          "image": "",
+          "hint": "Look for the option that is specific and testable.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ must\\ hold\\ at\\ least\\ four\\ whiteboard\\ markers$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It should look cool",
+            "It should be good",
+            "It must hold at least four whiteboard markers",
+            "I will use plywood"
+          ]
+        },
+        {
+          "id": "q07_outcome",
+          "text": "In Technology, what does outcome mean?",
+          "image": "",
+          "hint": "The outcome is what is developed to meet the brief.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ final\\ product,\\ model,\\ design\\ or\\ solution\\ being\\ developed$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The final product, model, design or solution being developed",
+            "Only the first sketch",
+            "Only the teacher’s feedback",
+            "The workshop rules"
+          ]
+        },
+        {
+          "id": "q08_fit_for_purpose",
+          "text": "What does fit for purpose mean?",
+          "image": "",
+          "hint": "Think about whether the outcome successfully does the job it was designed for.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ product\\ works\\ for\\ the\\ user,\\ purpose\\ and\\ environment$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The product is the most colourful",
+            "The product works for the user, purpose and environment",
+            "The product uses the most expensive material",
+            "The product is finished quickly"
+          ]
+        },
+        {
+          "id": "q09_intended_environment",
+          "text": "What is the intended environment?",
+          "image": "",
+          "hint": "Think about where the product needs to work.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ place\\ or\\ situation\\ where\\ the\\ outcome\\ will\\ be\\ used$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The place or situation where the outcome will be used",
+            "The place where the teacher marks the work",
+            "The storage cupboard",
+            "The workshop bin"
+          ]
+        },
+        {
+          "id": "q10_material",
+          "text": "What is a material?",
+          "image": "",
+          "hint": "Materials include things like timber, acrylic and mild steel.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^What\\ an\\ outcome\\ is\\ made\\ from$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The method used to shape a product",
+            "What an outcome is made from",
+            "A type of stakeholder",
+            "A design problem"
+          ]
+        },
+        {
+          "id": "q11_material_example",
+          "text": "Which of these is a material?",
+          "image": "",
+          "hint": "Choose the option that is something an outcome could be made from.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Plywood$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Drilling",
+            "Plywood",
+            "Filing",
+            "Testing"
+          ]
+        },
+        {
+          "id": "q12_material_property",
+          "text": "What is a material property?",
+          "image": "",
+          "hint": "Properties help you choose suitable materials.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A\\ quality\\ or\\ characteristic\\ of\\ a\\ material$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A quality or characteristic of a material",
+            "The name of the teacher",
+            "A tool used for cutting",
+            "A final stakeholder comment"
+          ]
+        },
+        {
+          "id": "q13_property_example",
+          "text": "Which of these is a material property?",
+          "image": "",
+          "hint": "A property describes how a material behaves or performs.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Durability$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Durability",
+            "Hacksawing",
+            "Centre punching",
+            "Riveting"
+          ]
+        },
+        {
+          "id": "q14_technique",
+          "text": "What is a technique?",
+          "image": "",
+          "hint": "Techniques are practical making processes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^A\\ method\\ or\\ process\\ used\\ to\\ make,\\ shape\\ or\\ join\\ something$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "A method or process used to make, shape or join something",
+            "The person using the product",
+            "The final mark for an assessment",
+            "A material property only"
+          ]
+        },
+        {
+          "id": "q15_technique_example",
+          "text": "Which of these is a technique?",
+          "image": "",
+          "hint": "Choose the making process.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Drilling$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Drilling",
+            "Plywood",
+            "Acrylic",
+            "Strength"
+          ]
+        },
+        {
+          "id": "q16_materials_group",
+          "text": "Which group contains only materials?",
+          "image": "",
+          "hint": "Materials are what the outcome is made from.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Plywood,\\ acrylic,\\ mild\\ steel$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Plywood, acrylic, mild steel",
+            "Cutting, folding, riveting",
+            "Strength, stability, durability",
+            "Testing, feedback, refine"
+          ]
+        },
+        {
+          "id": "q17_techniques_group",
+          "text": "Which group contains only techniques?",
+          "image": "",
+          "hint": "Techniques are processes used to make or modify the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Cutting,\\ folding,\\ riveting$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Plywood, acrylic, mild steel",
+            "Cutting, folding, riveting",
+            "Stakeholder, user, client",
+            "Brief, context, need"
+          ]
+        },
+        {
+          "id": "q18_functional_attributes_group",
+          "text": "Which group contains functional attributes?",
+          "image": "",
+          "hint": "Functional attributes describe what the outcome needs to do or how it performs.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Stability,\\ strength,\\ water\\ resistance$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Stability, strength, water resistance",
+            "Plywood, acrylic, MDF",
+            "Scriber, ruler, drill press",
+            "Brief, stakeholder, context"
+          ]
+        },
+        {
+          "id": "q19_functional_attribute_meaning",
+          "text": "What does functional attribute mean?",
+          "image": "",
+          "hint": "Think about function and performance.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Something\\ the\\ outcome\\ must\\ be\\ able\\ to\\ do\\ or\\ achieve$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Something the outcome must be able to do or achieve",
+            "A colour choice only",
+            "The name of a tool",
+            "A teacher comment"
+          ]
+        },
+        {
+          "id": "q20_phone_stand_attribute",
+          "text": "Which is a functional attribute for a phone stand?",
+          "image": "",
+          "hint": "A functional attribute links to what the product needs to do.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ holds\\ a\\ phone\\ upright\\ safely$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It holds a phone upright safely",
+            "It is made on Tuesday",
+            "The teacher likes it",
+            "It is stored in a cupboard"
+          ]
+        },
+        {
+          "id": "q21_refine",
+          "text": "What does refine mean?",
+          "image": "",
+          "hint": "Refining means improving the outcome during development.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^To\\ improve\\ or\\ change\\ something\\ after\\ feedback\\ or\\ testing$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "To improve or change something after feedback or testing",
+            "To copy the first idea exactly",
+            "To ignore stakeholder feedback",
+            "To stop the project"
+          ]
+        },
+        {
+          "id": "q22_justify",
+          "text": "What does justify mean?",
+          "image": "",
+          "hint": "Justifying is stronger than just naming what you did.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Give\\ clear\\ reasons\\ for\\ a\\ decision\\ using\\ evidence$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Give clear reasons for a decision using evidence",
+            "Draw without labels",
+            "Choose randomly",
+            "List tools only"
+          ]
+        },
+        {
+          "id": "q23_evaluate",
+          "text": "What does evaluate mean?",
+          "image": "",
+          "hint": "Evaluation should include a clear judgement.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Make\\ a\\ judgement\\ using\\ evidence$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Make a judgement using evidence",
+            "Copy a sentence from the internet",
+            "Only name a material",
+            "Use the quickest tool"
+          ]
+        },
+        {
+          "id": "q24_analyse",
+          "text": "What does analyse mean?",
+          "image": "",
+          "hint": "Analysis explains relationships and reasons.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Break\\ something\\ down\\ and\\ explain\\ the\\ connections$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Break something down and explain the connections",
+            "Guess without testing",
+            "Only describe the colour",
+            "Finish without feedback"
+          ]
+        },
+        {
+          "id": "q25_kaitiakitanga",
+          "text": "What does kaitiakitanga mean in a Technology project?",
+          "image": "",
+          "hint": "Think about guardianship and responsible decisions.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Care\\ for\\ people,\\ place,\\ resources\\ and\\ the\\ environment$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Care for people, place, resources and the environment",
+            "Use the newest tool every time",
+            "Make the biggest possible product",
+            "Ignore material waste"
+          ]
+        },
+        {
+          "id": "q26_reusing_offcuts",
+          "text": "Reusing offcuts is an example of what?",
+          "image": "",
+          "hint": "Think about reducing waste.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainable\\ practice$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Sustainable practice",
+            "Stakeholder feedback",
+            "Material testing only",
+            "A brief"
+          ]
+        },
+        {
+          "id": "q27_smallest_sheet",
+          "text": "Choosing the smallest suitable sheet size to reduce waste is mainly about what?",
+          "image": "",
+          "hint": "This links to efficient material use.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainability$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Sustainability",
+            "Decoration only",
+            "Making the task harder",
+            "Ignoring specifications"
+          ]
+        },
+        {
+          "id": "q28_feasible",
+          "text": "What does feasible mean?",
+          "image": "",
+          "hint": "Feasible means achievable in the real situation.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ outcome\\ can\\ realistically\\ be\\ made\\ with\\ the\\ available\\ time,\\ tools,\\ skills\\ and\\ materials$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The outcome can realistically be made with the available time, tools, skills and materials",
+            "The outcome is impossible to make",
+            "The outcome has no user",
+            "The outcome has no purpose"
+          ]
+        },
+        {
+          "id": "q29_testing_example",
+          "text": "Which is the best example of testing?",
+          "image": "",
+          "hint": "Testing checks whether the outcome performs as required.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Measuring\\ how\\ much\\ weight\\ a\\ shelf\\ can\\ hold$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Measuring how much weight a shelf can hold",
+            "Choosing a colour because it looks nice",
+            "Putting tools away",
+            "Writing your name on the page"
+          ]
+        },
+        {
+          "id": "q30_trialling_technique",
+          "text": "Which is the best example of trialling a technique?",
+          "image": "",
+          "hint": "Trialling helps compare possible making methods.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Testing\\ screws\\ and\\ rivets\\ to\\ see\\ which\\ joint\\ is\\ stronger$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Testing screws and rivets to see which joint is stronger",
+            "Picking the first idea and never changing it",
+            "Only drawing a title page",
+            "Asking no one for feedback"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHS Hard Materials Keyword MC Quiz Part 2",
+      "title": "Stage 3B – Hard Materials Key Word Multiple Choice Quiz",
+      "subtitle": "Materials and Processing Technology – Key Vocabulary | Questions 31–60",
+      "usNumber": "92012 / 92013 / 92014 / 92015",
+      "usVersion": "v1",
+      "credits": null,
+      "standardType": "practice",
+      "questions": [
+        {
+          "id": "q31_feedback",
+          "text": "Which is the best example of stakeholder feedback?",
+          "image": "",
+          "hint": "Feedback should come from someone connected to the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ product\\ user\\ says,\\ “The\\ handle\\ is\\ too\\ small\\ for\\ my\\ hand\\.”$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The product user says, “The handle is too small for my hand.”",
+            "The material is called plywood",
+            "The drill bit is 4.5 mm",
+            "The product was made in the workshop"
+          ]
+        },
+        {
+          "id": "q32_feedback_refine",
+          "text": "Which action shows using feedback to refine an outcome?",
+          "image": "",
+          "hint": "Refining means making an informed improvement.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Changing\\ the\\ handle\\ size\\ after\\ the\\ user\\ says\\ it\\ is\\ uncomfortable$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Changing the handle size after the user says it is uncomfortable",
+            "Ignoring the user and keeping the same design",
+            "Deleting all specifications",
+            "Choosing a material without testing"
+          ]
+        },
+        {
+          "id": "q33_kaitiakitanga_example",
+          "text": "Which option best shows kaitiakitanga?",
+          "image": "",
+          "hint": "Think about responsible care for resources.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Choosing\\ materials\\ carefully\\ and\\ reducing\\ waste$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Choosing materials carefully and reducing waste",
+            "Throwing away usable offcuts",
+            "Using more material than needed",
+            "Ignoring environmental impact"
+          ]
+        },
+        {
+          "id": "q34_standard_context",
+          "text": "A project focused on a real person, brief, specifications and final outcome connects most strongly to which area?",
+          "image": "",
+          "hint": "Think about the full design and development process.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Developing\\ an\\ outcome\\ in\\ an\\ authentic\\ context$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Developing an outcome in an authentic context",
+            "Only cleaning the workshop",
+            "Only naming PPE",
+            "Only copying a drawing"
+          ]
+        },
+        {
+          "id": "q35_standard_materials",
+          "text": "Comparing plywood, MDF and acrylic through testing connects most strongly to which area?",
+          "image": "",
+          "hint": "This focuses on material testing and selection.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Experimenting\\ with\\ materials$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Experimenting with materials",
+            "Writing only a title",
+            "Cleaning the bench",
+            "Submitting without evidence"
+          ]
+        },
+        {
+          "id": "q36_standard_sustainability",
+          "text": "Reducing waste, reusing offcuts and considering kaitiakitanga connects most strongly to which area?",
+          "image": "",
+          "hint": "Think about environmental and resource decisions.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainable\\ practices$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Sustainable practices",
+            "Only final decoration",
+            "Only stakeholder names",
+            "Only workshop rules"
+          ]
+        },
+        {
+          "id": "q37_standard_techniques",
+          "text": "Trialling screws and rivets to choose a suitable joint connects most strongly to which area?",
+          "image": "",
+          "hint": "This focuses on practical making processes.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Techniques\\ selected\\ for\\ a\\ feasible\\ outcome$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Techniques selected for a feasible outcome",
+            "Only naming the end user",
+            "Only writing the date",
+            "Only storing materials"
+          ]
+        },
+        {
+          "id": "q38_achieved_thinking",
+          "text": "Which statement is closest to Achieved-level thinking?",
+          "image": "",
+          "hint": "Achieved often identifies or describes what was done.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^I\\ used\\ plywood\\.$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "I used plywood.",
+            "I evaluated three materials and justified plywood as the best choice because of test results.",
+            "I compared plywood and acrylic, then refined my choice after testing.",
+            "I analysed how the material choice affected strength, cost and sustainability."
+          ]
+        },
+        {
+          "id": "q39_merit_thinking",
+          "text": "Which statement is closest to Merit-level thinking?",
+          "image": "",
+          "hint": "Merit usually explains how or why a decision improved the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^I\\ changed\\ from\\ nails\\ to\\ screws\\ because\\ testing\\ showed\\ screws\\ were\\ stronger\\ and\\ easier\\ to\\ remove\\ for\\ repair\\.$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "I changed from nails to screws because testing showed screws were stronger and easier to remove for repair.",
+            "I used screws.",
+            "Wood is a material.",
+            "My project is finished."
+          ]
+        },
+        {
+          "id": "q40_excellence_thinking",
+          "text": "Which statement is closest to Excellence-level thinking?",
+          "image": "",
+          "hint": "Excellence includes judgement, evidence and justification.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^I\\ evaluated\\ my\\ final\\ box\\ against\\ the\\ brief\\ and\\ justified\\ my\\ final\\ material\\ and\\ joining\\ method\\ using\\ test\\ results\\ and\\ stakeholder\\ feedback\\.$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "I evaluated my final box against the brief and justified my final material and joining method using test results and stakeholder feedback.",
+            "I used MDF.",
+            "I drew a sketch.",
+            "I cleaned my bench."
+          ]
+        },
+        {
+          "id": "q41_identify",
+          "text": "What does identify usually ask you to do?",
+          "image": "",
+          "hint": "Identify is usually a simple naming task.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Say\\ what\\ something\\ is$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Say what something is",
+            "Give a detailed evaluation",
+            "Build the final product",
+            "Ignore evidence"
+          ]
+        },
+        {
+          "id": "q42_describe",
+          "text": "What does describe usually ask you to do?",
+          "image": "",
+          "hint": "Describe adds detail.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Give\\ details\\ about\\ something$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Give details about something",
+            "Only write one unrelated word",
+            "Make a final judgement",
+            "Delete your evidence"
+          ]
+        },
+        {
+          "id": "q43_explain",
+          "text": "What does explain usually ask you to do?",
+          "image": "",
+          "hint": "Explain is about reasons and cause/effect.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Say\\ how\\ or\\ why\\ something\\ happened$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Say how or why something happened",
+            "Only name a material",
+            "Write nothing",
+            "Choose randomly"
+          ]
+        },
+        {
+          "id": "q44_compare",
+          "text": "What does compare usually ask you to do?",
+          "image": "",
+          "hint": "Compare means looking at more than one thing.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Show\\ similarities\\ and\\ differences$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Show similarities and differences",
+            "Only name the first option",
+            "Ignore all test results",
+            "Submit the same answer twice"
+          ]
+        },
+        {
+          "id": "q45_evaluate_command",
+          "text": "Which command word is most likely to require a strong evidence-based judgement?",
+          "image": "",
+          "hint": "Evaluation usually includes a judgement supported by evidence.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Evaluate$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Evaluate",
+            "Identify",
+            "List",
+            "Name"
+          ]
+        },
+        {
+          "id": "q46_scenario_end_user",
+          "text": "Scenario: A student designs and makes a desk organiser for a teacher. Who is the end user?",
+          "image": "",
+          "hint": "The end user is the person who will use the outcome.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ teacher$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The teacher",
+            "The drill press",
+            "The offcut bin",
+            "The school bell"
+          ]
+        },
+        {
+          "id": "q47_scenario_environment",
+          "text": "Scenario: The desk organiser will sit on a teacher’s desk. What is the intended environment?",
+          "image": "",
+          "hint": "The intended environment is where the outcome will be used.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ teacher’s\\ desk$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The teacher’s desk",
+            "The metal rack",
+            "The car park",
+            "The rubbish bin"
+          ]
+        },
+        {
+          "id": "q48_scenario_brief",
+          "text": "Which is the best brief for the desk organiser scenario?",
+          "image": "",
+          "hint": "A brief should explain what is needed and why.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Design\\ and\\ make\\ a\\ desk\\ organiser\\ for\\ a\\ teacher\\ to\\ store\\ classroom\\ items\\ neatly$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Design and make a desk organiser for a teacher to store classroom items neatly",
+            "Make anything you want",
+            "Use wood because it is there",
+            "Draw a random box"
+          ]
+        },
+        {
+          "id": "q49_scenario_specification",
+          "text": "Which is the best specification for the desk organiser?",
+          "image": "",
+          "hint": "Look for a clear, measurable requirement.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ must\\ hold\\ at\\ least\\ six\\ whiteboard\\ markers$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It must hold at least six whiteboard markers",
+            "It should be nice",
+            "It will be made somehow",
+            "It might be cool"
+          ]
+        },
+        {
+          "id": "q50_scenario_size_spec",
+          "text": "Which is another useful specification for the desk organiser?",
+          "image": "",
+          "hint": "A size specification can be measured.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ must\\ fit\\ within\\ 250\\ mm\\ ×\\ 200\\ mm\\ of\\ desk\\ space$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It must fit within 250 mm × 200 mm of desk space",
+            "It should be awesome",
+            "It will use tools",
+            "It exists in the room"
+          ]
+        },
+        {
+          "id": "q51_scenario_property",
+          "text": "Which material property would be useful for a desk organiser?",
+          "image": "",
+          "hint": "A property describes how a material performs.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Strength$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Strength",
+            "Stakeholder",
+            "Brief",
+            "Context"
+          ]
+        },
+        {
+          "id": "q52_scenario_technique",
+          "text": "Which option is a technique used when making the desk organiser?",
+          "image": "",
+          "hint": "A technique is a making process.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Drilling\\ holes\\ for\\ dividers$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Drilling holes for dividers",
+            "The teacher’s desk",
+            "The stakeholder",
+            "The design problem"
+          ]
+        },
+        {
+          "id": "q53_scenario_functional_attribute",
+          "text": "Which is a functional attribute of the desk organiser?",
+          "image": "",
+          "hint": "Functional attributes describe what the outcome must do.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ stays\\ stable\\ when\\ holding\\ items$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It stays stable when holding items",
+            "It was made in Term 1",
+            "It was placed near a pencil",
+            "It has a title"
+          ]
+        },
+        {
+          "id": "q54_scenario_test",
+          "text": "Which is the most useful test for the desk organiser?",
+          "image": "",
+          "hint": "Testing should check performance against requirements.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Check\\ whether\\ it\\ tips\\ over\\ when\\ full$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Check whether it tips over when full",
+            "Ask what day it is",
+            "Count the classroom windows",
+            "Choose a random colour"
+          ]
+        },
+        {
+          "id": "q55_scenario_feedback",
+          "text": "Which is useful stakeholder feedback for the desk organiser?",
+          "image": "",
+          "hint": "Useful feedback helps improve the outcome for the user.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ phone\\ slot\\ needs\\ to\\ be\\ wider\\ for\\ my\\ phone\\ with\\ its\\ case\\ on$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The phone slot needs to be wider for my phone with its case on",
+            "Plywood is brown",
+            "The bell rang",
+            "The drill is on the bench"
+          ]
+        },
+        {
+          "id": "q56_common_mistake_property",
+          "text": "Which statement is correct?",
+          "image": "",
+          "hint": "Some words can connect to more than one part of the project.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Strength\\ can\\ be\\ a\\ functional\\ attribute\\ or\\ material\\ property\\ depending\\ on\\ how\\ it\\ is\\ used$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Strength can be a functional attribute or material property depending on how it is used",
+            "Strength is always the name of a tool",
+            "Strength means the product is colourful",
+            "Strength means the stakeholder is happy"
+          ]
+        },
+        {
+          "id": "q57_common_mistake_sustainability",
+          "text": "Which statement about sustainability is correct?",
+          "image": "",
+          "hint": "Sustainability is broader than just recycling.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^Sustainability\\ can\\ include\\ reducing\\ waste,\\ choosing\\ suitable\\ materials\\ and\\ considering\\ disposal$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "Sustainability can include reducing waste, choosing suitable materials and considering disposal",
+            "Sustainability only means painting something green",
+            "Sustainability means using the most expensive material",
+            "Sustainability is not part of Technology"
+          ]
+        },
+        {
+          "id": "q58_common_mistake_feedback",
+          "text": "Why is feedback useful during development?",
+          "image": "",
+          "hint": "Feedback can guide refinements.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ helps\\ improve\\ the\\ design\\ before\\ the\\ final\\ outcome\\ is\\ completed$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It helps improve the design before the final outcome is completed",
+            "It must always be ignored",
+            "It replaces testing completely",
+            "It is only used after marking"
+          ]
+        },
+        {
+          "id": "q59_common_mistake_feasible",
+          "text": "What does it mean if an outcome is feasible?",
+          "image": "",
+          "hint": "Feasible means realistic and achievable.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^It\\ has\\ the\\ potential\\ to\\ be\\ made\\ successfully\\ with\\ available\\ time,\\ tools,\\ skills\\ and\\ materials$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "It has the potential to be made successfully with available time, tools, skills and materials",
+            "It is impossible to make",
+            "It has no specifications",
+            "It cannot be tested"
+          ]
+        },
+        {
+          "id": "q60_common_mistake_fit_for_purpose",
+          "text": "What does fit for purpose mean?",
+          "image": "",
+          "hint": "Fit for purpose means successful in the real situation.",
+          "type": "mc",
+          "maxPoints": 1,
+          "rubric": [
+            {
+              "points": 1,
+              "check": "^The\\ product\\ works\\ for\\ the\\ user,\\ purpose\\ and\\ environment$",
+              "flags": "i"
+            }
+          ],
+          "options": [
+            "The product works for the user, purpose and environment",
+            "The product is only decorative",
+            "The product uses the most material",
+            "The product was finished first"
+          ]
+        }
+      ]
     }
-  };
-
-  const marginLeft = 10;
-  const marginRight = 10;
-  const marginTop = 80;
-  const marginBottom = 10;
-  const usableHeight = pageHeight - marginTop - marginBottom;
-
-  const TARGET_WIDTH = 900;
-
-  const resultSection = document.getElementById("result");
-  const blocks = [];
-
-  const resultHeader = resultSection.querySelector(".result-header");
-  if (resultHeader) blocks.push(resultHeader);
-
-  resultSection.querySelectorAll(".feedback").forEach((el) => blocks.push(el));
-  if (blocks.length === 0) blocks.push(resultSection);
-
-  drawHeader(true);
-  let currentY = marginTop;
-
-  enablePdfMode();
-  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-  try {
-    for (const block of blocks) {
-      const canvas = await window.html2canvas(block, {
-        scale: 1.5,
-        width: TARGET_WIDTH,
-        windowWidth: TARGET_WIDTH,
-        useCORS: true,
-        scrollX: 0,
-        scrollY: -window.scrollY,
-      });
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.8);
-      const imgProps = pdf.getImageProperties(imgData);
-
-      const maxContentWidth = pageWidth - marginLeft - marginRight;
-      let imgWidth = maxContentWidth;
-      let imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-      const maxBlockHeight = usableHeight * 0.9;
-      if (imgHeight > maxBlockHeight) {
-        const scale = maxBlockHeight / imgHeight;
-        imgWidth *= scale;
-        imgHeight = maxBlockHeight;
-      }
-
-      const xPos = (pageWidth - imgWidth) / 2;
-
-      if (currentY + imgHeight > pageHeight - marginBottom) {
-        pdf.addPage();
-        drawHeader(false);
-        currentY = marginTop;
-      }
-
-      pdf.addImage(imgData, "JPEG", xPos, currentY, imgWidth, imgHeight);
-      currentY += imgHeight + 5;
-    }
-  } finally {
-    disablePdfMode();
-  }
-
-  const pageCount = pdf.getNumberOfPages();
-  pdf.setFontSize(9);
-  pdf.setTextColor(120, 130, 140);
-  for (let i = 1; i <= pageCount; i++) {
-    pdf.setPage(i);
-    pdf.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 6, { align: "center" });
-  }
-
-  let pdfBlob = pdf.output("blob");
-
-  // Attach signoff sheet if flagged
-  if (finalData.attachSignoff) {
-    try {
-      const signoffBytes = await fetchOptionalPdfBytes("assessment.pdf");
-      if (signoffBytes) {
-        const filledBytes = await fillPdfForm(signoffBytes, finalData);
-        pdfBlob = await appendPdfBytesToBlob(pdfBlob, filledBytes);
-      }
-    } catch (e) {
-      console.warn("Sign-off sheet fill/append failed, continuing without it:", e);
-    }
-  }
-
-  const fileName =
-    `${safePart(finalData.studentId || "student")}_` +
-    `${safePart(finalData.studentName || "name")}_` +
-    `${safePart(finalData.assessmentTitle || "assessment")}.pdf`;
-
-  let pdfFile = null;
-  if (window.File && typeof File === "function") {
-    pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" });
-  }
-
-  if (pdfFile && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-    try {
-      await navigator.share({
-        title: "Assessment PDF",
-        text: "Here is my completed assessment.",
-        files: [pdfFile],
-      });
-      showToast("Shared via device share sheet.");
-      return;
-    } catch (e) {
-      console.warn("Share cancelled or failed, falling back to download:", e);
-    }
-  }
-
-  const url = URL.createObjectURL(pdfBlob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  URL.revokeObjectURL(url);
+  ]
 }
-
-// ------------------------------------------------------------
-// Simple clipboard clear (best-effort)
-// ------------------------------------------------------------
-function clearClipboard() {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText("").catch(() => {});
-  }
-}
-
-// ------------------------------------------------------------
-// Attach protection to inputs (softened anti-cheat)
-// ------------------------------------------------------------
-function attachProtection() {
-//  document.querySelectorAll(".answer-field").forEach((f) => {
-    //f.addEventListener("input", () => saveAnswer(f.id.slice(1)));
-//   f.addEventListener("paste", (e) => {
-    //  e.preventDefault();
-      showToast(PASTE_BLOCKED_MESSAGE, false);
-   //   clearClipboard();
-  //  });
-//  });
-}
-
-// Limit context menu blocking to the question area only (still allow on inputs)
-document.addEventListener("contextmenu", (e) => {
-  const inQuestionsArea = e.target.closest("#questions");
-  if (inQuestionsArea && !e.target.matches("input, textarea")) {
-    e.preventDefault();
-  }
-});
-
-// ------------------------------------------------------------
-// Service worker registration for offline/PWA
-// ------------------------------------------------------------
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch((err) => {
-      if (DEBUG) console.log("Service worker registration failed:", err);
-    });
-  });
-}
-
-// ------------------------------------------------------------
-// Export
-// ------------------------------------------------------------
-window.loadAssessment = loadAssessment;
-window.submitWork = submitWork;
-window.back = back;
-window.emailWork = emailWork;
-
-// ------------------------------------------------------------
-// Start
-// ------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadQuestions();
-  initApp();
-  applyDeadlineLockIfNeeded();
-
-  // Preload libs quietly
-  loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
-  loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
-  loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js");
-});
