@@ -1,6 +1,6 @@
 {
   "APP_ID": "Pukekohe High School - Design Problem and Brief",
-  "VERSION": "2026.3-split-mc-randomised",
+  "VERSION": "2026.4-split-mc-randomised-clean",
   "APP_TITLE": "Writing a Design Problem, Brief and Specification",
   "APP_SUBTITLE": "Learning Assessment - Clear Language, Clear Evidence",
   "DEADLINE": {
@@ -18,7 +18,7 @@
   "ASSESSMENTS": [
     {
       "id": "PHS Problem and Brief Activity",
-      "title": "Stage 1 – Writing a Design Problem and Brief",
+      "title": "Stage 1 \u2013 Writing a Design Problem and Brief",
       "subtitle": "Task 1",
       "usNumber": "",
       "usVersion": "",
@@ -29,7 +29,7 @@
           "id": "Write a Design Problem and Brief",
           "text": "Describe the design problem and write a brief for your project.\n\nIn your response, you must:\n- clearly explain what the problem or need is\n- identify who the stakeholder(s) are\n- explain why this is a problem and why it needs to be solved\n- describe the context or situation where the problem exists\n- explain what the design outcome needs to achieve (do not describe your final solution)\n- include any constraints or limitations that will affect the design\n\nYour answer should focus on the need, not the solution, and should guide the rest of your project.",
           "image": "",
-          "hint": "To PASS, your response must clearly show that you understand the PROBLEM and the BRIEF.\n\nCheck your work against these questions:\n\nDESIGN PROBLEM\n• Have you clearly stated what the problem or need is?\n• Have you said who is affected by the problem?\n• Have you explained WHY this is a problem and why it needs to be solved?\n• Have you described where or when the problem occurs?\n\nDESIGN BRIEF\n• Have you explained what the outcome needs to achieve?\n• Have you used phrases like: “The outcome needs to…”, “It must…”, or “It is required to…”?\n• Have you avoided describing what your final solution looks like?\n\nCONSTRAINTS\n• Have you mentioned at least one limitation (time, cost, materials, tools, size, safety, or school rules)?\n\nBefore submitting, check that:\n✓ You mention the problem, the users, and the context\n✓ You explain why the problem matters\n✓ You focus on NEEDS, not your solution idea\n\nIf any of these are missing, you are unlikely to pass.",
+          "hint": "To PASS, your response must clearly show that you understand the PROBLEM and the BRIEF.\n\nCheck your work against these questions:\n\nDESIGN PROBLEM\n\u2022 Have you clearly stated what the problem or need is?\n\u2022 Have you said who is affected by the problem?\n\u2022 Have you explained WHY this is a problem and why it needs to be solved?\n\u2022 Have you described where or when the problem occurs?\n\nDESIGN BRIEF\n\u2022 Have you explained what the outcome needs to achieve?\n\u2022 Have you used phrases like: \u201cThe outcome needs to\u2026\u201d, \u201cIt must\u2026\u201d, or \u201cIt is required to\u2026\u201d?\n\u2022 Have you avoided describing what your final solution looks like?\n\nCONSTRAINTS\n\u2022 Have you mentioned at least one limitation (time, cost, materials, tools, size, safety, or school rules)?\n\nBefore submitting, check that:\n\u2713 You mention the problem, the users, and the context\n\u2713 You explain why the problem matters\n\u2713 You focus on NEEDS, not your solution idea\n\nIf any of these are missing, you are unlikely to pass.",
           "type": "long",
           "maxPoints": 10,
           "rubric": [
@@ -64,7 +64,7 @@
     },
     {
       "id": "PHS Specification Activity",
-      "title": "Stage 2 – Writing a Specification",
+      "title": "Stage 2 \u2013 Writing a Specification",
       "subtitle": "Task 2",
       "usNumber": "",
       "usVersion": "",
@@ -75,7 +75,7 @@
           "id": "Write a Specification",
           "text": "Write a specification for your design outcome.\n\nYour specification must:\n- be written as a list of clear criteria\n- use measurable or testable language\n- describe what the outcome must achieve\n- include constraints and requirements\n\nDo NOT describe your final solution.",
           "image": "",
-          "hint": "To PASS, your specification must be written as a clear list of criteria (bullet points or numbered).\n\nEach point should:\n• Start with: “The outcome must…” or “It must…”\n• Be measurable or testable (include numbers where possible)\n• Focus on what it must DO or achieve — NOT what it will look like\n\nA strong specification usually includes criteria for:\n1) Function – What must it do? (e.g., The outcome must securely hold 4 textbooks.)\n2) User – Who must it work for? (e.g., The outcome must be suitable for Year 9–10 students.)\n3) Size – Dimensions or limits (e.g., Must be no larger than 400mm x 300mm.)\n4) Materials – What is allowed or restricted (e.g., Must use sustainable timber available in the workshop.)\n5) Safety – What risks must be reduced or avoided (e.g., Must have no sharp edges.)\n6) Durability – How strong or long-lasting (e.g., Must support at least 10kg without bending.)\n7) Cost/Time – Budget or deadline limits (e.g., Must cost under $30 and be completed within 3 weeks.)\n8) Sustainability – Waste, reuse, environmental impact.\n9) Testing – How you will check success (e.g., It will be tested by loading it with 10kg for 1 minute.)\n\nAvoid vague statements like:\n✗ It should look cool.\n✗ It should be good quality.\n✗ I will make it out of plywood.\n\nInstead, make every point specific and measurable.",
+          "hint": "To PASS, your specification must be written as a clear list of criteria (bullet points or numbered).\n\nEach point should:\n\u2022 Start with: \u201cThe outcome must\u2026\u201d or \u201cIt must\u2026\u201d\n\u2022 Be measurable or testable (include numbers where possible)\n\u2022 Focus on what it must DO or achieve \u2014 NOT what it will look like\n\nA strong specification usually includes criteria for:\n1) Function \u2013 What must it do? (e.g., The outcome must securely hold 4 textbooks.)\n2) User \u2013 Who must it work for? (e.g., The outcome must be suitable for Year 9\u201310 students.)\n3) Size \u2013 Dimensions or limits (e.g., Must be no larger than 400mm x 300mm.)\n4) Materials \u2013 What is allowed or restricted (e.g., Must use sustainable timber available in the workshop.)\n5) Safety \u2013 What risks must be reduced or avoided (e.g., Must have no sharp edges.)\n6) Durability \u2013 How strong or long-lasting (e.g., Must support at least 10kg without bending.)\n7) Cost/Time \u2013 Budget or deadline limits (e.g., Must cost under $30 and be completed within 3 weeks.)\n8) Sustainability \u2013 Waste, reuse, environmental impact.\n9) Testing \u2013 How you will check success (e.g., It will be tested by loading it with 10kg for 1 minute.)\n\nAvoid vague statements like:\n\u2717 It should look cool.\n\u2717 It should be good quality.\n\u2717 I will make it out of plywood.\n\nInstead, make every point specific and measurable.",
           "type": "long",
           "maxPoints": 16,
           "rubric": [
@@ -125,8 +125,8 @@
     },
     {
       "id": "PHS Hard Materials Keyword MC Quiz Part 1",
-      "title": "Stage 3A – Hard Materials Key Word Multiple Choice Quiz",
-      "subtitle": "Materials and Processing Technology – Key Vocabulary | Questions 1–30",
+      "title": "Stage 3A \u2013 Hard Materials Key Word Multiple Choice Quiz",
+      "subtitle": "Materials and Processing Technology \u2013 Key Vocabulary | Questions 1\u201330",
       "usNumber": "92012 / 92013 / 92014 / 92015",
       "usVersion": "v1",
       "credits": null,
@@ -142,7 +142,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^A\\ real\\-life\\ situation\\ where\\ a\\ product\\ is\\ needed$",
+              "check": "^A real-life situation where a product is needed$",
               "flags": "i"
             }
           ],
@@ -163,7 +163,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ person\\ or\\ group\\ who\\ will\\ use\\ the\\ final\\ outcome$",
+              "check": "^The person or group who will use the final outcome$",
               "flags": "i"
             }
           ],
@@ -184,7 +184,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Someone\\ who\\ has\\ an\\ interest\\ in\\ the\\ outcome\\ or\\ can\\ give\\ useful\\ feedback$",
+              "check": "^Someone who has an interest in the outcome or can give useful feedback$",
               "flags": "i"
             }
           ],
@@ -205,7 +205,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^A\\ short\\ statement\\ explaining\\ what\\ needs\\ to\\ be\\ made\\ and\\ why$",
+              "check": "^A short statement explaining what needs to be made and why$",
               "flags": "i"
             }
           ],
@@ -226,7 +226,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^A\\ clear\\ and\\ measurable\\ requirement\\ the\\ outcome\\ must\\ meet$",
+              "check": "^A clear and measurable requirement the outcome must meet$",
               "flags": "i"
             }
           ],
@@ -247,7 +247,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ must\\ hold\\ at\\ least\\ four\\ whiteboard\\ markers$",
+              "check": "^It must hold at least four whiteboard markers$",
               "flags": "i"
             }
           ],
@@ -268,12 +268,12 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ final\\ product,\\ model,\\ design\\ or\\ solution\\ being\\ developed$",
+              "check": "^The final product, model, design or solution being developed$",
               "flags": "i"
             }
           ],
           "options": [
-            "Only the teacher’s feedback",
+            "Only the teacher\u2019s feedback",
             "The final product, model, design or solution being developed",
             "Only the first sketch",
             "The workshop rules"
@@ -289,7 +289,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ product\\ works\\ for\\ the\\ user,\\ purpose\\ and\\ environment$",
+              "check": "^The product works for the user, purpose and environment$",
               "flags": "i"
             }
           ],
@@ -310,7 +310,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ place\\ or\\ situation\\ where\\ the\\ outcome\\ will\\ be\\ used$",
+              "check": "^The place or situation where the outcome will be used$",
               "flags": "i"
             }
           ],
@@ -331,7 +331,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^What\\ an\\ outcome\\ is\\ made\\ from$",
+              "check": "^What an outcome is made from$",
               "flags": "i"
             }
           ],
@@ -373,7 +373,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^A\\ quality\\ or\\ characteristic\\ of\\ a\\ material$",
+              "check": "^A quality or characteristic of a material$",
               "flags": "i"
             }
           ],
@@ -415,7 +415,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^A\\ method\\ or\\ process\\ used\\ to\\ make,\\ shape\\ or\\ join\\ something$",
+              "check": "^A method or process used to make, shape or join something$",
               "flags": "i"
             }
           ],
@@ -457,7 +457,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Plywood,\\ acrylic,\\ mild\\ steel$",
+              "check": "^Plywood, acrylic, mild steel$",
               "flags": "i"
             }
           ],
@@ -478,7 +478,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Cutting,\\ folding,\\ riveting$",
+              "check": "^Cutting, folding, riveting$",
               "flags": "i"
             }
           ],
@@ -499,7 +499,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Stability,\\ strength,\\ water\\ resistance$",
+              "check": "^Stability, strength, water resistance$",
               "flags": "i"
             }
           ],
@@ -520,7 +520,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Something\\ the\\ outcome\\ must\\ be\\ able\\ to\\ do\\ or\\ achieve$",
+              "check": "^Something the outcome must be able to do or achieve$",
               "flags": "i"
             }
           ],
@@ -541,7 +541,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ holds\\ a\\ phone\\ upright\\ safely$",
+              "check": "^It holds a phone upright safely$",
               "flags": "i"
             }
           ],
@@ -562,7 +562,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^To\\ improve\\ or\\ change\\ something\\ after\\ feedback\\ or\\ testing$",
+              "check": "^To improve or change something after feedback or testing$",
               "flags": "i"
             }
           ],
@@ -583,7 +583,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Give\\ clear\\ reasons\\ for\\ a\\ decision\\ using\\ evidence$",
+              "check": "^Give clear reasons for a decision using evidence$",
               "flags": "i"
             }
           ],
@@ -604,7 +604,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Make\\ a\\ judgement\\ using\\ evidence$",
+              "check": "^Make a judgement using evidence$",
               "flags": "i"
             }
           ],
@@ -625,7 +625,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Break\\ something\\ down\\ and\\ explain\\ the\\ connections$",
+              "check": "^Break something down and explain the connections$",
               "flags": "i"
             }
           ],
@@ -646,7 +646,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Care\\ for\\ people,\\ place,\\ resources\\ and\\ the\\ environment$",
+              "check": "^Care for people, place, resources and the environment$",
               "flags": "i"
             }
           ],
@@ -667,7 +667,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Sustainable\\ practice$",
+              "check": "^Sustainable practice$",
               "flags": "i"
             }
           ],
@@ -709,7 +709,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ outcome\\ can\\ realistically\\ be\\ made\\ with\\ the\\ available\\ time,\\ tools,\\ skills\\ and\\ materials$",
+              "check": "^The outcome can realistically be made with the available time, tools, skills and materials$",
               "flags": "i"
             }
           ],
@@ -730,7 +730,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Measuring\\ how\\ much\\ weight\\ a\\ shelf\\ can\\ hold$",
+              "check": "^Measuring how much weight a shelf can hold$",
               "flags": "i"
             }
           ],
@@ -751,7 +751,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Testing\\ screws\\ and\\ rivets\\ to\\ see\\ which\\ joint\\ is\\ stronger$",
+              "check": "^Testing screws and rivets to see which joint is stronger$",
               "flags": "i"
             }
           ],
@@ -766,8 +766,8 @@
     },
     {
       "id": "PHS Hard Materials Keyword MC Quiz Part 2",
-      "title": "Stage 3B – Hard Materials Key Word Multiple Choice Quiz",
-      "subtitle": "Materials and Processing Technology – Key Vocabulary | Questions 31–60",
+      "title": "Stage 3B \u2013 Hard Materials Key Word Multiple Choice Quiz",
+      "subtitle": "Materials and Processing Technology \u2013 Key Vocabulary | Questions 31\u201360",
       "usNumber": "92012 / 92013 / 92014 / 92015",
       "usVersion": "v1",
       "credits": null,
@@ -783,13 +783,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ product\\ user\\ says,\\ “The\\ handle\\ is\\ too\\ small\\ for\\ my\\ hand\\.”$",
+              "check": "^The product user says, \u201cThe handle is too small for my hand\\.\u201d$",
               "flags": "i"
             }
           ],
           "options": [
             "The material is called plywood",
-            "The product user says, “The handle is too small for my hand.”",
+            "The product user says, \u201cThe handle is too small for my hand.\u201d",
             "The drill bit is 4.5 mm",
             "The product was made in the workshop"
           ]
@@ -804,7 +804,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Changing\\ the\\ handle\\ size\\ after\\ the\\ user\\ says\\ it\\ is\\ uncomfortable$",
+              "check": "^Changing the handle size after the user says it is uncomfortable$",
               "flags": "i"
             }
           ],
@@ -825,7 +825,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Choosing\\ materials\\ carefully\\ and\\ reducing\\ waste$",
+              "check": "^Choosing materials carefully and reducing waste$",
               "flags": "i"
             }
           ],
@@ -846,7 +846,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Developing\\ an\\ outcome\\ in\\ an\\ authentic\\ context$",
+              "check": "^Developing an outcome in an authentic context$",
               "flags": "i"
             }
           ],
@@ -867,7 +867,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Experimenting\\ with\\ materials$",
+              "check": "^Experimenting with materials$",
               "flags": "i"
             }
           ],
@@ -888,7 +888,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Sustainable\\ practices$",
+              "check": "^Sustainable practices$",
               "flags": "i"
             }
           ],
@@ -909,7 +909,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Techniques\\ selected\\ for\\ a\\ feasible\\ outcome$",
+              "check": "^Techniques selected for a feasible outcome$",
               "flags": "i"
             }
           ],
@@ -930,7 +930,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^I\\ used\\ plywood\\.$",
+              "check": "^I used plywood\\.$",
               "flags": "i"
             }
           ],
@@ -951,7 +951,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^I\\ changed\\ from\\ nails\\ to\\ screws\\ because\\ testing\\ showed\\ screws\\ were\\ stronger\\ and\\ easier\\ to\\ remove\\ for\\ repair\\.$",
+              "check": "^I changed from nails to screws because testing showed screws were stronger and easier to remove for repair\\.$",
               "flags": "i"
             }
           ],
@@ -972,7 +972,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^I\\ evaluated\\ my\\ final\\ box\\ against\\ the\\ brief\\ and\\ justified\\ my\\ final\\ material\\ and\\ joining\\ method\\ using\\ test\\ results\\ and\\ stakeholder\\ feedback\\.$",
+              "check": "^I evaluated my final box against the brief and justified my final material and joining method using test results and stakeholder feedback\\.$",
               "flags": "i"
             }
           ],
@@ -993,7 +993,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Say\\ what\\ something\\ is$",
+              "check": "^Say what something is$",
               "flags": "i"
             }
           ],
@@ -1014,7 +1014,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Give\\ details\\ about\\ something$",
+              "check": "^Give details about something$",
               "flags": "i"
             }
           ],
@@ -1035,7 +1035,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Say\\ how\\ or\\ why\\ something\\ happened$",
+              "check": "^Say how or why something happened$",
               "flags": "i"
             }
           ],
@@ -1056,7 +1056,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Show\\ similarities\\ and\\ differences$",
+              "check": "^Show similarities and differences$",
               "flags": "i"
             }
           ],
@@ -1098,7 +1098,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ teacher$",
+              "check": "^The teacher$",
               "flags": "i"
             }
           ],
@@ -1111,7 +1111,7 @@
         },
         {
           "id": "q47_scenario_environment",
-          "text": "Scenario: The desk organiser will sit on a teacher’s desk. What is the intended environment?",
+          "text": "Scenario: The desk organiser will sit on a teacher\u2019s desk. What is the intended environment?",
           "image": "",
           "hint": "The intended environment is where the outcome will be used.",
           "type": "mc",
@@ -1119,13 +1119,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ teacher’s\\ desk$",
+              "check": "^The teacher\u2019s desk$",
               "flags": "i"
             }
           ],
           "options": [
             "The car park",
-            "The teacher’s desk",
+            "The teacher\u2019s desk",
             "The rubbish bin",
             "The metal rack"
           ]
@@ -1140,7 +1140,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Design\\ and\\ make\\ a\\ desk\\ organiser\\ for\\ a\\ teacher\\ to\\ store\\ classroom\\ items\\ neatly$",
+              "check": "^Design and make a desk organiser for a teacher to store classroom items neatly$",
               "flags": "i"
             }
           ],
@@ -1161,7 +1161,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ must\\ hold\\ at\\ least\\ six\\ whiteboard\\ markers$",
+              "check": "^It must hold at least six whiteboard markers$",
               "flags": "i"
             }
           ],
@@ -1182,13 +1182,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ must\\ fit\\ within\\ 250\\ mm\\ ×\\ 200\\ mm\\ of\\ desk\\ space$",
+              "check": "^It must fit within 250 mm \u00d7 200 mm of desk space$",
               "flags": "i"
             }
           ],
           "options": [
             "It should be awesome",
-            "It must fit within 250 mm × 200 mm of desk space",
+            "It must fit within 250 mm \u00d7 200 mm of desk space",
             "It exists in the room",
             "It will use tools"
           ]
@@ -1224,12 +1224,12 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Drilling\\ holes\\ for\\ dividers$",
+              "check": "^Drilling holes for dividers$",
               "flags": "i"
             }
           ],
           "options": [
-            "The teacher’s desk",
+            "The teacher\u2019s desk",
             "The design problem",
             "Drilling holes for dividers",
             "The stakeholder"
@@ -1245,7 +1245,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ stays\\ stable\\ when\\ holding\\ items$",
+              "check": "^It stays stable when holding items$",
               "flags": "i"
             }
           ],
@@ -1266,7 +1266,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Check\\ whether\\ it\\ tips\\ over\\ when\\ full$",
+              "check": "^Check whether it tips over when full$",
               "flags": "i"
             }
           ],
@@ -1287,7 +1287,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ phone\\ slot\\ needs\\ to\\ be\\ wider\\ for\\ my\\ phone\\ with\\ its\\ case\\ on$",
+              "check": "^The phone slot needs to be wider for my phone with its case on$",
               "flags": "i"
             }
           ],
@@ -1308,7 +1308,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Strength\\ can\\ be\\ a\\ functional\\ attribute\\ or\\ material\\ property\\ depending\\ on\\ how\\ it\\ is\\ used$",
+              "check": "^Strength can be a functional attribute or material property depending on how it is used$",
               "flags": "i"
             }
           ],
@@ -1329,7 +1329,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^Sustainability\\ can\\ include\\ reducing\\ waste,\\ choosing\\ suitable\\ materials\\ and\\ considering\\ disposal$",
+              "check": "^Sustainability can include reducing waste, choosing suitable materials and considering disposal$",
               "flags": "i"
             }
           ],
@@ -1350,7 +1350,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ helps\\ improve\\ the\\ design\\ before\\ the\\ final\\ outcome\\ is\\ completed$",
+              "check": "^It helps improve the design before the final outcome is completed$",
               "flags": "i"
             }
           ],
@@ -1371,7 +1371,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^It\\ has\\ the\\ potential\\ to\\ be\\ made\\ successfully\\ with\\ available\\ time,\\ tools,\\ skills\\ and\\ materials$",
+              "check": "^It has the potential to be made successfully with available time, tools, skills and materials$",
               "flags": "i"
             }
           ],
@@ -1392,7 +1392,7 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The\\ product\\ works\\ for\\ the\\ user,\\ purpose\\ and\\ environment$",
+              "check": "^The product works for the user, purpose and environment$",
               "flags": "i"
             }
           ],
