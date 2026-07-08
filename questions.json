@@ -1119,13 +1119,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The teacher\u2019s desk$",
+              "check": "^The teacher's desk$",
               "flags": "i"
             }
           ],
           "options": [
             "The car park",
-            "The teacher\u2019s desk",
+            "The teacher's desk",
             "The rubbish bin",
             "The metal rack"
           ]
