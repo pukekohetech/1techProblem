@@ -783,13 +783,13 @@
           "rubric": [
             {
               "points": 1,
-              "check": "^The product user says, \u201cThe handle is too small for my hand\\.\u201d$",
+              "check": "^The product user says, 'The handle is too small for my hand\\.'",
               "flags": "i"
             }
           ],
           "options": [
             "The material is called plywood",
-            "The product user says, \u201cThe handle is too small for my hand.\u201d",
+            "The product user says, 'The handle is too small for my hand.'",
             "The drill bit is 4.5 mm",
             "The product was made in the workshop"
           ]
