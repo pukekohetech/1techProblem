@@ -1,6 +1,6 @@
 {
   "APP_ID": "Pukekohe High School - Design Problem and Brief",
-  "VERSION": "2026.2-split-mc",
+  "VERSION": "2026.3-split-mc-randomised",
   "APP_TITLE": "Writing a Design Problem, Brief and Specification",
   "APP_SUBTITLE": "Learning Assessment - Clear Language, Clear Evidence",
   "DEADLINE": {
@@ -148,8 +148,8 @@
           ],
           "options": [
             "A made-up activity with no real user",
-            "A real-life situation where a product is needed",
             "A drawing copied from the internet",
+            "A real-life situation where a product is needed",
             "A list of tools in the workshop"
           ]
         },
@@ -168,10 +168,10 @@
             }
           ],
           "options": [
-            "The person or group who will use the final outcome",
-            "The teacher who marks the work",
+            "The machine used to make the product",
             "The person who sells the materials",
-            "The machine used to make the product"
+            "The teacher who marks the work",
+            "The person or group who will use the final outcome"
           ]
         },
         {
@@ -189,8 +189,8 @@
             }
           ],
           "options": [
-            "A tool used to hold timber",
             "Someone who has an interest in the outcome or can give useful feedback",
+            "A tool used to hold timber",
             "A type of material property",
             "A safety rule in the workshop"
           ]
@@ -210,9 +210,9 @@
             }
           ],
           "options": [
-            "A short statement explaining what needs to be made and why",
-            "A final photo of the product",
             "A list of unrelated ideas",
+            "A final photo of the product",
+            "A short statement explaining what needs to be made and why",
             "A tool safety checklist"
           ]
         },
@@ -231,10 +231,10 @@
             }
           ],
           "options": [
-            "A clear and measurable requirement the outcome must meet",
-            "A rough sketch with no labels",
             "A random material choice",
-            "A finished product only"
+            "A finished product only",
+            "A clear and measurable requirement the outcome must meet",
+            "A rough sketch with no labels"
           ]
         },
         {
@@ -252,10 +252,10 @@
             }
           ],
           "options": [
-            "It should look cool",
-            "It should be good",
             "It must hold at least four whiteboard markers",
-            "I will use plywood"
+            "It should look cool",
+            "I will use plywood",
+            "It should be good"
           ]
         },
         {
@@ -273,9 +273,9 @@
             }
           ],
           "options": [
+            "Only the teacher’s feedback",
             "The final product, model, design or solution being developed",
             "Only the first sketch",
-            "Only the teacher’s feedback",
             "The workshop rules"
           ]
         },
@@ -294,10 +294,10 @@
             }
           ],
           "options": [
-            "The product is the most colourful",
-            "The product works for the user, purpose and environment",
+            "The product is finished quickly",
             "The product uses the most expensive material",
-            "The product is finished quickly"
+            "The product works for the user, purpose and environment",
+            "The product is the most colourful"
           ]
         },
         {
@@ -316,8 +316,8 @@
           ],
           "options": [
             "The place or situation where the outcome will be used",
-            "The place where the teacher marks the work",
             "The storage cupboard",
+            "The place where the teacher marks the work",
             "The workshop bin"
           ]
         },
@@ -337,9 +337,9 @@
           ],
           "options": [
             "The method used to shape a product",
-            "What an outcome is made from",
             "A type of stakeholder",
-            "A design problem"
+            "A design problem",
+            "What an outcome is made from"
           ]
         },
         {
@@ -357,10 +357,10 @@
             }
           ],
           "options": [
+            "Testing",
             "Drilling",
-            "Plywood",
             "Filing",
-            "Testing"
+            "Plywood"
           ]
         },
         {
@@ -399,10 +399,10 @@
             }
           ],
           "options": [
-            "Durability",
-            "Hacksawing",
             "Centre punching",
-            "Riveting"
+            "Durability",
+            "Riveting",
+            "Hacksawing"
           ]
         },
         {
@@ -420,10 +420,10 @@
             }
           ],
           "options": [
-            "A method or process used to make, shape or join something",
-            "The person using the product",
             "The final mark for an assessment",
-            "A material property only"
+            "The person using the product",
+            "A material property only",
+            "A method or process used to make, shape or join something"
           ]
         },
         {
@@ -483,9 +483,9 @@
             }
           ],
           "options": [
-            "Plywood, acrylic, mild steel",
             "Cutting, folding, riveting",
             "Stakeholder, user, client",
+            "Plywood, acrylic, mild steel",
             "Brief, context, need"
           ]
         },
@@ -504,10 +504,10 @@
             }
           ],
           "options": [
+            "Brief, stakeholder, context",
             "Stability, strength, water resistance",
             "Plywood, acrylic, MDF",
-            "Scriber, ruler, drill press",
-            "Brief, stakeholder, context"
+            "Scriber, ruler, drill press"
           ]
         },
         {
@@ -526,9 +526,9 @@
           ],
           "options": [
             "Something the outcome must be able to do or achieve",
-            "A colour choice only",
             "The name of a tool",
-            "A teacher comment"
+            "A teacher comment",
+            "A colour choice only"
           ]
         },
         {
@@ -546,9 +546,9 @@
             }
           ],
           "options": [
+            "The teacher likes it",
             "It holds a phone upright safely",
             "It is made on Tuesday",
-            "The teacher likes it",
             "It is stored in a cupboard"
           ]
         },
@@ -568,8 +568,8 @@
           ],
           "options": [
             "To improve or change something after feedback or testing",
-            "To copy the first idea exactly",
             "To ignore stakeholder feedback",
+            "To copy the first idea exactly",
             "To stop the project"
           ]
         },
@@ -588,10 +588,10 @@
             }
           ],
           "options": [
-            "Give clear reasons for a decision using evidence",
+            "List tools only",
             "Draw without labels",
-            "Choose randomly",
-            "List tools only"
+            "Give clear reasons for a decision using evidence",
+            "Choose randomly"
           ]
         },
         {
@@ -609,10 +609,10 @@
             }
           ],
           "options": [
-            "Make a judgement using evidence",
             "Copy a sentence from the internet",
+            "Use the quickest tool",
             "Only name a material",
-            "Use the quickest tool"
+            "Make a judgement using evidence"
           ]
         },
         {
@@ -631,9 +631,9 @@
           ],
           "options": [
             "Break something down and explain the connections",
-            "Guess without testing",
             "Only describe the colour",
-            "Finish without feedback"
+            "Finish without feedback",
+            "Guess without testing"
           ]
         },
         {
@@ -651,9 +651,9 @@
             }
           ],
           "options": [
-            "Care for people, place, resources and the environment",
             "Use the newest tool every time",
             "Make the biggest possible product",
+            "Care for people, place, resources and the environment",
             "Ignore material waste"
           ]
         },
@@ -672,10 +672,10 @@
             }
           ],
           "options": [
-            "Sustainable practice",
-            "Stakeholder feedback",
+            "A brief",
             "Material testing only",
-            "A brief"
+            "Stakeholder feedback",
+            "Sustainable practice"
           ]
         },
         {
@@ -693,10 +693,10 @@
             }
           ],
           "options": [
+            "Ignoring specifications",
             "Sustainability",
-            "Decoration only",
             "Making the task harder",
-            "Ignoring specifications"
+            "Decoration only"
           ]
         },
         {
@@ -715,8 +715,8 @@
           ],
           "options": [
             "The outcome can realistically be made with the available time, tools, skills and materials",
-            "The outcome is impossible to make",
             "The outcome has no user",
+            "The outcome is impossible to make",
             "The outcome has no purpose"
           ]
         },
@@ -736,9 +736,9 @@
           ],
           "options": [
             "Measuring how much weight a shelf can hold",
-            "Choosing a colour because it looks nice",
             "Putting tools away",
-            "Writing your name on the page"
+            "Writing your name on the page",
+            "Choosing a colour because it looks nice"
           ]
         },
         {
@@ -756,10 +756,10 @@
             }
           ],
           "options": [
+            "Asking no one for feedback",
             "Testing screws and rivets to see which joint is stronger",
             "Picking the first idea and never changing it",
-            "Only drawing a title page",
-            "Asking no one for feedback"
+            "Only drawing a title page"
           ]
         }
       ]
@@ -788,8 +788,8 @@
             }
           ],
           "options": [
-            "The product user says, “The handle is too small for my hand.”",
             "The material is called plywood",
+            "The product user says, “The handle is too small for my hand.”",
             "The drill bit is 4.5 mm",
             "The product was made in the workshop"
           ]
@@ -809,10 +809,10 @@
             }
           ],
           "options": [
-            "Changing the handle size after the user says it is uncomfortable",
             "Ignoring the user and keeping the same design",
+            "Choosing a material without testing",
             "Deleting all specifications",
-            "Choosing a material without testing"
+            "Changing the handle size after the user says it is uncomfortable"
           ]
         },
         {
@@ -830,9 +830,9 @@
             }
           ],
           "options": [
-            "Choosing materials carefully and reducing waste",
             "Throwing away usable offcuts",
             "Using more material than needed",
+            "Choosing materials carefully and reducing waste",
             "Ignoring environmental impact"
           ]
         },
@@ -851,10 +851,10 @@
             }
           ],
           "options": [
+            "Only copying a drawing",
             "Developing an outcome in an authentic context",
             "Only cleaning the workshop",
-            "Only naming PPE",
-            "Only copying a drawing"
+            "Only naming PPE"
           ]
         },
         {
@@ -872,10 +872,10 @@
             }
           ],
           "options": [
-            "Experimenting with materials",
+            "Submitting without evidence",
             "Writing only a title",
             "Cleaning the bench",
-            "Submitting without evidence"
+            "Experimenting with materials"
           ]
         },
         {
@@ -894,9 +894,9 @@
           ],
           "options": [
             "Sustainable practices",
-            "Only final decoration",
             "Only stakeholder names",
-            "Only workshop rules"
+            "Only workshop rules",
+            "Only final decoration"
           ]
         },
         {
@@ -914,10 +914,10 @@
             }
           ],
           "options": [
-            "Techniques selected for a feasible outcome",
             "Only naming the end user",
-            "Only writing the date",
-            "Only storing materials"
+            "Techniques selected for a feasible outcome",
+            "Only storing materials",
+            "Only writing the date"
           ]
         },
         {
@@ -935,9 +935,9 @@
             }
           ],
           "options": [
+            "I compared plywood and acrylic, then refined my choice after testing.",
             "I used plywood.",
             "I evaluated three materials and justified plywood as the best choice because of test results.",
-            "I compared plywood and acrylic, then refined my choice after testing.",
             "I analysed how the material choice affected strength, cost and sustainability."
           ]
         },
@@ -956,9 +956,9 @@
             }
           ],
           "options": [
-            "I changed from nails to screws because testing showed screws were stronger and easier to remove for repair.",
             "I used screws.",
             "Wood is a material.",
+            "I changed from nails to screws because testing showed screws were stronger and easier to remove for repair.",
             "My project is finished."
           ]
         },
@@ -977,8 +977,8 @@
             }
           ],
           "options": [
-            "I evaluated my final box against the brief and justified my final material and joining method using test results and stakeholder feedback.",
             "I used MDF.",
+            "I evaluated my final box against the brief and justified my final material and joining method using test results and stakeholder feedback.",
             "I drew a sketch.",
             "I cleaned my bench."
           ]
@@ -998,10 +998,10 @@
             }
           ],
           "options": [
-            "Say what something is",
-            "Give a detailed evaluation",
             "Build the final product",
-            "Ignore evidence"
+            "Ignore evidence",
+            "Say what something is",
+            "Give a detailed evaluation"
           ]
         },
         {
@@ -1019,10 +1019,10 @@
             }
           ],
           "options": [
-            "Give details about something",
             "Only write one unrelated word",
-            "Make a final judgement",
-            "Delete your evidence"
+            "Delete your evidence",
+            "Give details about something",
+            "Make a final judgement"
           ]
         },
         {
@@ -1040,10 +1040,10 @@
             }
           ],
           "options": [
+            "Choose randomly",
             "Say how or why something happened",
-            "Only name a material",
             "Write nothing",
-            "Choose randomly"
+            "Only name a material"
           ]
         },
         {
@@ -1061,10 +1061,10 @@
             }
           ],
           "options": [
-            "Show similarities and differences",
+            "Submit the same answer twice",
             "Only name the first option",
             "Ignore all test results",
-            "Submit the same answer twice"
+            "Show similarities and differences"
           ]
         },
         {
@@ -1084,8 +1084,8 @@
           "options": [
             "Evaluate",
             "Identify",
-            "List",
-            "Name"
+            "Name",
+            "List"
           ]
         },
         {
@@ -1103,10 +1103,10 @@
             }
           ],
           "options": [
-            "The teacher",
             "The drill press",
-            "The offcut bin",
-            "The school bell"
+            "The school bell",
+            "The teacher",
+            "The offcut bin"
           ]
         },
         {
@@ -1124,10 +1124,10 @@
             }
           ],
           "options": [
-            "The teacher’s desk",
-            "The metal rack",
             "The car park",
-            "The rubbish bin"
+            "The teacher’s desk",
+            "The rubbish bin",
+            "The metal rack"
           ]
         },
         {
@@ -1146,9 +1146,9 @@
           ],
           "options": [
             "Design and make a desk organiser for a teacher to store classroom items neatly",
+            "Draw a random box",
             "Make anything you want",
-            "Use wood because it is there",
-            "Draw a random box"
+            "Use wood because it is there"
           ]
         },
         {
@@ -1166,10 +1166,10 @@
             }
           ],
           "options": [
-            "It must hold at least six whiteboard markers",
-            "It should be nice",
+            "It might be cool",
             "It will be made somehow",
-            "It might be cool"
+            "It should be nice",
+            "It must hold at least six whiteboard markers"
           ]
         },
         {
@@ -1187,10 +1187,10 @@
             }
           ],
           "options": [
-            "It must fit within 250 mm × 200 mm of desk space",
             "It should be awesome",
-            "It will use tools",
-            "It exists in the room"
+            "It must fit within 250 mm × 200 mm of desk space",
+            "It exists in the room",
+            "It will use tools"
           ]
         },
         {
@@ -1208,10 +1208,10 @@
             }
           ],
           "options": [
-            "Strength",
+            "Context",
             "Stakeholder",
-            "Brief",
-            "Context"
+            "Strength",
+            "Brief"
           ]
         },
         {
@@ -1229,10 +1229,10 @@
             }
           ],
           "options": [
-            "Drilling holes for dividers",
             "The teacher’s desk",
-            "The stakeholder",
-            "The design problem"
+            "The design problem",
+            "Drilling holes for dividers",
+            "The stakeholder"
           ]
         },
         {
@@ -1250,10 +1250,10 @@
             }
           ],
           "options": [
-            "It stays stable when holding items",
-            "It was made in Term 1",
             "It was placed near a pencil",
-            "It has a title"
+            "It was made in Term 1",
+            "It has a title",
+            "It stays stable when holding items"
           ]
         },
         {
@@ -1271,10 +1271,10 @@
             }
           ],
           "options": [
-            "Check whether it tips over when full",
+            "Choose a random colour",
             "Ask what day it is",
             "Count the classroom windows",
-            "Choose a random colour"
+            "Check whether it tips over when full"
           ]
         },
         {
@@ -1292,8 +1292,8 @@
             }
           ],
           "options": [
-            "The phone slot needs to be wider for my phone with its case on",
             "Plywood is brown",
+            "The phone slot needs to be wider for my phone with its case on",
             "The bell rang",
             "The drill is on the bench"
           ]
@@ -1313,9 +1313,9 @@
             }
           ],
           "options": [
-            "Strength can be a functional attribute or material property depending on how it is used",
-            "Strength is always the name of a tool",
             "Strength means the product is colourful",
+            "Strength is always the name of a tool",
+            "Strength can be a functional attribute or material property depending on how it is used",
             "Strength means the stakeholder is happy"
           ]
         },
@@ -1334,10 +1334,10 @@
             }
           ],
           "options": [
-            "Sustainability can include reducing waste, choosing suitable materials and considering disposal",
-            "Sustainability only means painting something green",
             "Sustainability means using the most expensive material",
-            "Sustainability is not part of Technology"
+            "Sustainability only means painting something green",
+            "Sustainability is not part of Technology",
+            "Sustainability can include reducing waste, choosing suitable materials and considering disposal"
           ]
         },
         {
@@ -1355,10 +1355,10 @@
             }
           ],
           "options": [
-            "It helps improve the design before the final outcome is completed",
-            "It must always be ignored",
+            "It is only used after marking",
             "It replaces testing completely",
-            "It is only used after marking"
+            "It helps improve the design before the final outcome is completed",
+            "It must always be ignored"
           ]
         },
         {
@@ -1376,10 +1376,10 @@
             }
           ],
           "options": [
-            "It has the potential to be made successfully with available time, tools, skills and materials",
+            "It cannot be tested",
             "It is impossible to make",
             "It has no specifications",
-            "It cannot be tested"
+            "It has the potential to be made successfully with available time, tools, skills and materials"
           ]
         },
         {
@@ -1397,10 +1397,10 @@
             }
           ],
           "options": [
-            "The product works for the user, purpose and environment",
-            "The product is only decorative",
             "The product uses the most material",
-            "The product was finished first"
+            "The product was finished first",
+            "The product is only decorative",
+            "The product works for the user, purpose and environment"
           ]
         }
       ]
