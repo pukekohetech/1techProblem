@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f547c">
+<title>Materials Technology Evidence Lab | Year 11</title>
+<style>
+:root{
+  --blue:#24577f;--blue-dark:#173d5b;--blue-light:#dcecf7;--teal:#0e766e;
+  --ach:#2f7d4b;--ach-bg:#e5f3df;--merit:#a85f1e;--merit-bg:#fff0df;
+  --exc:#6541a5;--exc-bg:#eee8fa;--yellow:#fff4c7;--yellow-line:#d2ad27;
+  --red:#a3283d;--red-bg:#fde9ed;--ink:#20252b;--muted:#65717c;--paper:#fffefb;
+  --line:#cbd5dc;--soft:#f3f7fa;--shadow:0 18px 45px #173d5b1e;--radius:20px;
+  --focus:0 0 0 4px #f1bc3d73;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 4%,#dcecf7 0,transparent 31rem),linear-gradient(180deg,#fbfdff,#eef4f8)}
+body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+button,input,select,textarea{font:inherit}
+button{min-height:46px;border:0;border-radius:12px;font-weight:800;cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:none;box-shadow:var(--focus)}
+input,select,textarea{width:100%;border:2px solid #bdcbd4;border-radius:11px;background:white;color:var(--ink);padding:.72rem .8rem}
+input,select{min-height:46px}
+textarea{min-height:105px;resize:vertical;line-height:1.5}
+label{font-weight:750}
+a{color:var(--blue)}
+.screen{display:none;min-height:100vh}.screen.active{display:block}
+.shell{width:min(1320px,calc(100% - 2rem));margin-inline:auto}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.hide{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:.87rem}
+.primary,.secondary,.ghost,.danger,.success{padding:.76rem 1rem}
+.primary{color:white;background:var(--blue);box-shadow:0 8px 20px #24577f31}.primary:hover{background:var(--blue-dark)}
+.secondary{color:#432d00;background:#efbd43}.secondary:hover{background:#e4aa25}
+.ghost{color:var(--ink);background:white;border:2px solid var(--line)}
+.danger{color:var(--red);background:var(--red-bg);border:2px solid #e6aebb}
+.success{color:white;background:var(--ach)}
+.icon-btn{width:46px;min-width:46px;padding:0;display:grid;place-items:center;color:var(--blue);background:#fff;border:2px solid #24577f25;font-size:1.18rem}
+.card{background:#fffefde8;border:1px solid #24577f1f;border-radius:var(--radius);box-shadow:var(--shadow)}
+.row{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.field{display:grid;gap:.35rem}
+.kicker{display:inline-flex;align-items:center;gap:.45rem;padding:.4rem .7rem;border-radius:999px;background:#dcecf7;color:var(--blue-dark);font-size:.78rem;font-weight:900;letter-spacing:.075em;text-transform:uppercase}
+.notice{padding:.92rem 1rem;border-left:6px solid var(--yellow-line);border-radius:12px;background:var(--yellow);line-height:1.5}
+.warning{padding:.92rem 1rem;border:2px solid #e2a7b3;border-radius:12px;background:var(--red-bg);color:#762033;line-height:1.5}
+
+/* Start */
+.start-wrap{padding:1rem 0 3rem}
+.start-tools{display:flex;justify-content:flex-end;gap:.5rem}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr);gap:2rem;align-items:center;min-height:calc(100vh - 5.5rem)}
+.hero-copy h1{margin:.78rem 0 .55rem;color:var(--blue-dark);font-size:clamp(3.1rem,7vw,6.6rem);line-height:.88;letter-spacing:-.065em}
+.hero-copy h1 span{display:block;margin-top:.6rem;color:var(--ink);font-size:.29em;line-height:1.18;letter-spacing:.01em}
+.hero-copy>p{max-width:64ch;color:var(--muted);font-size:1.08rem;line-height:1.65}
+.mantra{margin:1.1rem 0;padding:.9rem 1rem;border-radius:13px;background:linear-gradient(90deg,var(--blue-dark),var(--teal));color:#fff;font-weight:900;letter-spacing:.035em;text-align:center}
+.hero-art{position:relative;min-height:450px;overflow:hidden;display:grid;place-items:center;border-radius:30px;background:linear-gradient(145deg,#1f547c,#15374f);box-shadow:var(--shadow)}
+.hero-art::before,.hero-art::after{content:"";position:absolute;border-radius:50%;background:#ffffff10}.hero-art::before{width:310px;height:310px;right:-90px;top:-80px}.hero-art::after{width:240px;height:240px;left:-65px;bottom:-65px}
+.workbench-art{position:relative;z-index:1;width:min(88%,560px);display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end}
+.art-item{position:relative;min-height:115px;display:grid;place-items:center;border:4px solid #ffffff6c;border-radius:22px;background:#ffffff16;color:white;font-size:3.8rem;transform:rotate(var(--rot,0deg));box-shadow:inset 0 0 25px #ffffff10}
+.art-item:nth-child(2){transform:translateY(36px) rotate(-3deg)}.art-item:nth-child(4){transform:translateY(20px) rotate(4deg)}
+.art-label{position:absolute;bottom:.42rem;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:900;color:#fffbd7}
+.start-card{margin-top:1.1rem;padding:1.2rem}
+.mode-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin:.7rem 0 1rem}
+.mode-card{min-height:92px;padding:.75rem;text-align:left;border:2px solid var(--line);background:#fff;color:var(--ink)}
+.mode-card.on{border-color:var(--blue);background:#eaf4fb;color:var(--blue-dark)}
+.mode-card strong{display:block}.mode-card small{display:block;margin-top:.25rem;color:var(--muted);font-weight:600;line-height:1.25}
+.resume-box{display:none;margin-bottom:1rem;padding:.95rem;border:2px solid #6ca3ca;border-radius:14px;background:#eaf4fb}.resume-box.show{display:block}.resume-box h3{margin:.05rem 0 .35rem;color:var(--blue-dark)}
+
+/* App */
+.topbar{position:sticky;top:0;z-index:60;display:grid;grid-template-columns:minmax(210px,1fr) minmax(260px,1.2fr) auto;gap:.8rem;align-items:center;padding:.58rem max(1rem,calc((100vw - 1320px)/2));background:#173d5bf3;color:white;box-shadow:0 10px 24px #102c423d;backdrop-filter:blur(8px)}
+.student-chip{display:flex;align-items:center;gap:.65rem;min-width:0}.avatar{width:43px;height:43px;flex:none;display:grid;place-items:center;border-radius:50%;background:#efbd43;color:#3f2b00;font-weight:950}.student-chip strong,.student-chip small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.student-chip small{opacity:.76}
+.progress-wrap{display:grid;gap:.3rem}.progress-label{display:flex;justify-content:space-between;gap:.7rem;font-size:.8rem;font-weight:850}.progress-track{height:12px;overflow:hidden;border-radius:999px;background:#ffffff27}.progress-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#efbd43,#fff0a7);transition:width .28s ease}
+.top-actions{display:flex;gap:.4rem;align-items:center}.top-actions .icon-btn{color:white;background:#ffffff16;border-color:#ffffff2e}.stat-pill{padding:.28rem .55rem;border-radius:999px;background:#ffffff17;font-size:.77rem;font-weight:850;white-space:nowrap}
+.app-layout{display:grid;grid-template-columns:250px minmax(0,1fr) 310px;gap:1rem;align-items:start;padding:1.15rem 0 3rem}
+.mission-nav{position:sticky;top:78px;padding:.8rem;max-height:calc(100vh - 94px);overflow:auto}
+.mission-nav h2{margin:.25rem .35rem .7rem;color:var(--blue-dark);font-size:1rem}
+.mission-btn{width:100%;min-height:0;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:.55rem;align-items:center;margin:.35rem 0;padding:.65rem;border:2px solid transparent;background:transparent;color:var(--ink);text-align:left}
+.mission-btn:hover{background:#eef5f9}.mission-btn.active{border-color:#76a5c8;background:#eaf4fb;color:var(--blue-dark)}.mission-btn.locked{opacity:.48}.mission-btn .num{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#e5edf2;font-weight:950}.mission-btn.active .num{background:var(--blue);color:white}.mission-btn .m-title{min-width:0;font-size:.88rem;line-height:1.15}.mission-btn .state{font-size:1rem}
+.main-stack{display:grid;gap:1rem}
+.mission-head{padding:1.25rem 1.35rem;background:linear-gradient(135deg,#fff,#f1f8fc)}
+.mission-head-top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.mission-head h1{margin:.4rem 0 .35rem;color:var(--blue-dark);font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.035em}.mission-head p{margin:.25rem 0;color:var(--muted);line-height:1.55}.requirement-tag{max-width:300px;padding:.62rem .75rem;border-radius:12px;background:#eaf4fb;color:var(--blue-dark);font-size:.82rem;font-weight:900;text-align:center}.requirement-tag.final{background:var(--red-bg);color:#812239}.teaching-card{margin-top:1rem;padding:.85rem 1rem;border:2px solid var(--yellow-line);border-radius:13px;background:var(--yellow);line-height:1.5}.teaching-card strong{color:#695000}
+.question-card{min-height:520px;padding:clamp(1rem,2.7vw,1.55rem)}
+.q-top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.q-skill{margin:0;color:var(--blue);font-size:.78rem;font-weight:950;letter-spacing:.075em;text-transform:uppercase}.q-count{padding:.35rem .55rem;border-radius:999px;background:#edf2f5;color:var(--muted);font-size:.8rem;font-weight:850;white-space:nowrap}.question-card h2{margin:.48rem 0 .75rem;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.22;letter-spacing:-.02em}.scenario{margin:.65rem 0 1rem;padding:1rem;border-left:6px solid var(--blue);border-radius:13px;background:#edf6fb;line-height:1.55}.scenario strong{color:var(--blue-dark)}
+.answer-grid{display:grid;grid-template-columns:1fr 1fr;gap:.68rem;margin-top:.9rem}.choice{min-height:72px;padding:.8rem;border:2px solid var(--line);background:white;color:var(--ink);text-align:left;line-height:1.35}.choice:hover{border-color:#6f9fc1;background:#f6fbfe}.choice.selected{border-color:var(--blue);background:#eaf4fb;color:var(--blue-dark)}.choice.correct{border-color:#65b084;background:var(--ach-bg)}.choice.incorrect{border-color:#d58a99;background:var(--red-bg)}.choice-letter{display:inline-grid;place-items:center;width:30px;height:30px;margin-right:.48rem;border-radius:50%;background:#e9eef1;font-weight:950}.choice.selected .choice-letter{background:var(--blue);color:#fff}
+.q-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1.1rem}.feedback{display:none;margin-top:1rem;padding:.92rem 1rem;border-radius:13px;line-height:1.55;font-weight:680}.feedback.show{display:block}.feedback.good{border:2px solid #78bd95;background:var(--ach-bg);color:#1d6337}.feedback.notyet{border:2px solid #e0ad50;background:#fff2d7;color:#744600}.feedback.info{border:2px solid #87b5d7;background:#eaf4fb;color:#235778}
+.application-card{display:none;padding:1.25rem}.application-card.show{display:block}.application-card h2{margin:.1rem 0 .35rem;color:var(--blue-dark)}.application-card>p{color:var(--muted);line-height:1.5}.form-section{margin:.85rem 0;padding:1rem;border:1px solid var(--line);border-radius:14px;background:#fbfdfe}.form-section h3{margin:.05rem 0 .6rem;color:var(--blue-dark)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}.spec-grid,.test-grid{display:grid;gap:.55rem}.spec-row{display:grid;grid-template-columns:34px minmax(0,1fr);gap:.55rem;align-items:center}.spec-num{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:var(--blue);color:white;font-weight:900}.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem}.chain .field label{font-size:.8rem}.power-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem}.power-step{padding:.7rem;border-radius:13px;background:#e6f6f3;border:2px solid #9ccfc8}.power-step strong{display:block;color:var(--teal);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}.power-preview{margin-top:.8rem;padding:1rem;border:2px solid #80bdb5;border-radius:13px;background:#f0fbf9;line-height:1.55}.readiness-group{margin:.8rem 0;border:1px solid var(--line);border-radius:15px;overflow:hidden}.readiness-title{padding:.7rem 1rem;font-weight:950}.readiness-title.ach{background:var(--ach-bg);color:var(--ach)}.readiness-title.mer{background:var(--merit-bg);color:var(--merit)}.readiness-title.exc{background:var(--exc-bg);color:var(--exc)}.readiness-item{display:grid;grid-template-columns:28px minmax(180px,.8fr) minmax(180px,1.2fr);gap:.6rem;align-items:center;padding:.65rem .8rem;border-top:1px solid #e1e7eb}.readiness-item input[type=checkbox]{width:22px;height:22px;min-height:0}.priorities{margin-top:.8rem;padding:1rem;border-radius:14px;background:#fff5d5;border:2px solid #d9b83f}.priorities ol{margin:.45rem 0 .1rem;padding-left:1.25rem}.priorities li{margin:.35rem 0}
+
+/* Side */
+.side-stack{position:sticky;top:78px;display:grid;gap:1rem}.side-card{padding:1rem}.side-card h2,.side-card h3{margin:.1rem 0 .65rem;color:var(--blue-dark)}.folder{min-height:230px;padding:1rem;border:3px solid #a77722;border-radius:8px 8px 18px 18px;background:linear-gradient(#e1ad49,#c88622);box-shadow:inset 0 12px 0 #f0c66d;position:relative}.folder::before{content:"EVIDENCE FOLDER";position:absolute;top:-18px;left:18px;padding:.35rem .8rem;border-radius:10px 10px 0 0;background:#d99a32;color:#4a2b00;font-size:.75rem;font-weight:950;letter-spacing:.07em}.evidence-papers{display:grid;gap:.42rem;margin-top:.25rem}.paper-slip{display:flex;align-items:center;gap:.55rem;padding:.55rem .65rem;border-radius:8px;background:#fffdf7;box-shadow:0 4px 8px #5833002a;transform:rotate(var(--tilt,0deg));font-size:.82rem;font-weight:820}.paper-slip.locked{filter:grayscale(1);opacity:.42}.badge-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.42rem}.badge{aspect-ratio:1;display:grid;place-items:center;border:3px solid #d4dce1;border-radius:50%;background:#edf1f3;filter:grayscale(1);opacity:.48;font-size:1.35rem}.badge.earned{border-color:#a8791d;background:radial-gradient(circle at 35% 28%,#fff6bf,#efbd43 68%,#c78414);filter:none;opacity:1;box-shadow:0 5px 10px #7f52002c}.side-mantra{padding:.85rem;border-radius:13px;background:linear-gradient(135deg,var(--blue-dark),var(--teal));color:white;text-align:center;font-weight:950;line-height:1.35;letter-spacing:.025em}.disclaimer{font-size:.8rem;line-height:1.45;color:var(--muted)}
+
+/* Modals */
+.modal{display:none;position:fixed;inset:0;z-index:100;background:#132b3a96;padding:1rem;overflow:auto}.modal.open{display:grid;place-items:center}.modal-panel{width:min(780px,100%);max-height:calc(100vh - 2rem);overflow:auto;padding:1.15rem;border-radius:22px;background:white;box-shadow:0 26px 70px #081b287a}.modal-head{display:flex;justify-content:space-between;gap:1rem;align-items:center}.modal-head h2{margin:.1rem 0;color:var(--blue-dark)}.glossary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-top:.9rem}.glossary-item{padding:.75rem;border:1px solid var(--line);border-radius:12px;background:#f8fbfd}.glossary-item strong{display:block;color:var(--blue-dark)}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.9rem}.checkline{display:flex;gap:.55rem;align-items:flex-start;padding:.65rem;border:1px solid var(--line);border-radius:12px}.checkline input{width:22px;height:22px;min-height:0;margin-top:.05rem}.complete-badge{width:88px;height:88px;display:grid;place-items:center;margin:.4rem auto;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff7ba,#efbd43 65%,#b67510);border:5px solid #9a6813;font-size:2.5rem}
+
+/* Results and certificate */
+.results-wrap{padding:1.2rem 0 3rem}.results-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}.results-head h1{margin:.15rem 0;color:var(--blue-dark);font-size:clamp(2rem,5vw,4rem);letter-spacing:-.045em}.result-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem}.result-card{padding:1.2rem}.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}.big-stat{padding:.8rem;border-radius:14px;background:#eef5f9;text-align:center}.big-stat strong{display:block;color:var(--blue-dark);font-size:1.8rem}.skill-bars{display:grid;gap:.55rem;margin-top:.8rem}.skill-line{display:grid;grid-template-columns:150px 1fr 48px;gap:.55rem;align-items:center}.mini-track{height:12px;border-radius:999px;background:#e6ecef;overflow:hidden}.mini-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),var(--teal))}.certificate{margin-top:1rem;padding:2rem;border:12px double var(--blue);background:linear-gradient(135deg,#fffdf6,#eef8fc);text-align:center;position:relative;overflow:hidden}.certificate::before,.certificate::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:#efbd4323}.certificate::before{top:-80px;left:-70px}.certificate::after{right:-70px;bottom:-80px}.certificate h2{position:relative;margin:.2rem 0;color:var(--blue-dark);font-size:clamp(2rem,5vw,3.5rem);letter-spacing:.04em}.certificate .cert-name{position:relative;margin:.8rem auto .4rem;max-width:650px;border-bottom:2px solid #4c5961;font-family:Georgia,serif;font-size:2rem;font-weight:700}.certificate p{position:relative;max-width:780px;margin:.65rem auto;line-height:1.55}.cert-badges{position:relative;display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;margin:1rem 0}.cert-badge{padding:.38rem .6rem;border-radius:999px;background:#e8f2f8;color:var(--blue-dark);font-size:.8rem;font-weight:850}.signature{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:760px;margin:2rem auto .5rem}.signature div{padding-top:1.5rem;border-top:1px solid #56636c}.certificate-footer{position:relative;margin-top:1.1rem!important;color:var(--muted);font-size:.8rem}
+
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .32s ease}
+.confetti{position:fixed;z-index:200;top:-20px;width:10px;height:16px;border-radius:2px;pointer-events:none;animation:fall 1.7s linear forwards}
+@keyframes fall{to{transform:translate(var(--dx),105vh) rotate(640deg);opacity:.9}}
+
+@media(max-width:1100px){.app-layout{grid-template-columns:220px minmax(0,1fr)}.side-stack{position:static;grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}.hero-art{min-height:360px}.topbar{grid-template-columns:1fr 1fr auto}}
+@media(max-width:780px){.shell{width:min(100% - 1rem,1320px)}.hero{display:block}.hero-art{margin-top:1rem;min-height:300px}.start-card{padding:.9rem}.mode-grid{grid-template-columns:1fr 1fr}.grid2,.form-row,.settings-grid,.glossary-grid,.result-grid{grid-template-columns:1fr}.topbar{grid-template-columns:1fr auto;padding:.5rem}.progress-wrap{grid-column:1/-1;grid-row:2}.stat-pill{display:none}.app-layout{grid-template-columns:1fr;padding-top:.65rem}.mission-nav{position:static;display:flex;gap:.4rem;overflow-x:auto;max-height:none}.mission-nav h2{display:none}.mission-btn{min-width:195px;margin:0}.side-stack{grid-template-columns:1fr}.answer-grid{grid-template-columns:1fr}.chain,.power-grid{grid-template-columns:1fr}.readiness-item{grid-template-columns:28px minmax(0,1fr)}.readiness-item input[type=text]{grid-column:2}.stat-grid{grid-template-columns:1fr 1fr}.skill-line{grid-template-columns:110px 1fr 40px}.workbench-art{grid-template-columns:repeat(2,1fr)}.art-item:nth-child(2),.art-item:nth-child(4){transform:none}}
+@media(max-width:480px){.mode-grid{grid-template-columns:1fr}.hero-copy h1{font-size:3.15rem}.top-actions .icon-btn:nth-of-type(1){display:none}.mission-head-top{display:block}.requirement-tag{margin-top:.7rem;max-width:none}.q-top{display:block}.q-count{display:inline-block;margin-top:.4rem}.stat-grid{grid-template-columns:1fr}.signature{grid-template-columns:1fr;gap:2rem}.certificate{padding:1.25rem;border-width:7px}.art-item{font-size:3rem;min-height:95px}}
+
+@media print{
+  body{background:white!important}.screen{display:none!important}.topbar,.no-print,.results-head,.result-grid{display:none!important}
+  #resultsScreen{display:block!important}.results-wrap{padding:0}.certificate{display:block!important;margin:0;border:9px double #24577f;min-height:180mm;page-break-inside:avoid;box-shadow:none}.certificate h2{font-size:29pt}.certificate .cert-name{font-size:23pt}
+  @page{size:A4 landscape;margin:10mm}
+}
+</style>
+</head>
+<body>
+<div id="ariaLive" class="sr-only" aria-live="polite"></div>
+
+<section id="startScreen" class="screen active">
+  <div class="shell start-wrap">
+    <div class="start-tools">
+      <button class="icon-btn" id="startSettings" title="Teacher settings" aria-label="Open teacher settings">⚙</button>
+      <button class="icon-btn" id="startSound" title="Sound" aria-label="Toggle sound">🔇</button>
+    </div>
+    <div class="hero">
+      <div class="hero-copy">
+        <span class="kicker">Year 11 Materials Technology</span>
+        <h1>Evidence Lab<span>Show the evidence. Explain the decision. Improve the outcome.</span></h1>
+        <p>Complete short, changing challenges about briefs, measurable specifications, purposeful trials, stakeholder feedback, sustainable practice, final testing and evaluation.</p>
+        <div class="mantra">USE THE WORD. SHOW THE EVIDENCE. EXPLAIN THE DECISION.</div>
+        <div class="card start-card">
+          <div id="resumeBox" class="resume-box">
+            <h3>Saved session found</h3>
+            <p id="resumeText" class="small"></p>
+            <div class="row"><button id="resumeBtn" class="primary">Resume session</button><button id="discardBtn" class="ghost">Start again</button></div>
+          </div>
+          <form id="startForm">
+            <div class="grid2">
+              <div class="field"><label for="studentName">First name</label><input id="studentName" required maxlength="40" autocomplete="given-name" placeholder="e.g. Maia"></div>
+              <div class="field"><label for="className">Class</label><input id="className" maxlength="30" placeholder="e.g. 1TTEC RY"></div>
+              <div class="field"><label for="projectName">Project name</label><input id="projectName" required maxlength="60" placeholder="e.g. Controller stand"></div>
+              <div class="field"><label for="projectType">Project type</label><select id="projectType"><option>Wood</option><option>Metal</option><option>Mixed materials</option><option>Electronics</option><option>Product design</option><option>Other</option></select></div>
+            </div>
+            <p style="margin:.95rem 0 .35rem;font-weight:850">Choose a practice goal</p>
+            <div class="mode-grid" role="group" aria-label="Practice goal">
+              <button type="button" class="mode-card on" data-goal="achieved"><strong>Build the basics</strong><small>Evidence, testing and clear descriptions.</small></button>
+              <button type="button" class="mode-card" data-goal="merit"><strong>Aim for Merit</strong><small>Compare, refine and explain improvements.</small></button>
+              <button type="button" class="mode-card" data-goal="excellence"><strong>Aim for Excellence</strong><small>Analyse trade-offs and justify decisions.</small></button>
+              <button type="button" class="mode-card" data-goal="full"><strong>Full evidence check</strong><small>Work through all levels and readiness checks.</small></button>
+            </div>
+            <div class="notice"><strong>Remember:</strong> Technology words do not earn a grade by themselves. You still need photographs, drawings, models, trials, measurements, feedback and a completed outcome.</div>
+            <div class="row" style="margin-top:1rem"><button class="primary" type="submit">Start Evidence Lab →</button><button class="ghost" type="button" id="openGlossaryStart">Preview Word Power</button></div>
+          </form>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="workbench-art">
+          <div class="art-item" style="--rot:-4deg">📁<span class="art-label">Evidence</span></div>
+          <div class="art-item">📷<span class="art-label">Photos</span></div>
+          <div class="art-item" style="--rot:3deg">📏<span class="art-label">Measure</span></div>
+          <div class="art-item">🧪<span class="art-label">Trial</span></div>
+          <div class="art-item" style="--rot:2deg">💬<span class="art-label">Feedback</span></div>
+          <div class="art-item">🛠️<span class="art-label">Refine</span></div>
+          <div class="art-item" style="--rot:-3deg">✅<span class="art-label">Test</span></div>
+          <div class="art-item">⚖️<span class="art-label">Judge</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="labScreen" class="screen">
+  <header class="topbar">
+    <div class="student-chip"><div class="avatar" id="avatar">E</div><div><strong id="topStudent">Student</strong><small id="topProject">Project</small></div></div>
+    <div class="progress-wrap"><div class="progress-label"><span id="topMission">Mission 1</span><span id="topProgressText">0%</span></div><div class="progress-track"><div id="topProgress" class="progress-fill"></div></div></div>
+    <div class="top-actions"><span class="stat-pill" id="xpPill">0 XP</span><span class="stat-pill" id="streakPill">0 streak</span><button class="icon-btn" id="quickBtn" title="Quick Check" aria-label="Start Quick Check">⚡</button><button class="icon-btn" id="glossaryBtn" title="Glossary" aria-label="Open glossary">📘</button><button class="icon-btn" id="soundBtn" title="Sound" aria-label="Toggle sound">🔇</button><button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Open settings">⚙</button></div>
+  </header>
+  <div class="shell app-layout">
+    <nav id="missionNav" class="card mission-nav" aria-label="Missions"><h2>Missions</h2></nav>
+    <main class="main-stack">
+      <section id="missionHead" class="card mission-head"></section>
+      <section id="questionCard" class="card question-card">
+        <div class="q-top"><p id="qSkill" class="q-skill">Skill</p><span id="qCount" class="q-count">Question 1 of 4</span></div>
+        <h2 id="qPrompt">Loading question…</h2>
+        <div id="qScenario" class="scenario"></div>
+        <div id="answerArea" class="answer-grid"></div>
+        <div class="q-actions"><button id="checkBtn" class="primary" disabled>Check answer</button><button id="hintBtn" class="ghost">Need a hint?</button><button id="skipBtn" class="ghost">New question</button></div>
+        <div id="feedback" class="feedback" role="status"></div>
+      </section>
+      <section id="applicationCard" class="card application-card"></section>
+    </main>
+    <aside class="side-stack">
+      <section class="card side-card"><h2>Your evidence folder</h2><div class="folder"><div id="evidencePapers" class="evidence-papers"></div></div></section>
+      <section class="card side-card"><h3>Mission badges</h3><div id="badgeGrid" class="badge-grid"></div></section>
+      <section class="card side-card"><div class="side-mantra">USE THE WORD.<br>SHOW THE EVIDENCE.<br>EXPLAIN THE DECISION.</div><p class="disclaimer">This app provides automated practice feedback only. It does not award an official assessment grade. Your teacher makes assessment decisions using your real project evidence.</p><div class="row"><button id="viewResultsBtn" class="ghost">Progress summary</button><button id="resetBtn" class="danger">Reset</button></div></section>
+    </aside>
+  </div>
+</section>
+
+<section id="resultsScreen" class="screen">
+  <div class="shell results-wrap">
+    <div class="results-head no-print"><div><span class="kicker">Practice summary</span><h1>Evidence Lab results</h1><p id="resultsIntro" class="muted"></p></div><div class="row"><button id="returnLabBtn" class="ghost">← Return to lab</button><button id="printSummaryBtn" class="primary">Print certificate</button></div></div>
+    <div class="result-grid no-print">
+      <section class="card result-card"><h2>Progress</h2><div class="stat-grid"><div class="big-stat"><strong id="statMissions">0</strong><span>Missions</span></div><div class="big-stat"><strong id="statAccuracy">0%</strong><span>First-try accuracy</span></div><div class="big-stat"><strong id="statBest">0</strong><span>Best streak</span></div><div class="big-stat"><strong id="statTime">0 min</strong><span>Time</span></div></div><h3>Skill confidence</h3><div id="skillBars" class="skill-bars"></div></section>
+      <section class="card result-card"><h2>My next three priorities</h2><div id="resultPriorities" class="priorities"></div><h3>Strongest saved response</h3><p id="strongResponse" class="notice">Complete the project application activities to save a response.</p><div class="row"><button id="copyPrioritiesBtn" class="secondary">Copy priorities</button><button id="practiseMissedBtn" class="ghost">Practise missed skills</button><button id="newSessionBtn" class="danger">New session</button></div></section>
+    </div>
+    <section id="certificate" class="certificate">
+      <span class="kicker">Year 11 Materials Technology</span>
+      <h2>MATERIALS TECHNOLOGY EVIDENCE LAB</h2>
+      <p>This certifies that</p>
+      <div id="certName" class="cert-name">Student</div>
+      <p>completed evidence and explanation practice covering briefs, specifications, purposeful trials, stakeholder feedback, sustainable practices, outcome testing and evaluation for:</p>
+      <p><strong id="certProject">Project</strong></p>
+      <div id="certBadges" class="cert-badges"></div>
+      <p id="certStatement">The student practised using Technology vocabulary and supporting judgements with project evidence.</p>
+      <div class="signature"><div>Teacher signature</div><div id="certDate">Date</div></div>
+      <p class="certificate-footer">This certificate records completion of practice activities. It is not an official assessment grade.</p>
+    </section>
+  </div>
+</section>
+
+<div id="glossaryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="glossaryTitle">
+  <div class="modal-panel"><div class="modal-head"><h2 id="glossaryTitle">Materials Technology Word Power</h2><button class="icon-btn close-modal" data-close="glossaryModal" aria-label="Close glossary">✕</button></div><p class="notice"><strong>Power words do not earn a grade by themselves.</strong> Use them to explain photographs, models, trials, results, feedback and the completed outcome.</p><div id="glossaryGrid" class="glossary-grid"></div></div>
+</div>
+
+<div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="modal-panel"><div class="modal-head"><h2 id="settingsTitle">Teacher settings</h2><button class="icon-btn close-modal" data-close="settingsModal" aria-label="Close settings">✕</button></div>
+    <div class="settings-grid">
+      <div class="field"><label for="settingQuestions">Questions per mission</label><select id="settingQuestions"><option>3</option><option selected>4</option><option>5</option><option>6</option><option>8</option></select></div>
+      <div class="field"><label for="settingQuick">Quick Check length</label><select id="settingQuick"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div>
+      <div class="field"><label for="settingBand">Practice language level</label><select id="settingBand"><option value="student">Use student goal</option><option value="achieved">Achieved focus</option><option value="merit">Achieved + Merit</option><option value="full">Full A/M/E</option></select></div>
+      <div class="field"><label for="settingStartMission">Starting mission</label><select id="settingStartMission"></select></div>
+      <label class="checkline"><input id="settingWriting" type="checkbox" checked><span><strong>Show project application tasks</strong><br><span class="small muted">Students can save brief, trial, feedback and evaluation notes.</span></span></label>
+      <label class="checkline"><input id="settingUnlock" type="checkbox"><span><strong>Unlock all missions</strong><br><span class="small muted">Useful when targeting one weekly checklist area.</span></span></label>
+      <label class="checkline"><input id="settingEvidence" type="checkbox" checked><span><strong>Require evidence locations in readiness check</strong><br><span class="small muted">A box is not treated as ready without a page, photo, model or test reference.</span></span></label>
+      <label class="checkline"><input id="settingMotion" type="checkbox" checked><span><strong>Animations</strong><br><span class="small muted">Turn off for reduced motion.</span></span></label>
+      <label class="checkline"><input id="settingSound" type="checkbox"><span><strong>Sound feedback</strong><br><span class="small muted">Off by default.</span></span></label>
+      <label class="checkline"><input id="settingCertificate" type="checkbox" checked><span><strong>Completion certificate</strong><br><span class="small muted">Certificate states that it is practice, not an official grade.</span></span></label>
+    </div>
+    <div class="row" style="margin-top:1rem"><button id="saveSettingsBtn" class="primary">Save settings</button><button id="resetSettingsBtn" class="ghost">Restore defaults</button></div>
+  </div>
+</div>
+
+<div id="completeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="completeTitle">
+  <div class="modal-panel" style="width:min(560px,100%);text-align:center"><div id="completeIcon" class="complete-badge">✓</div><h2 id="completeTitle">Mission complete</h2><p id="completeText" class="muted"></p><div class="row" style="justify-content:center"><button id="completeNextBtn" class="primary">Next mission →</button><button id="completeStayBtn" class="ghost">Stay here</button></div></div>
+</div>
+
+<script>
+"use strict";
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORE_KEY="materialsTechnologyEvidenceLab_v1";
+const SETTINGS_KEY="materialsTechnologyEvidenceLab_settings_v1";
+const DEFAULT_SETTINGS={questions:4,quick:10,band:"student",startMission:1,writing:true,unlock:false,requireEvidence:true,motion:true,sound:false,certificate:true};
+let settings=loadJSON(SETTINGS_KEY,DEFAULT_SETTINGS);
+let selectedGoal="achieved";
+let locked=false,wrongTimer=null,ticker=null,audioCtx=null;
+
+const MISSIONS={
+  1:{title:"Word Power",target:"Word Power warm-up",icon:"📘",folder:"Technology vocabulary",requirement:"Use your current project evidence",teach:"Use the right Technology term, then back it up with evidence. A power word on its own is not proof.",app:"Rewrite one vague statement from your own project using a correct Technology term and evidence."},
+  2:{title:"Evidence or Claim?",target:"Weekly Target 1",icon:"🔎",folder:"Evidence check",requirement:"Drawings, progress photos, models and test pieces are useful",teach:"A claim tells us what you think. Evidence shows what happened. A supported judgement connects evidence to a decision.",app:"Record where one piece of evidence is located and explain exactly what it proves."},
+  3:{title:"Brief & Specifications",target:"Weekly Target 2",icon:"📐",folder:"Brief + specifications",requirement:"No finished prototype needed — use your current design",teach:"A final brief names the purpose, end user and place of use. Every important specification should be measurable, testable or clearly observable.",app:"Save a current brief and five testable specifications for your project."},
+  4:{title:"Purposeful Trials",target:"Weekly Target 3",icon:"🧪",folder:"Technique trials",requirement:"Small test models, samples and practice pieces are enough",teach:"A purposeful trial answers a real project question. Record the question, method, result and the decision that followed.",app:"Plan or record two purposeful trials for your project."},
+  5:{title:"Feedback & Refinement",target:"Weekly Target 4",icon:"💬",folder:"Feedback chain",requirement:"A model, test piece or partly built outcome is enough",teach:"Useful evidence shows the full chain: feedback → decision → change → result. Explain why the stakeholder is relevant.",app:"Record one complete stakeholder feedback chain."},
+  6:{title:"Sustainable Practice",target:"Weekly Target 5",icon:"♻️",folder:"Sustainable action",requirement:"Material samples, offcuts, cutting plans and test pieces are enough",teach:"Show a real action from your project. Do not only write that a material is sustainable. Consider waste, durability, repair and end of life.",app:"Record a sustainable action, its evidence and one trade-off."},
+  7:{title:"Final Outcome Testing",target:"Weekly Target 6",icon:"✅",folder:"Final test table",requirement:"Finished prototype must be completed first",final:true,teach:"Test every final specification safely. Record the method and result, then mark it met, partly met or not met. High-risk testing needs teacher approval.",app:"Create a short final-testing table using results from the real finished outcome."},
+  8:{title:"Final Evaluation",target:"Weekly Target 7",icon:"⚖️",folder:"Evaluation",requirement:"Finished prototype and real test results must be completed first",final:true,teach:"Evaluation is a supported judgement about the finished outcome. Use test results, photos and stakeholder feedback, and discuss limitations honestly.",app:"Write an overall judgement, one limitation and the most important future improvement."},
+  9:{title:"Five-Step Power Sentence",target:"Writing workshop",icon:"🧩",folder:"Power sentence",requirement:"Use real evidence from your project",teach:"Build your explanation in five parts: Evidence → Meaning → Decision → Reason → Judgement.",app:"Build and save one five-step response about your own project."},
+ 10:{title:"Final Readiness Check",target:"Final grade readiness",icon:"🎯",folder:"Readiness priorities",requirement:"Use after working through the seven weekly targets",teach:"Complete Achieved evidence first, then Merit explanations, then Excellence analysis and justification. Every tick needs a place where the evidence can be found.",app:"Check your evidence honestly and generate your next three priorities."}
+};
+
+const WORD_SWAPS=[
+  ["the user / people","the end user","the person who will use the finished product"],
+  ["someone who gave advice","a stakeholder","a person who can give useful feedback about the project"],
+  ["the situation","the authentic context","the real place, need or problem connected to the project"],
+  ["my plan","the design brief","what is being made, who it is for and what it needs to achieve"],
+  ["things it must do","functional specifications","the jobs the outcome must perform"],
+  ["size, material and shape","physical specifications","what the outcome must physically be like"],
+  ["a feature that matters","a functional attribute","a quality such as strength, stability, comfort or accuracy"],
+  ["a practice piece","a purposeful trial","a test made to answer a real design or making question"],
+  ["a way of making it","a technique","a method such as welding, joining, forming, cutting or finishing"],
+  ["it can be made","it is feasible","it can realistically be produced using available skills, time and resources"],
+  ["I changed it","I refined it","I improved or adjusted the design using evidence"],
+  ["it works","it is fit for purpose","it does the job for the end user in the intended place"]
+];
+const GRADE_WORDS={Achieved:["identify","describe","test","measure","result","evidence","met","partly met","not met","fit for purpose"],Merit:["compare","feedback","refine","improve","most appropriate","more suitable","because","therefore","informed decision"],Excellence:["analyse","evaluate","influence","consequence","trade-off","limitation","compromise","justify","overall judgement"]};
+const PROJECTS=["wall-mounted key holder","controller stand","phone stand","tool rack","storage box","workshop trolley","small shelf","folding stool","plant stand","bike maintenance stand","desk organiser","metal bracket","lamp","outdoor seat","equipment holder"];
+const MATERIALS=["9 mm plywood","12 mm plywood","pine","reclaimed timber","mild steel","aluminium","acrylic","MDF","stainless steel","recycled plastic sheet"];
+const TECHNIQUES=["screwed butt joint","housing joint","MIG weld","brazed joint","riveted joint","epoxy bond","CNC-cut slot","hand-cut slot","spray finish","brush-on finish"];
+const STAKEHOLDERS=["the intended end user","the workshop technician","a family member who will use the outcome","a teacher with relevant making experience","a random student who has not seen the project","a client who requested the product","a workshop manager","a friend who only chose their favourite colour"];
+const PAPER_ITEMS=["Technology vocabulary","Evidence check","Brief + specifications","Technique trials","Feedback chain","Sustainable action","Final test table","Evaluation","Power sentence","Readiness priorities"];
+const BADGE_ICONS=["📘","🔎","📐","🧪","💬","♻️","✅","⚖️","🧩","🎯"];
+
+function defaultState(){return{version:1,student:{name:"",className:"",project:"",projectType:"Wood",goal:"achieved"},mission:1,unlocked:1,completedMissions:[],badges:[],correctInMission:0,question:null,qAttempt:0,selected:null,xp:0,streak:0,bestStreak:0,totalAttempts:0,firstCorrect:0,skillStats:{},responses:{},readiness:{},priorities:[],elapsed:0,lastTick:Date.now(),quick:null,practiceSkill:null};}
+let state=defaultState();
+
+function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?{...fallback,...JSON.parse(raw)}:{...fallback}}catch(e){return{...fallback}}}
+function save(){try{state.lastTick=Date.now();localStorage.setItem(STORE_KEY,JSON.stringify(state))}catch(e){}}
+function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}catch(e){}}
+function getSaved(){try{const raw=localStorage.getItem(STORE_KEY);return raw?JSON.parse(raw):null}catch(e){return null}}
+function esc(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
+function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function sample(a){return a[Math.floor(rand()*a.length)]}
+function ri(a,b){return Math.floor(rand()*(b-a+1))+a}
+function rand(){if(window.crypto?.getRandomValues){const x=new Uint32Array(1);crypto.getRandomValues(x);return x[0]/4294967296}return Math.random()}
+function uniq(a){return [...new Set(a)]}
+function formatDate(){return new Intl.DateTimeFormat("en-NZ",{day:"numeric",month:"long",year:"numeric"}).format(new Date())}
+function project(){return state.student.project||sample(PROJECTS)}
+function currentBand(){if(settings.band!=="student")return settings.band;return state.student.goal==="achieved"?"achieved":state.student.goal==="merit"?"merit":"full"}
+function allowedTier(max){const b=currentBand(),limit=b==="achieved"?1:b==="merit"?2:3;return Math.min(max||3,limit)}
+function announce(t){$("#ariaLive").textContent=t}
+function showScreen(id){$$('.screen').forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo({top:0,behavior:"smooth"})}
+function openModal(id){$("#"+id).classList.add("open");const p=$("#"+id+" button, #"+id+" input, #"+id+" select");p?.focus()}
+function closeModal(id){$("#"+id).classList.remove("open")}
+function beep(good=true){if(!settings.sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=good?660:240;g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.08,audioCtx.currentTime+.015);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.16);o.start();o.stop(audioCtx.currentTime+.18)}catch(e){}}
+function confetti(n=32){if(!settings.motion)return;const colours=["#24577f","#efbd43","#2f7d4b","#6541a5","#0e766e"];for(let i=0;i<n;i++){const d=document.createElement("i");d.className="confetti";d.style.left=ri(4,96)+"vw";d.style.background=sample(colours);d.style.setProperty("--dx",ri(-140,140)+"px");d.style.animationDelay=(rand()*.45)+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),2300)}}
+function signature(q){return [q.skill,q.prompt,q.correctText,q.scenario].join("|")}
+function makeMCQ({mission,skill,tier=1,prompt,scenario="",correct,wrong,hints=[],explanation="",worked=""}){let choices=uniq([correct,...wrong]).slice(0,4);while(choices.length<4)choices.push("None of these");choices=shuffle(choices);return{mission,skill,tier,type:"mcq",prompt,scenario,choices,correct:choices.indexOf(correct),correctText:correct,hints,explanation,worked,signature:[skill,prompt,scenario,correct].join("|")}}
+function stat(skill,mission=state.mission){const x=state.skillStats[skill]||(state.skillStats[skill]={correct:0,wrong:0,attempts:0,first:0,mission});x.mission=mission;return x}
+function setFeedback(kind,html){const f=$("#feedback");f.className="feedback show "+kind;f.innerHTML=html;announce(f.textContent)}
+function clearFeedback(){const f=$("#feedback");f.className="feedback";f.innerHTML=""}
+
+function genWordPower(skill){
+  const types=skill?[skill]:["swap","definition","grade","context"];
+  const type=skill||sample(types),row=sample(WORD_SWAPS),m=1;
+  if(type==="swap")return makeMCQ({mission:m,skill:"word-swap",prompt:`What is the stronger Technology term for “${row[0]}”?`,correct:row[1],wrong:shuffle(WORD_SWAPS.filter(x=>x!==row).map(x=>x[1])).slice(0,3),hints:["Choose the term a technologist would use in a project report.",row[2]],explanation:`${row[1]} means ${row[2]}.`});
+  if(type==="definition")return makeMCQ({mission:m,skill:"word-definition",prompt:`What does “${row[1]}” mean?`,correct:row[2],wrong:shuffle(WORD_SWAPS.filter(x=>x!==row).map(x=>x[2])).slice(0,3),hints:[`Think about how “${row[1]}” is used in a Technology project.`],explanation:`${row[1]} means ${row[2]}.`});
+  if(type==="grade"){
+    const levels=Object.keys(GRADE_WORDS),level=sample(levels),word=sample(GRADE_WORDS[level]);
+    return makeMCQ({mission:m,skill:"grade-language",tier:level==="Achieved"?1:level==="Merit"?2:3,prompt:`Which broad grade-language group does “${word}” belong to?`,scenario:"This is vocabulary practice only. The word still needs evidence and reasoning.",correct:level,wrong:levels.filter(x=>x!==level).concat(["It guarantees a grade"]),hints:["Achieved identifies and tests; Merit compares and refines; Excellence analyses trade-offs and justifies."],explanation:`“${word}” is commonly used in ${level}-level explanation.`});
+  }
+  const contexts=[
+    ["Jordan made two sample welds to compare current settings.","a purposeful trial"],
+    ["Amelia adjusted the handle after a load test showed a pressure point.","I refined it"],
+    ["The finished holder does the required job for the person using it.","it is fit for purpose"],
+    ["The product can be completed with available tools, time and skills.","it is feasible"],
+    ["The person who will use the finished storage box.","the end user"]
+  ];
+  const c=sample(contexts);return makeMCQ({mission:m,skill:"term-in-context",prompt:"Which Technology term best matches this situation?",scenario:c[0],correct:c[1],wrong:shuffle(WORD_SWAPS.map(x=>x[1]).filter(x=>x!==c[1])).slice(0,3),hints:["Look for the exact role played by the person, model, decision or outcome."],explanation:`The best term is “${c[1]}”.`});
+}
+
+function genEvidence(skill){
+  const m=2,type=skill||sample(["strength","missing","classify","proof"]),p=project();
+  if(type==="strength"){
+    const load=ri(6,18),bend=ri(1,6),time=sample(["one minute","five minutes","ten minutes"]);
+    const correct=`The ${p} supported ${load} kg for ${time} and bent ${bend} mm, so it met the load specification.`;
+    return makeMCQ({mission:m,skill:"evidence-strength",prompt:"Which statement contains the strongest project evidence?",correct,wrong:["It was very strong.","I tested it and it seemed good.",`The ${p} should hold enough weight.`],hints:["Look for a test condition, a measured result and a judgement."],explanation:"Strong evidence states what was tested, what happened and what the result means."});
+  }
+  if(type==="missing"){
+    const statements=[
+      ["The end user said the handle was better.","the exact comment or a recorded follow-up result"],
+      ["The shelf was strong.","a measured load and amount of bending"],
+      ["I used less material.","a cutting plan or measured waste comparison"],
+      ["The new joint was more suitable.","results from comparing the two joint trials"]
+    ],s=sample(statements);
+    return makeMCQ({mission:m,skill:"missing-evidence",prompt:"What important evidence is missing?",scenario:`Student statement: “${s[0]}”`,correct:s[1],wrong:["a more complicated adjective","an Excellence word","a longer title"],hints:["Ask: what could the student show, measure or quote?"],explanation:`The statement needs ${s[1]}.`});
+  }
+  if(type==="classify"){
+    const cases=[
+      ["It was good.","A vague claim"],
+      ["The hook held 8 kg.","Some evidence"],
+      ["The hook held 8 kg for five minutes with no permanent movement.","Strong project evidence"],
+      ["The hook held 8 kg with no movement, so it met the end user’s load requirement and was retained.","A supported judgement"]
+    ],c=sample(cases);
+    return makeMCQ({mission:m,skill:"claim-or-evidence",prompt:"How should this statement be classified?",scenario:`“${c[0]}”`,correct:c[1],wrong:cases.map(x=>x[1]).filter(x=>x!==c[1]).slice(0,3),hints:["A claim has no proof. Strong evidence adds conditions and results. A supported judgement explains what the evidence means."],explanation:`This is ${c[1].toLowerCase()}.`});
+  }
+  const proofs=[
+    ["a change in handle shape","before-and-after drawings plus the feedback that caused the change"],
+    ["reduced cutting waste","the first and revised cutting plans with waste percentages"],
+    ["a finish is durable","a labelled finish sample and a repeatable wear or moisture test"],
+    ["the outcome fits the intended space","a measured photograph or dimension check in the real location"]
+  ],x=sample(proofs);
+  return makeMCQ({mission:m,skill:"best-proof",prompt:`What is the best evidence for ${x[0]}?`,correct:x[1],wrong:["a decorative title page","a general internet fact","a statement that it looks good"],hints:["Choose evidence that another person could inspect or repeat."],explanation:`The strongest proof is ${x[1]}.`});
+}
+
+function genBrief(skill){
+  const m=3,type=skill||sample(["brief","measurable","category","result","tradeoff"]),p=project();
+  if(type==="brief")return makeMCQ({mission:m,skill:"brief-parts",prompt:"Which final brief is the most complete?",correct:`Design and make a ${p} for a named end user to solve a stated need in the intended place of use.`,wrong:[`Make a cool ${p}.`,`Make something from available material.`,`Research several products and choose one.`],hints:["A final brief needs the outcome, end user, need and place of use."],explanation:"A complete brief explains what is being made, who it is for, the need and the context."});
+  if(type==="measurable"){
+    const load=ri(8,20),bend=ri(2,5),correct=`The ${p} must support ${load} kg for five minutes with no more than ${bend} mm of movement.`;
+    return makeMCQ({mission:m,skill:"measurable-specification",prompt:"Which specification is most measurable and testable?",correct,wrong:["It must be strong.","It should hold plenty of things.","It needs to be a good size."],hints:["Look for a quantity, test condition and pass requirement."],explanation:"A measurable specification tells the student exactly how to test whether it has been met."});
+  }
+  if(type==="category"){
+    const cases=[
+      ["The holder must keep two controllers secure without them touching the floor.","Functional specification"],
+      ["The base must be 260 mm wide and made from 12 mm plywood.","Physical specification"],
+      ["The drawer must open fully using less than 20 N of force.","Functional specification"],
+      ["All exposed corners must have a radius of at least 4 mm.","Physical specification"]
+    ],c=sample(cases);
+    return makeMCQ({mission:m,skill:"functional-or-physical",prompt:"What type of specification is this?",scenario:c[0],correct:c[1],wrong:[c[1].startsWith("Functional")?"Physical specification":"Functional specification","A stakeholder comment","A design brief"],hints:["Functional = the job it performs. Physical = what it is physically like."],explanation:`This is a ${c[1].toLowerCase()}.`});
+  }
+  if(type==="result"){
+    const limit=ri(2,6),actual=limit+sample([-1,0,ri(2,4)]),judge=actual<=limit?"Met":"Not met";
+    return makeMCQ({mission:m,skill:"test-judgement",prompt:"How should the specification be judged?",scenario:`Specification: movement must be no more than ${limit} mm. Test result: ${actual} mm of movement.`,correct:judge,wrong:[judge==="Met"?"Not met":"Met","Partly met without explanation","Cannot be judged even though a result is recorded"],hints:[`Compare the measured result (${actual} mm) directly with the maximum allowed (${limit} mm).`],explanation:`${actual} mm is ${actual<=limit?"within":"above"} the limit, so the requirement is ${judge.toLowerCase()}.`});
+  }
+  const trade=[
+    ["Increasing sheet thickness improves strength but also…","increases weight, cost and material use"],
+    ["Making a handle wider improves comfort but may…","reduce the internal storage space"],
+    ["Adding a durable coating can extend service life but may…","increase cost, time and difficulty of repair"],
+    ["Using bolts instead of permanent welding can improve repair but may…","add visible fixings and require maintenance"]
+  ],t=sample(trade);
+  return makeMCQ({mission:m,skill:"specification-tradeoff",tier:3,prompt:t[0],correct:t[1],wrong:["remove every limitation","make testing unnecessary","guarantee an Excellence grade"],hints:["A trade-off means improving one requirement creates a cost or limitation somewhere else."],explanation:`The realistic trade-off is that it ${t[1]}.`});
+}
+
+function genTrials(skill){
+  const m=4,type=skill||sample(["purpose","question","compare","sequence","feasible"]),p=project();
+  if(type==="purpose")return makeMCQ({mission:m,skill:"purposeful-trial",prompt:"Which is the most purposeful technique trial?",correct:`Compare two suitable joints for the ${p}, load each one in the same way and record movement or failure.`,wrong:["Practise until the joint looks good.","Make one random offcut sample with no question.","Watch a video and state which joint looks easiest."],hints:["A purposeful trial begins with a real project question and produces comparable evidence."],explanation:"A purposeful trial compares suitable options under controlled conditions and records the result."});
+  if(type==="question"){
+    const qs=[
+      ["Two finish samples are left in a damp area for 24 hours.","Which finish best resists moisture for the intended environment?"],
+      ["Two slot widths are CNC cut and fitted to the same material.","Which slot size gives the best secure fit without splitting?"],
+      ["Two weld settings are used on equal steel samples.","Which setting produces the most consistent joint with least distortion?"],
+      ["Two handle shapes are tested with the same load.","Which handle is most comfortable and controllable for the end user?"]
+    ],q=sample(qs);
+    return makeMCQ({mission:m,skill:"trial-question",prompt:"What real project question does this trial answer?",scenario:q[0],correct:q[1],wrong:["Which sample looks most colourful?","Can I avoid recording results?","Which option takes the fewest words to explain?"],hints:["Connect the method to a measurable or observable design decision."],explanation:q[1]});
+  }
+  if(type==="compare"){
+    const a=ri(6,10),b=ri(1,4),thickA=sample([9,10]),thickB=thickA+3;
+    return makeMCQ({mission:m,skill:"compare-trial-results",tier:2,prompt:"Which conclusion is best supported by the trial?",scenario:`Under the same ${ri(7,12)} kg load, ${thickA} mm plywood bent ${a} mm and ${thickB} mm plywood bent ${b} mm.`,correct:`The ${thickB} mm plywood resisted bending better, but weight, cost and available space should also be considered.`,wrong:[`Both materials performed exactly the same.`,`The ${thickA} mm plywood is automatically best because it is thinner.`,`The trial proves the entire final outcome is fit for purpose.`],hints:["Compare the recorded bending, then avoid claiming the trial proves more than it actually tested."],explanation:"The lower bending supports the thicker option, while a complete decision still considers other requirements."});
+  }
+  if(type==="sequence")return makeMCQ({mission:m,skill:"trial-sequence",prompt:"Which sequence records a purposeful trial most clearly?",correct:"Question → method → result → decision",wrong:["Decision → opinion → decoration → title","Result → question → guess → delete","Method → final grade → result → no decision"],hints:["Start with what you need to find out and finish with what the result made you choose."],explanation:"A clear trial record follows question, method, result and decision."});
+  const opts=[
+    [`Technique A needs specialist equipment not available at school. Technique B can be completed safely with available tools and met the trial requirement.`,`Technique B is the most feasible option.`],
+    [`Technique A is fastest but repeatedly failed the load test. Technique B takes longer but passed and can be completed within the deadline.`,`Technique B is more feasible because it meets the requirement within available time.`],
+    [`Technique A looks impressive but the student has not been trained to use the required machine. Technique B is safe, available and produced an accurate sample.`,`Technique B is the feasible choice.`]
+  ],o=sample(opts);
+  return makeMCQ({mission:m,skill:"feasible-technique",tier:3,prompt:"Which judgement is best supported?",scenario:o[0],correct:o[1],wrong:["Technique A is best because it sounds advanced.","Either option is feasible even if it cannot be made safely.","No trial evidence is needed for feasibility."],hints:["Feasible means realistically possible with available skills, time, tools and resources."],explanation:o[1]});
+}
+
+function genFeedback(skill){
+  const m=5,type=skill||sample(["relevance","chain","result","tradeoff","influence"]),p=project();
+  if(type==="relevance"){
+    const relevant=sample(STAKEHOLDERS.slice(0,4).concat(STAKEHOLDERS.slice(5,7)));
+    return makeMCQ({mission:m,skill:"relevant-stakeholder",prompt:`Who is the most relevant stakeholder for feedback about how the ${p} works in use?`,correct:relevant,wrong:shuffle(STAKEHOLDERS.filter(x=>x!==relevant)).slice(0,3),hints:["Choose someone who will use the outcome or has relevant knowledge of its function, safety or manufacture."],explanation:`${relevant} can provide feedback connected to the project’s use or development.`});
+  }
+  if(type==="chain")return makeMCQ({mission:m,skill:"feedback-chain",prompt:"Which sequence shows useful refinement evidence?",correct:"Feedback → decision → change → result",wrong:["Change → guess → feedback → title","Result → final grade → feedback → no change","Opinion → decoration → photograph → finish"],hints:["Start with what the stakeholder said and finish with evidence about the revised version."],explanation:"Useful refinement evidence shows feedback, the decision, the change and what happened after testing it."});
+  if(type==="result"){
+    const old=ri(15,21),nw=ri(26,34),load=ri(5,9);
+    return makeMCQ({mission:m,skill:"refinement-result",tier:2,prompt:"Which evidence best shows the refinement improved fitness for purpose?",scenario:`The end user said the ${old} mm handle created a pressure point. The student increased it to ${nw} mm and rounded the edges.`,correct:`The end user carried a ${load} kg load using the revised handle and reported no pressure point.`,wrong:["The new handle was photographed before testing.","The student preferred the new shape.","The handle used more material."],hints:["Choose a result that checks the original problem under realistic use."],explanation:"The follow-up loaded-use result directly checks whether the feedback-led change worked."});
+  }
+  if(type==="tradeoff")return makeMCQ({mission:m,skill:"feedback-tradeoff",tier:3,prompt:"Which response analyses both a benefit and a limitation?",correct:"Widening the handle improved comfort and control, but reduced internal storage width by 10 mm. The change was retained because safe handling mattered more to the end user.",wrong:["The handle was better after feedback.","The stakeholder liked it, so it was perfect.","I made the handle wider and there were no disadvantages."],hints:["Look for what improved, what became harder or was lost, and why the decision was still justified."],explanation:"The strongest response explains the benefit, limitation and priority."});
+  const comments=[
+    ["The intended end user reported that the product tipped during normal loading, and the revised base passed a repeat stability test.","This feedback had major influence because it changed a safety-critical feature and was supported by testing."],
+    ["A friend preferred blue rather than green, but the end user prioritised a secure grip and the grip test improved after refinement.","The grip feedback had greater influence because it affected function and was supported by evidence."],
+    ["The technician identified a joint that could not be assembled with available access, so the joint was redesigned and successfully trialled.","The technician’s feedback had major influence because it made the outcome feasible to manufacture."]
+  ],c=sample(comments);
+  return makeMCQ({mission:m,skill:"feedback-influence",tier:3,prompt:"Which judgement best explains the greatest influence?",scenario:c[0],correct:c[1],wrong:["All feedback has equal influence.","Colour feedback always matters most.","The most recent comment must be the most important."],hints:["Greater influence usually changes an important requirement, direction, safety issue or feasible method."],explanation:c[1]});
+}
+
+function genSustainability(skill){
+  const m=6,type=skill||sample(["action","proof","refine","tradeoff","claim"]);
+  if(type==="action")return makeMCQ({mission:m,skill:"real-sustainable-action",prompt:"Which statement shows a real sustainable practice in a project?",correct:"I revised the cutting plan so the parts used 12% less sheet material, and I used the remaining offcuts for trial pieces.",wrong:["Wood is sustainable.","Steel can be recycled.","My product is eco-friendly because I wrote about the environment."],hints:["Choose an action the student actually completed and can prove."],explanation:"A real sustainable practice is applied in the project and supported by evidence."});
+  if(type==="proof"){
+    const cases=[
+      ["reduced material waste","the first and revised cutting plans with measured waste"],
+      ["designed for repair","a drawing or photo showing removable fixings and replaceable parts"],
+      ["used offcuts responsibly","labelled photographs of offcuts used in trial pieces"],
+      ["improved durability","finish samples and a relevant durability test"]
+    ],c=sample(cases);
+    return makeMCQ({mission:m,skill:"sustainability-evidence",prompt:`What is the best evidence that the student ${c[0]}?`,correct:c[1],wrong:["a general website about recycling","a green-coloured title","a claim with no project photograph"],hints:["The evidence should come from the student’s own project."],explanation:c[1]});
+  }
+  if(type==="refine")return makeMCQ({mission:m,skill:"sustainable-refinement",tier:2,prompt:"Which example shows a sustainable practice being refined?",correct:"The first cutting plan left 28% waste. The revised layout left 12% waste while keeping every required part size.",wrong:["The student wrote that the material is recyclable.","The student used the first layout without checking waste.","The student changed the project colour."],hints:["Refinement shows a first approach, an evidence-based change and an improved result."],explanation:"The revised cutting plan measurably improves resource use."});
+  if(type==="tradeoff")return makeMCQ({mission:m,skill:"sustainability-tradeoff",tier:3,prompt:"Which is the strongest supported sustainability judgement?",correct:"Bolted joints used slightly more material and cost more than permanent welds, but they allow damaged parts to be replaced. For this frequently used outcome, the repair benefit is the more responsible long-term option.",wrong:["Bolts are always sustainable.","The cheapest option is automatically the most responsible.","The strongest material is always best, regardless of waste or repair."],hints:["A strong judgement compares consequences such as cost, durability, waste and repair."],explanation:"The response recognises a cost trade-off and justifies the long-term repair benefit."});
+  const claims=[
+    ["Steel is recyclable.","A general fact, not yet project evidence"],
+    ["I designed the steel parts so they can be unbolted, repaired and separated at end of life.","A real project sustainable practice"],
+    ["My product is perfect for the environment.","An unsupported claim"],
+    ["The revised cutting plan reduced measured waste from 24% to 11%.","Strong project evidence"]
+  ],c=sample(claims);
+  return makeMCQ({mission:m,skill:"sustainability-claim",prompt:"How should this statement be classified?",scenario:`“${c[0]}”`,correct:c[1],wrong:claims.map(x=>x[1]).filter(x=>x!==c[1]).slice(0,3),hints:["Ask whether it describes something actually done and proven in the project."],explanation:c[1]});
+}
+
+function genTesting(skill){
+  const m=7,type=skill||sample(["gate","match","judge","safety","context"]),p=project();
+  if(type==="gate")return makeMCQ({mission:m,skill:"finished-prototype-gate",prompt:"What is required before completing final outcome testing?",correct:"The real finished prototype, clear photographs and results for every final specification",wrong:["Only an AI image of the intended outcome","Only a scale model and planned tests","A drawing with no finished outcome"],hints:["Final outcome testing is about the real finished prototype."],explanation:"A drawing, AI image or scale model cannot replace final testing of the finished outcome."});
+  if(type==="match"){
+    const load=ri(70,100),cases=[
+      [`The stool must safely support ${load} kg.`,`Complete a teacher-approved progressive load test and record movement, instability or damage.`],
+      ["The drawer must open fully using less than 20 N of force.","Use a suitable force gauge or controlled method and record the opening force."],
+      ["The product must fit a 450 mm-wide space.","Measure the finished maximum width and photograph it in the intended space."],
+      ["The handle must remain comfortable while carrying 7 kg.","Ask the end user to complete a controlled loaded-use check and record specific feedback."]
+    ],c=sample(cases);
+    return makeMCQ({mission:m,skill:"match-test-method",prompt:"Which test method best matches the specification?",scenario:c[0],correct:c[1],wrong:["Ask whether it looks strong.","Photograph it without testing.","Use a different measurement unrelated to the requirement."],hints:["The method must directly test the quantity or behaviour in the specification."],explanation:c[1]});
+  }
+  if(type==="judge"){
+    const mode=sample(["max","min"]),limit=mode==="max"?ri(3,8):ri(8,15),actual=mode==="max"?limit+sample([-2,0,2,4]):limit+sample([-3,0,2,5]);
+    const met=mode==="max"?actual<=limit:actual>=limit,word=met?"Met":"Not met";
+    return makeMCQ({mission:m,skill:"final-test-judgement",prompt:"What judgement is supported by the result?",scenario:`Specification: ${mode==="max"?"movement must be no more than":"capacity must be at least"} ${limit} ${mode==="max"?"mm":"kg"}. Result: ${actual} ${mode==="max"?"mm":"kg"}.`,correct:word,wrong:[word==="Met"?"Not met":"Met","Partly met with no reason","No result is available"],hints:["Compare the result directly with the pass condition."],explanation:`The result ${met?"meets":"does not meet"} the stated limit.`});
+  }
+  if(type==="safety")return makeMCQ({mission:m,skill:"safe-testing",prompt:"What should happen before a high-risk load, electrical or structural test?",correct:"The teacher approves a safe method, equipment, limits and supervision.",wrong:["The student tests it alone as quickly as possible.","The largest possible load is added without a plan.","The test is skipped but marked as met."],hints:["High-risk outcomes need teacher-approved testing."],explanation:"Safe testing requires an approved method, controlled limits and appropriate supervision."});
+  const contexts=[
+    [`A wall-mounted ${p}`,"Install or realistically mount it in the intended type of wall and test the expected use."],
+    ["An outdoor seat","Test it in realistic outdoor conditions and check stability, comfort and finish behaviour."],
+    ["A tool holder","Load it with the real tools and use it in the intended workshop position."],
+    ["A portable storage box","Carry the expected load over a realistic distance and check handle, fasteners and stability."]
+  ],c=sample(contexts);
+  return makeMCQ({mission:m,skill:"testing-in-context",tier:3,prompt:"Which test best checks the outcome in its real or realistically modelled environment?",scenario:c[0],correct:c[1],wrong:["Look at it on an empty bench.","Test an unrelated material offcut only.","Use a planned result without completing the test."],hints:["The conditions should represent where and how the end user will actually use it."],explanation:c[1]});
+}
+
+function genEvaluation(skill){
+  const m=8,type=skill||sample(["level","strongest","tradeoff","future","fitness"]),p=project();
+  if(type==="level"){
+    const cases=[
+      ["The outcome measured 450 mm × 300 mm, so it met the size specification.","Achieved-style evidence and judgement"],
+      ["The end user’s feedback led me to widen the handle, and the revised version was rated more comfortable during the loaded-use check.","Merit-style explanation of refinement"],
+      ["Widening the handle improved comfort but reduced storage width by 10 mm. The refinement was justified because safe handling was the higher priority.","Excellence-style analysis and justification"]
+    ],c=sample(cases);
+    return makeMCQ({mission:m,skill:"evaluation-level",prompt:"What type of thinking is shown most clearly?",scenario:c[0],correct:c[1],wrong:cases.map(x=>x[1]).filter(x=>x!==c[1]).concat(["A guaranteed official grade"]).slice(0,3),hints:["Achieved uses evidence; Merit explains improvement; Excellence analyses trade-offs and justifies priorities."],explanation:c[1]});
+  }
+  if(type==="strongest")return makeMCQ({mission:m,skill:"supported-evaluation",prompt:"Which is the strongest evaluation statement?",correct:`The ${p} met four of five specifications. It passed the load and size tests and the end user found it easy to use, but the finish scratched during testing. Overall it is fit for purpose, with finish durability as the priority improvement.`,wrong:[`The ${p} was good and everyone liked it.`,`The ${p} is perfect because I finished it.`,`I used Excellence words, so the outcome is fit for purpose.`],hints:["Look for test results, feedback, an honest limitation and an overall judgement."],explanation:"A strong evaluation uses several kinds of evidence and identifies the most important remaining limitation."});
+  if(type==="tradeoff")return makeMCQ({mission:m,skill:"evaluation-tradeoff",tier:3,prompt:"Which sentence analyses a trade-off rather than only describing a change?",correct:"The thicker base improved stability, but increased weight by 0.8 kg; this was accepted because the product remains portable and stability was the end user’s highest priority.",wrong:["I made the base thicker.","The base looks better now.","There were no limitations."],hints:["A trade-off explains both the gain and the cost, then judges the priority."],explanation:"The response links a benefit, a measurable cost and a justified priority."});
+  if(type==="future"){
+    const cases=[
+      ["The only failed specification was finish durability after repeated wet use.","Improve and re-test the finish system because it is the main evidence-based limitation."],
+      ["The handle passed every load test but the drawer required 28 N rather than the 20 N maximum.","Refine the drawer alignment or runners because the force result did not meet the specification."],
+      ["The product fit the space and was stable, but the end user could not reach one control comfortably.","Prioritise ergonomic access because it directly limits use by the end user."]
+    ],c=sample(cases);
+    return makeMCQ({mission:m,skill:"future-improvement",tier:3,prompt:"Which future improvement should be prioritised?",scenario:c[0],correct:c[1],wrong:["Change the colour even though no evidence identifies it as a problem.","Start a completely unrelated project.","State that nothing could be improved."],hints:["Prioritise the limitation that most affects fitness for purpose and is supported by evidence."],explanation:c[1]});
+  }
+  return makeMCQ({mission:m,skill:"fitness-for-purpose",prompt:"What does a supported fitness-for-purpose judgement require?",correct:"A conclusion about how well the finished outcome meets the end user’s need in context, supported by specifications, tests, photographs and feedback.",wrong:["Only the phrase ‘fit for purpose’.","Only a photograph of the outcome.","Only the student’s personal opinion."],hints:["The judgement must connect the finished outcome to its requirements, end user and intended place."],explanation:"Fitness for purpose is a supported overall judgement, not a standalone phrase."});
+}
+
+function genPower(skill){
+  const m=9,type=skill||sample(["order","missing","strong","rewrite","chain"]),p=project();
+  if(type==="order")return makeMCQ({mission:m,skill:"power-sentence-order",prompt:"What is the correct five-step order?",correct:"Evidence → Meaning → Decision → Reason → Judgement",wrong:["Decision → Evidence → Title → Opinion → Grade","Meaning → Judgement → Evidence → No reason → Finish","Evidence → Decoration → Opinion → Decision → Claim"],hints:["Begin with what happened and finish with whether the decision improved the outcome."],explanation:"The five-step structure is Evidence, Meaning, Decision, Reason and Judgement."});
+  if(type==="missing"){
+    const parts=["Evidence","Meaning","Decision","Reason","Judgement"],missing=sample(parts),shown=parts.filter(x=>x!==missing).join(" → ");
+    return makeMCQ({mission:m,skill:"missing-power-step",prompt:"Which step is missing from this response structure?",scenario:shown,correct:missing,wrong:parts.filter(x=>x!==missing).slice(0,3),hints:["The full sequence explains what happened, what it showed, what was chosen, why and whether it improved the outcome."],explanation:`The missing step is ${missing}.`});
+  }
+  if(type==="strong")return makeMCQ({mission:m,skill:"strong-power-sentence",tier:2,prompt:"Which response best follows the five-step structure?",correct:"The 9 mm shelf bent 8 mm under the test load. This showed it could sag in use. I selected 12 mm plywood because it bent only 2 mm. This better supported the end user’s books and improved fitness for purpose.",wrong:["The shelf was good so I used it.","I selected plywood because I liked it.","The outcome is fit for purpose because I used the correct words."],hints:["Look for a result, meaning, decision, reason and judgement."],explanation:"The strongest response moves from measured evidence to a justified outcome decision."});
+  if(type==="rewrite"){
+    const swaps=[
+      ["It was strong.","It supported ___ kg with ___ mm of movement or bending."],
+      ["I tested it.","I completed a purposeful trial to compare…"],
+      ["They liked it.","The end user said ___, which showed that…"],
+      ["This one was better.","This option was more suitable because…"],
+      ["It is perfect.","It is fit for purpose, although the limitation is…"]
+    ],s=sample(swaps);
+    return makeMCQ({mission:m,skill:"rewrite-vague-language",prompt:`Choose the strongest replacement for “${s[0]}”`,correct:s[1],wrong:["It was really, really good.","I used a harder word instead.","My friend agreed with me."],hints:["The improved wording should invite specific evidence and reasoning."],explanation:s[1]});
+  }
+  return makeMCQ({mission:m,skill:"evidence-reasoning-chain",tier:3,prompt:`Which response makes a supported overall judgement about the ${p}?`,correct:"The load and stability tests met the specifications, and the end user could use the revised handle comfortably. Although the finish showed minor scratching, the outcome is fit for purpose because its main safety and use requirements were met. Finish durability is the priority improvement.",wrong:["It is fit for purpose because it looks good.","It is perfect and has no limitations.","The tests were completed, therefore every specification must have been met."],hints:["A supported judgement combines results, feedback, a limitation and a priority."],explanation:"The response uses evidence, recognises a limitation and justifies the overall judgement."});
+}
+
+function genReadiness(skill){
+  const m=10,type=skill||sample(["order","proof","gate","priority","grade"]);
+  if(type==="order")return makeMCQ({mission:m,skill:"readiness-order",prompt:"What is the safest progression through the checklist?",correct:"Complete Achieved evidence first, then Merit explanations, then Excellence analysis and justification.",wrong:["Start with Excellence words and add evidence later.","Skip final testing and write an overall judgement.","Tick every box before locating the evidence."],hints:["Higher-level explanation depends on secure evidence underneath it."],explanation:"Achieved evidence supports Merit explanations, which support Excellence analysis and justification."});
+  if(type==="proof")return makeMCQ({mission:m,skill:"readiness-proof",prompt:"When should a readiness box be ticked?",correct:"When the student can show the page, photograph, model, test, result or finished outcome that proves it.",wrong:["When the wording sounds impressive.","When the student plans to do it later.","When a friend says it is probably complete."],hints:["The checklist repeatedly asks: Can I prove it?"],explanation:"A readiness tick should point to visible project evidence."});
+  if(type==="gate")return makeMCQ({mission:m,skill:"readiness-gate",prompt:"Which target cannot be completed using only a drawing, AI image or scale model?",correct:"Final outcome testing and final evaluation",wrong:["Early idea generation only","A preliminary technique trial only","Writing the current design brief only"],hints:["The final targets require the real finished prototype and real results."],explanation:"Final testing and evaluation require the finished prototype."});
+  if(type==="priority")return makeMCQ({mission:m,skill:"next-priority",prompt:"Which is the best next priority when a student has five specifications but no final result for two of them?",correct:"Safely complete and record the two missing tests before writing the overall evaluation.",wrong:["Add more Excellence words to the evaluation.","Tick the tests as met without evidence.","Change the project title."],hints:["Fill the missing Achieved evidence before attempting a final judgement."],explanation:"Missing final results are the immediate evidence gap."});
+  return makeMCQ({mission:m,skill:"practice-not-grade",prompt:"What does this app’s certificate show?",correct:"Completion of practice activities, not an official assessment grade.",wrong:["A guaranteed NZQA Excellence grade.","A replacement for the student’s real portfolio evidence.","Teacher approval of every readiness box."],hints:["Automated feedback supports learning; the teacher assesses real evidence."],explanation:"The certificate records practice completion only."});
+}
+
+const GENERATORS={1:genWordPower,2:genEvidence,3:genBrief,4:genTrials,5:genFeedback,6:genSustainability,7:genTesting,8:genEvaluation,9:genPower,10:genReadiness};
+const MISSION_SKILLS={
+  1:["swap","definition","grade","context"],2:["strength","missing","classify","proof"],3:["brief","measurable","category","result","tradeoff"],4:["purpose","question","compare","sequence","feasible"],5:["relevance","chain","result","tradeoff","influence"],6:["action","proof","refine","tradeoff","claim"],7:["gate","match","judge","safety","context"],8:["level","strongest","tradeoff","future","fitness"],9:["order","missing","strong","rewrite","chain"],10:["order","proof","gate","priority","grade"]
+};
+const QUICK_MAP=[
+  [1,"swap","Vocabulary"],[2,"strength","Evidence quality"],[3,"measurable","Specifications"],[4,"purpose","Purposeful trials"],[5,"chain","Feedback"],[6,"action","Sustainability"],[7,"match","Testing"],[8,"strongest","Evaluation"],[8,"tradeoff","Trade-offs"],[9,"strong","Power sentences"]
+];
+
+function generateQuestion(mission=state.mission,skill=null,avoid=""){
+  let q,tries=0;do{q=GENERATORS[mission](skill);tries++}while(q.signature===avoid&&tries<12);
+  if(q.tier>allowedTier(q.tier))return generateQuestion(mission,chooseBasicSkill(mission),avoid);
+  return q;
+}
+function chooseBasicSkill(m){const basic={1:["swap","definition","context"],2:["strength","missing","classify","proof"],3:["brief","measurable","category","result"],4:["purpose","question","sequence"],5:["relevance","chain","result"],6:["action","proof","claim"],7:["gate","match","judge","safety"],8:["level","strongest","fitness"],9:["order","missing","rewrite"],10:["order","proof","gate","priority","grade"]};return sample(basic[m])}
+function generateReplacement(old){const key=mapSkillToGeneratorKey(old.mission,old.skill);let fallback=null;for(let i=0;i<16;i++){const q=generateQuestion(old.mission,key,old.signature);fallback=q;if(q.correctText!==old.correctText)return q}return fallback||generateQuestion(old.mission,key,old.signature)}
+
+function init(){
+  populateMissionSettings();applySettingsToUI();renderGlossary();renderStartResume();bindEvents();document.body.classList.toggle("reduce-motion",!settings.motion);updateSoundIcons();
+}
+function renderStartResume(){const saved=getSaved(),box=$("#resumeBox");if(saved?.student?.name&&saved?.student?.project){box.classList.add("show");$("#resumeText").textContent=`${saved.student.name} — ${saved.student.project}. Mission ${saved.mission}: ${MISSIONS[saved.mission]?.title||"Evidence Lab"}.`}else box.classList.remove("show")}
+function bindEvents(){
+  $("#startForm").addEventListener("submit",e=>{e.preventDefault();startNew()});
+  $$(".mode-card").forEach(b=>b.addEventListener("click",()=>{$$(".mode-card").forEach(x=>x.classList.remove("on"));b.classList.add("on");selectedGoal=b.dataset.goal}));
+  $("#resumeBtn").addEventListener("click",resumeSession);$("#discardBtn").addEventListener("click",resetState);
+  $("#openGlossaryStart").addEventListener("click",()=>openModal("glossaryModal"));$("#glossaryBtn").addEventListener("click",()=>openModal("glossaryModal"));
+  $("#startSettings").addEventListener("click",()=>openModal("settingsModal"));$("#settingsBtn").addEventListener("click",()=>openModal("settingsModal"));
+  $("#startSound").addEventListener("click",toggleSound);$("#soundBtn").addEventListener("click",toggleSound);
+  $$(".close-modal").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));$$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
+  $("#checkBtn").addEventListener("click",checkAnswer);$("#hintBtn").addEventListener("click",showHint);$("#skipBtn").addEventListener("click",newSameQuestion);
+  $("#quickBtn").addEventListener("click",startQuickCheck);$("#viewResultsBtn").addEventListener("click",showResults);$("#returnLabBtn").addEventListener("click",()=>{showScreen("labScreen");startTicker()});
+  $("#printSummaryBtn").addEventListener("click",()=>window.print());$("#copyPrioritiesBtn").addEventListener("click",copyPriorities);$("#practiseMissedBtn").addEventListener("click",practiseMissed);$("#newSessionBtn").addEventListener("click",resetState);$("#resetBtn").addEventListener("click",resetState);
+  $("#saveSettingsBtn").addEventListener("click",saveSettingsFromUI);$("#resetSettingsBtn").addEventListener("click",restoreSettings);
+  $("#completeStayBtn").addEventListener("click",()=>closeModal("completeModal"));$("#completeNextBtn").addEventListener("click",completeNext);
+  $("#applicationCard").addEventListener("input",saveApplicationInputs);$("#applicationCard").addEventListener("change",saveApplicationInputs);$("#applicationCard").addEventListener("click",applicationClick);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")$$('.modal.open').forEach(m=>closeModal(m.id));if(!$("#labScreen").classList.contains("active")||locked)return;const n=Number(e.key);if(n>=1&&n<=4){const b=$$("#answerArea .choice")[n-1];b?.click()}if(e.key==="Enter"&&!$("#checkBtn").disabled){e.preventDefault();$("#checkBtn").click()}});
+}
+function startNew(){
+  state=defaultState();state.student={name:$("#studentName").value.trim(),className:$("#className").value.trim(),project:$("#projectName").value.trim(),projectType:$("#projectType").value,goal:selectedGoal};state.mission=Number(settings.startMission)||1;state.unlocked=settings.unlock?10:state.mission;state.lastTick=Date.now();state.question=generateQuestion(state.mission);save();enterLab();
+}
+function resumeSession(){const s=getSaved();if(!s)return;state={...defaultState(),...s,student:{...defaultState().student,...s.student},responses:s.responses||{},readiness:s.readiness||{},skillStats:s.skillStats||{}};state.lastTick=Date.now();if(!state.question)state.question=generateQuestion(state.mission);enterLab()}
+function enterLab(){showScreen("labScreen");renderAll();startTicker()}
+function resetState(){if(!confirm("Clear this student session and start again?"))return;try{localStorage.removeItem(STORE_KEY)}catch(e){}state=defaultState();stopTicker();showScreen("startScreen");renderStartResume();$("#startForm").reset();$$(".mode-card").forEach((x,i)=>x.classList.toggle("on",i===0));selectedGoal="achieved"}
+function startTicker(){stopTicker();state.lastTick=Date.now();ticker=setInterval(()=>{const now=Date.now();state.elapsed+=Math.max(0,Math.round((now-state.lastTick)/1000));state.lastTick=now;if(state.elapsed%20<2)save()},1000)}
+function stopTicker(){if(ticker)clearInterval(ticker);ticker=null}
+function renderAll(){updateTop();renderMissionNav();renderMissionHead();renderQuestion();renderBadges();renderFolder();renderApplication()}
+function updateTop(){const total=10,complete=state.completedMissions.length,pct=Math.round((complete/total)*100);$("#topStudent").textContent=state.student.name;$("#topProject").textContent=`${state.student.project} · ${state.student.className||"Year 11"}`;$("#avatar").textContent=(state.student.name[0]||"E").toUpperCase();$("#topMission").textContent=state.quick?`Quick Check · ${state.quick.correct}/${state.quick.target}`:`Mission ${state.mission}: ${MISSIONS[state.mission].title}`;$("#topProgressText").textContent=pct+"%";$("#topProgress").style.width=pct+"%";$("#xpPill").textContent=state.xp+" XP";$("#streakPill").textContent=state.streak+" streak"}
+function renderMissionNav(){const nav=$("#missionNav");nav.innerHTML="<h2>Missions</h2>";Object.entries(MISSIONS).forEach(([k,m])=>{const n=Number(k),lockedMission=!settings.unlock&&n>state.unlocked,done=state.completedMissions.includes(n),b=document.createElement("button");b.className=`mission-btn ${n===state.mission&&!state.quick?"active":""} ${lockedMission?"locked":""}`;b.disabled=lockedMission;b.innerHTML=`<span class="num">${n}</span><span class="m-title"><strong>${esc(m.title)}</strong><br><small>${esc(m.target)}</small></span><span class="state">${done?"✓":lockedMission?"🔒":""}</span>`;b.addEventListener("click",()=>goMission(n));nav.appendChild(b)})}
+function goMission(n){if(locked)return;state.quick=null;state.mission=n;state.correctInMission=0;state.qAttempt=0;state.selected=null;state.question=generateQuestion(n);save();renderAll();window.scrollTo({top:0,behavior:"smooth"})}
+function renderMissionHead(){const m=MISSIONS[state.mission];$("#missionHead").innerHTML=`<div class="mission-head-top"><div><span class="kicker">${esc(m.target)}</span><h1>${m.icon} ${esc(m.title)}</h1><p>${esc(m.app)}</p></div><div class="requirement-tag ${m.final?"final":""}">${esc(m.requirement)}</div></div><div class="teaching-card"><strong>Quick teaching point:</strong> ${esc(m.teach)}</div>`}
+function renderQuestion(){
+  clearTimeout(wrongTimer);locked=false;clearFeedback();state.selected=null;const q=state.question||generateQuestion(state.mission);state.question=q;
+  $("#qSkill").textContent=state.quick?`Quick Check · ${q.skill.replaceAll("-"," ")}`:q.skill.replaceAll("-"," ");
+  $("#qCount").textContent=state.quick?`Correct ${state.quick.correct} of ${state.quick.target}`:`Correct ${state.correctInMission} of ${settings.questions}`;
+  $("#qPrompt").textContent=q.prompt;const sc=$("#qScenario");sc.innerHTML=q.scenario?`<strong>Scenario</strong><br>${esc(q.scenario)}`:`<strong>Project connection</strong><br>Think about how this skill could be shown in <em>${esc(state.student.project)}</em>.`;
+  const area=$("#answerArea");area.innerHTML="";q.choices.forEach((c,i)=>{const b=document.createElement("button");b.className="choice";b.dataset.index=i;b.innerHTML=`<span class="choice-letter">${String.fromCharCode(65+i)}</span>${esc(c)}`;b.addEventListener("click",()=>selectChoice(i,b));area.appendChild(b)});
+  $("#checkBtn").disabled=true;$("#checkBtn").textContent="Check answer";$("#hintBtn").disabled=false;$("#skipBtn").disabled=false;updateTop();save()
+}
+function selectChoice(i,b){if(locked)return;state.selected=i;$$("#answerArea .choice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");$("#checkBtn").disabled=false}
+function checkAnswer(){if(locked||state.selected===null)return;locked=true;const q=state.question,s=stat(q.skill,q.mission);state.totalAttempts++;s.attempts++;if(state.selected===q.correct){onCorrect(q,s)}else onWrong(q,s)}
+function onCorrect(q,s){s.correct++;if(state.qAttempt===0){s.first++;state.firstCorrect++}state.streak++;state.bestStreak=Math.max(state.bestStreak,state.streak);state.xp+=state.qAttempt===0?12:8;state.correctInMission++;beep(true);const btn=$$("#answerArea .choice")[state.selected];btn?.classList.add("correct");setFeedback("good",`<strong>Correct.</strong> ${esc(q.explanation)} ${state.qAttempt===0?"+12 XP":"+8 XP"}`);$("#checkBtn").disabled=false;$("#checkBtn").textContent="Next question →";$("#hintBtn").disabled=true;$("#skipBtn").disabled=true;$("#checkBtn").onclick=afterCorrect;confetti(state.streak%4===0?24:0);save();updateTop()}
+function afterCorrect(){$("#checkBtn").onclick=null;state.qAttempt=0;state.selected=null;if(state.quick){advanceQuick();return}if(state.correctInMission>=settings.questions){finishQuizPart();return}state.question=generateQuestion(state.mission,null,state.question.signature);renderQuestion()}
+function onWrong(q,s){s.wrong++;state.qAttempt++;state.streak=0;beep(false);const btn=$$("#answerArea .choice")[state.selected];btn?.classList.add("incorrect");let hint=q.hints[Math.min(state.qAttempt-1,q.hints.length-1)]||"Look again for evidence, a measurable result or a justified decision.";if(state.qAttempt>=3&&q.worked)hint+=` Worked example: ${q.worked}`;setFeedback("notyet",`<strong>Not yet.</strong> ${esc(hint)} A fresh version of the same skill is coming next.`);$("#checkBtn").disabled=true;$("#hintBtn").disabled=true;$("#skipBtn").disabled=true;save();updateTop();const old=q;wrongTimer=setTimeout(()=>{state.selected=null;state.question=generateReplacement(old);renderQuestion()},settings.motion?1450:120)}
+function mapSkillToGeneratorKey(m,skill){const maps={1:{"word-swap":"swap","word-definition":"definition","grade-language":"grade","term-in-context":"context"},2:{"evidence-strength":"strength","missing-evidence":"missing","claim-or-evidence":"classify","best-proof":"proof"},3:{"brief-parts":"brief","measurable-specification":"measurable","functional-or-physical":"category","test-judgement":"result","specification-tradeoff":"tradeoff"},4:{"purposeful-trial":"purpose","trial-question":"question","compare-trial-results":"compare","trial-sequence":"sequence","feasible-technique":"feasible"},5:{"relevant-stakeholder":"relevance","feedback-chain":"chain","refinement-result":"result","feedback-tradeoff":"tradeoff","feedback-influence":"influence"},6:{"real-sustainable-action":"action","sustainability-evidence":"proof","sustainable-refinement":"refine","sustainability-tradeoff":"tradeoff","sustainability-claim":"claim"},7:{"finished-prototype-gate":"gate","match-test-method":"match","final-test-judgement":"judge","safe-testing":"safety","testing-in-context":"context"},8:{"evaluation-level":"level","supported-evaluation":"strongest","evaluation-tradeoff":"tradeoff","future-improvement":"future","fitness-for-purpose":"fitness"},9:{"power-sentence-order":"order","missing-power-step":"missing","strong-power-sentence":"strong","rewrite-vague-language":"rewrite","evidence-reasoning-chain":"chain"},10:{"readiness-order":"order","readiness-proof":"proof","readiness-gate":"gate","next-priority":"priority","practice-not-grade":"grade"}};return maps[m]?.[skill]||null}
+function showHint(){if(locked)return;const q=state.question,n=Math.min(state.qAttempt,q.hints.length-1),h=q.hints[n]||"Look for the strongest evidence and the most direct connection to the requirement.";setFeedback("info",`<strong>Hint:</strong> ${esc(h)}`)}
+function newSameQuestion(){if(locked)return;state.qAttempt=0;state.question=generateQuestion(state.question.mission,mapSkillToGeneratorKey(state.question.mission,state.question.skill),state.question.signature);renderQuestion()}
+function finishQuizPart(){locked=false;if(!settings.writing){completeMission();return}renderApplication(true);$("#applicationCard").scrollIntoView({behavior:"smooth",block:"start"});setFeedback("good","<strong>Quiz complete.</strong> Apply the skill to your own project below, then save the mission.")}
+function completeMission(){locked=false;const n=state.mission;if(!state.completedMissions.includes(n))state.completedMissions.push(n);if(!state.badges.includes(n))state.badges.push(n);state.unlocked=Math.max(state.unlocked,Math.min(10,n+1));state.xp+=25;save();renderBadges();renderFolder();renderMissionNav();updateTop();confetti(55);$("#completeIcon").textContent=MISSIONS[n].icon;$("#completeTitle").textContent=`${MISSIONS[n].title} complete`;$("#completeText").textContent=`Badge earned. ${n<10?"The next mission is ready.":"Your evidence-readiness summary is ready."}`;$("#completeNextBtn").textContent=n<10?"Next mission →":"View results →";openModal("completeModal")}
+function completeNext(){closeModal("completeModal");if(state.mission>=10){showResults();return}goMission(state.mission+1)}
+
+function renderBadges(){const g=$("#badgeGrid");g.innerHTML="";BADGE_ICONS.forEach((ic,i)=>{const d=document.createElement("div");d.className="badge "+(state.badges.includes(i+1)?"earned":"");d.title=MISSIONS[i+1].title;d.setAttribute("aria-label",`${MISSIONS[i+1].title} badge ${state.badges.includes(i+1)?"earned":"not yet earned"}`);d.textContent=ic;g.appendChild(d)})}
+function renderFolder(){const f=$("#evidencePapers");f.innerHTML=PAPER_ITEMS.map((p,i)=>`<div class="paper-slip ${state.completedMissions.includes(i+1)?"":"locked"}" style="--tilt:${i%2?1.2:-1.2}deg"><span>${BADGE_ICONS[i]}</span><span>${esc(p)}</span></div>`).join("")}
+
+function renderApplication(force=false){const card=$("#applicationCard");if(!settings.writing){card.classList.remove("show");card.innerHTML="";return}const ready=force||state.correctInMission>=settings.questions||state.completedMissions.includes(state.mission);if(!ready){card.classList.remove("show");card.innerHTML="";return}card.classList.add("show");card.innerHTML=applicationHTML(state.mission);restoreApplicationValues();if(state.mission===9)updatePowerPreview();if(state.mission===10)renderPriorities()}
+function applicationHTML(m){const r=state.responses||{};const heading=`<h2>Apply it to your project</h2><p>This is a planning and writing space. Save only information that is true for <strong>${esc(state.student.project)}</strong>.</p>`;let body="";
+  if(m===1)body=`<div class="form-section"><div class="field"><label for="app_wordPower">Rewrite one vague project statement</label><textarea id="app_wordPower" data-save="wordPower" placeholder="Example: The outcome met the requirement because the test showed…"></textarea></div></div>`;
+  if(m===2)body=`<div class="form-section form-row"><div class="field"><label for="app_evidenceLocation">Where is the evidence?</label><input id="app_evidenceLocation" data-save="evidenceLocation" placeholder="Page, photo number, model, trial or test table"></div><div class="field"><label for="app_evidenceShows">What does it prove?</label><textarea id="app_evidenceShows" data-save="evidenceShows" placeholder="State the exact result or change shown by the evidence."></textarea></div></div>`;
+  if(m===3)body=`<div class="form-section"><div class="field"><label for="app_brief">Current final brief</label><textarea id="app_brief" data-save="brief" placeholder="I am designing and making… for… because… It will be used…"></textarea></div></div><div class="form-section"><h3>Five measurable specifications</h3><div class="spec-grid">${[1,2,3,4,5].map(i=>`<div class="spec-row"><span class="spec-num">${i}</span><input data-array="specs" data-index="${i-1}" placeholder="It must… [quantity]… under [condition]… pass when…"></div>`).join("")}</div></div>`;
+  if(m===4)body=`<div class="form-section"><h3>Purposeful trial 1</h3><div class="form-row"><div class="field"><label>Question</label><input data-save="trial1Question" placeholder="What do I need to find out?"></div><div class="field"><label>Method</label><input data-save="trial1Method" placeholder="What will I compare or test?"></div><div class="field"><label>Result</label><input data-save="trial1Result" placeholder="Measured or observed result"></div><div class="field"><label>Decision</label><input data-save="trial1Decision" placeholder="What will I select or change?"></div></div></div><div class="form-section"><h3>Purposeful trial 2</h3><div class="form-row"><div class="field"><label>Question</label><input data-save="trial2Question" placeholder="What do I need to find out?"></div><div class="field"><label>Method</label><input data-save="trial2Method" placeholder="What will I compare or test?"></div><div class="field"><label>Result</label><input data-save="trial2Result" placeholder="Measured or observed result"></div><div class="field"><label>Decision</label><input data-save="trial2Decision" placeholder="What will I select or change?"></div></div></div>`;
+  if(m===5)body=`<div class="form-section"><h3>Feedback → decision → change → result</h3><div class="chain"><div class="field"><label>Feedback</label><textarea data-save="feedback" placeholder="Who said what, and why are they relevant?"></textarea></div><div class="field"><label>Decision</label><textarea data-save="feedbackDecision" placeholder="What did you decide?"></textarea></div><div class="field"><label>Change</label><textarea data-save="feedbackChange" placeholder="What exactly changed?"></textarea></div><div class="field"><label>Result</label><textarea data-save="feedbackResult" placeholder="What test, measurement, photo or follow-up comment showed the effect?"></textarea></div></div></div>`;
+  if(m===6)body=`<div class="form-section form-row"><div class="field"><label>Real sustainable action</label><textarea data-save="sustainableAction" placeholder="What did you actually do in this project?"></textarea></div><div class="field"><label>Evidence</label><textarea data-save="sustainableEvidence" placeholder="Photo, cutting plan, offcut, replaceable part or measured result"></textarea></div><div class="field"><label>Benefit</label><textarea data-save="sustainableBenefit" placeholder="How did it reduce waste, improve durability or support repair?"></textarea></div><div class="field"><label>Trade-off</label><textarea data-save="sustainableTradeoff" placeholder="Cost, weight, strength, time, waste or another consequence"></textarea></div></div>`;
+  if(m===7)body=`<div class="warning"><strong>Finished outcome required.</strong> Record only tests actually completed using the real prototype. Get teacher approval for high-risk testing.</div><div class="form-section"><h3>Final testing table</h3><div class="test-grid">${[0,1,2].map(i=>`<div class="form-row"><input data-array="testSpecs" data-index="${i}" placeholder="Specification"><input data-array="testMethods" data-index="${i}" placeholder="Safe test method"><input data-array="testResults" data-index="${i}" placeholder="Recorded result"><select data-array="testJudgements" data-index="${i}"><option value="">Judgement</option><option>Met</option><option>Partly met</option><option>Not met</option></select></div>`).join("")}</div></div>`;
+  if(m===8)body=`<div class="form-section"><div class="field"><label>Overall fitness-for-purpose judgement</label><textarea data-save="overallJudgement" placeholder="Use specifications, test results, photographs and stakeholder feedback."></textarea></div></div><div class="form-section form-row"><div class="field"><label>Main limitation or compromise</label><textarea data-save="mainLimitation"></textarea></div><div class="field"><label>Most important future improvement</label><textarea data-save="futureImprovement"></textarea></div></div>`;
+  if(m===9)body=`<div class="power-grid"><div class="power-step"><strong>1 Evidence</strong><textarea data-save="powerEvidence" placeholder="What happened?"></textarea></div><div class="power-step"><strong>2 Meaning</strong><textarea data-save="powerMeaning" placeholder="What did it show?"></textarea></div><div class="power-step"><strong>3 Decision</strong><textarea data-save="powerDecision" placeholder="What did you choose?"></textarea></div><div class="power-step"><strong>4 Reason</strong><textarea data-save="powerReason" placeholder="Why was it suitable?"></textarea></div><div class="power-step"><strong>5 Judgement</strong><textarea data-save="powerJudgement" placeholder="Did it improve the outcome?"></textarea></div></div><div id="powerPreview" class="power-preview"><strong>Combined response</strong><p></p></div>`;
+  if(m===10)body=readinessHTML();
+  return heading+body+`<div class="row" style="margin-top:1rem"><button class="primary" data-action="save-complete">Save and complete mission</button>${m===10?'<button class="secondary" data-action="generate-priorities">Generate priorities</button>':''}<span id="saveStatus" class="small muted">Saved locally in this browser.</span></div>`}
+function readinessHTML(){const groups={Achieved:["Finished outcome is complete","Final brief matches the outcome","Specifications are measurable","Purposeful trials are included","Relevant stakeholder feedback is included","A real sustainable practice is shown","Final testing is complete","Fitness-for-purpose judgement is written"],Merit:["All Achieved evidence is complete","Feedback caused clear refinements","Techniques were compared","A sustainable practice was refined","Improvements were clearly explained","Judgements use specific evidence"],Excellence:["All Achieved and Merit evidence is complete","Decisions were analysed","Trade-offs and limitations were discussed","The final outcome was evaluated in context","Judgements were clearly justified","The best future improvement was prioritised"]};let html="";Object.entries(groups).forEach(([g,items])=>{html+=`<div class="readiness-group"><div class="readiness-title ${g==="Achieved"?"ach":g==="Merit"?"mer":"exc"}">${g.toUpperCase()}</div>${items.map((t,i)=>{const key=`${g}_${i}`;return`<label class="readiness-item"><input type="checkbox" data-ready="${key}"><span>${esc(t)}</span><input type="text" data-ready-evidence="${key}" placeholder="Where is the evidence? Page, photo, trial or result"></label>`}).join("")}</div>`});return html+`<div id="priorityBox" class="priorities"><strong>My next three priorities</strong><ol><li>Complete the check honestly.</li><li>Add evidence locations.</li><li>Generate priorities.</li></ol></div>`}
+function restoreApplicationValues(){const r=state.responses||{};$$("#applicationCard [data-save]").forEach(el=>{el.value=r[el.dataset.save]||""});$$("#applicationCard [data-array]").forEach(el=>{el.value=(r[el.dataset.array]||[])[Number(el.dataset.index)]||""});if(state.mission===10){$$("[data-ready]").forEach(el=>el.checked=!!state.readiness[el.dataset.ready]?.checked);$$("[data-ready-evidence]").forEach(el=>el.value=state.readiness[el.dataset.readyEvidence]?.evidence||"")}}
+function saveApplicationInputs(e){const el=e.target;if(el.dataset.save){state.responses[el.dataset.save]=el.value}if(el.dataset.array){const k=el.dataset.array,idx=Number(el.dataset.index);state.responses[k]=state.responses[k]||[];state.responses[k][idx]=el.value}if(el.dataset.ready){state.readiness[el.dataset.ready]=state.readiness[el.dataset.ready]||{};state.readiness[el.dataset.ready].checked=el.checked}if(el.dataset.readyEvidence){state.readiness[el.dataset.readyEvidence]=state.readiness[el.dataset.readyEvidence]||{};state.readiness[el.dataset.readyEvidence].evidence=el.value}if(state.mission===9)updatePowerPreview();save();const s=$("#saveStatus");if(s)s.textContent="Saved."}
+function applicationClick(e){const action=e.target.closest("[data-action]")?.dataset.action;if(action==="save-complete")completeMission();if(action==="generate-priorities"){generatePriorities();renderPriorities();save()}}
+function updatePowerPreview(){const keys=["powerEvidence","powerMeaning","powerDecision","powerReason","powerJudgement"],text=keys.map(k=>(state.responses[k]||"").trim()).filter(Boolean).join(" ");const p=$("#powerPreview p");if(p)p.textContent=text||"Complete the five boxes to build your response."}
+function generatePriorities(){const all=[...$$('[data-ready]')];const missing=[];all.forEach(ch=>{const k=ch.dataset.ready,r=state.readiness[k]||{},label=ch.closest("label")?.querySelector("span")?.textContent||"Evidence item";if(!r.checked)missing.push(`Complete: ${label}.`);else if(settings.requireEvidence&&!String(r.evidence||"").trim())missing.push(`Add an evidence location for: ${label}.`)});state.priorities=missing.slice(0,3);while(state.priorities.length<3){const extras=["Check that each specification has a recorded result.","Use a specific measurement, photograph or exact stakeholder comment in your judgement.","Explain one trade-off or limitation honestly.","Identify the most important future improvement and justify why it comes first."];const x=extras.find(v=>!state.priorities.includes(v));if(!x)break;state.priorities.push(x)}}
+function renderPriorities(){if(!state.priorities.length)generatePriorities();const box=$("#priorityBox");if(box)box.innerHTML=`<strong>My next three priorities</strong><ol>${state.priorities.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`}
+
+function startQuickCheck(){if(locked)return;state.quick={target:Number(settings.quick),correct:0,breakdown:{},queue:buildQuickQueue(Number(settings.quick)),returnMission:state.mission};state.correctInMission=0;nextQuickQuestion();renderMissionNav();updateTop()}
+function buildQuickQueue(n){const base=shuffle(QUICK_MAP);const out=[];while(out.length<n)out.push(...shuffle(base));return out.slice(0,n)}
+function nextQuickQuestion(repeat=null){const item=repeat||state.quick.queue[state.quick.correct];if(!item){finishQuick();return}state.question=generateQuestion(item[0],item[1],state.question?.signature||"");state.question.quickLabel=item[2];renderQuickHead();renderQuestion()}
+function renderQuickHead(){$("#missionHead").innerHTML=`<div class="mission-head-top"><div><span class="kicker">Quick Check</span><h1>⚡ Ten-skill evidence sprint</h1><p>Each incorrect answer is replaced by a new version of the same skill. You must secure the skill correctly before moving on.</p></div><div class="requirement-tag">${state.quick.correct} of ${state.quick.target} skills secured</div></div><div class="teaching-card"><strong>Remember:</strong> Choose the answer with the clearest evidence, direct project connection and justified decision.</div>`}
+function advanceQuick(){const item=state.quick.queue[state.quick.correct],label=item?.[2]||state.question.quickLabel||state.question.skill;state.quick.breakdown[label]=(state.quick.breakdown[label]||0)+1;state.quick.correct++;state.correctInMission=0;if(state.quick.correct>=state.quick.target){finishQuick();return}nextQuickQuestion();updateTop()}
+function finishQuick(){const labels=Object.keys(state.quick.breakdown);setFeedback("good",`<strong>Quick Check complete.</strong> Secured: ${esc(labels.join(", "))}.`);confetti(70);state.xp+=40;const ret=state.quick.returnMission;state.quick=null;state.mission=ret;state.question=generateQuestion(ret);save();setTimeout(()=>{renderAll()},800)}
+function practiseMissed(){const entries=Object.entries(state.skillStats).filter(([,v])=>v.wrong>v.correct||v.wrong>=2);showScreen("labScreen");startTicker();if(!entries.length){startQuickCheck();return}const [skill,v]=sample(entries);state.mission=v.mission||1;state.quick={target:3,correct:0,breakdown:{},queue:[[state.mission,mapSkillToGeneratorKey(state.mission,skill)||chooseBasicSkill(state.mission),skill],[state.mission,mapSkillToGeneratorKey(state.mission,skill)||chooseBasicSkill(state.mission),skill],[state.mission,mapSkillToGeneratorKey(state.mission,skill)||chooseBasicSkill(state.mission),skill]],returnMission:state.mission};nextQuickQuestion()}
+
+function showResults(){stopTicker();generatePriorities();showScreen("resultsScreen");const mins=Math.max(1,Math.round(state.elapsed/60)),accuracy=state.totalAttempts?Math.round((state.firstCorrect/state.totalAttempts)*100):0;$("#resultsIntro").textContent=`${state.student.name}, this summary shows practice completed for ${state.student.project}. It does not award an official grade.`;$("#statMissions").textContent=state.completedMissions.length;$("#statAccuracy").textContent=accuracy+"%";$("#statBest").textContent=state.bestStreak;$("#statTime").textContent=mins+" min";renderSkillBars();$("#resultPriorities").innerHTML=`<ol>${state.priorities.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`;$("#strongResponse").textContent=strongestResponse();renderCertificate();save()}
+function renderSkillBars(){const container=$("#skillBars"),groups=["Vocabulary","Evidence","Specifications","Trials","Feedback","Sustainability","Testing","Evaluation","Power sentences","Readiness"],missionSkills=Object.values(state.skillStats);container.innerHTML=groups.map((g,i)=>{const arr=missionSkills.filter(x=>x.mission===i+1),correct=arr.reduce((a,x)=>a+x.correct,0),wrong=arr.reduce((a,x)=>a+x.wrong,0),pct=correct+wrong?Math.round(correct/(correct+wrong)*100):0;return`<div class="skill-line"><span>${g}</span><div class="mini-track"><div class="mini-fill" style="width:${pct}%"></div></div><strong>${pct}%</strong></div>`}).join("")}
+function strongestResponse(){const r=state.responses;const power=[r.powerEvidence,r.powerMeaning,r.powerDecision,r.powerReason,r.powerJudgement].filter(Boolean).join(" ");return power||r.overallJudgement||r.feedbackResult||r.evidenceShows||r.wordPower||"Complete the project application activities to save a response."}
+function renderCertificate(){$("#certName").textContent=state.student.name;$("#certProject").textContent=state.student.project;$("#certDate").textContent=formatDate();$("#certBadges").innerHTML=state.badges.map(n=>`<span class="cert-badge">${MISSIONS[n].icon} ${esc(MISSIONS[n].title)}</span>`).join("")||'<span class="cert-badge">Practice in progress</span>';$("#certificate").style.display=settings.certificate?"block":"none";$("#certStatement").textContent=state.completedMissions.length>=8?"The student practised using Technology vocabulary, measurable evidence, stakeholder-led refinement, testing and supported evaluation.":"The student began evidence and explanation practice for a Materials Technology project."}
+function copyPriorities(){const text=state.priorities.map((x,i)=>`${i+1}. ${x}`).join("\n");navigator.clipboard?.writeText(text).then(()=>announce("Priorities copied")).catch(()=>prompt("Copy your priorities:",text))}
+
+function renderGlossary(){const grid=$("#glossaryGrid");grid.innerHTML=WORD_SWAPS.map(x=>`<div class="glossary-item"><strong>${esc(x[1])}</strong><span>${esc(x[2])}</span><br><small class="muted">Instead of: ${esc(x[0])}</small></div>`).join("")}
+function populateMissionSettings(){const s=$("#settingStartMission");s.innerHTML=Object.entries(MISSIONS).map(([n,m])=>`<option value="${n}">${n}. ${esc(m.title)}</option>`).join("")}
+function applySettingsToUI(){$("#settingQuestions").value=String(settings.questions);$("#settingQuick").value=String(settings.quick);$("#settingBand").value=settings.band;$("#settingStartMission").value=String(settings.startMission);$("#settingWriting").checked=settings.writing;$("#settingUnlock").checked=settings.unlock;$("#settingEvidence").checked=settings.requireEvidence;$("#settingMotion").checked=settings.motion;$("#settingSound").checked=settings.sound;$("#settingCertificate").checked=settings.certificate}
+function saveSettingsFromUI(){settings={questions:Number($("#settingQuestions").value),quick:Number($("#settingQuick").value),band:$("#settingBand").value,startMission:Number($("#settingStartMission").value),writing:$("#settingWriting").checked,unlock:$("#settingUnlock").checked,requireEvidence:$("#settingEvidence").checked,motion:$("#settingMotion").checked,sound:$("#settingSound").checked,certificate:$("#settingCertificate").checked};saveSettings();document.body.classList.toggle("reduce-motion",!settings.motion);updateSoundIcons();closeModal("settingsModal");if($("#labScreen").classList.contains("active")){state.unlocked=settings.unlock?10:Math.max(state.unlocked,state.mission);state.question=generateQuestion(state.mission);state.correctInMission=0;renderAll()}}
+function restoreSettings(){settings={...DEFAULT_SETTINGS};saveSettings();applySettingsToUI();document.body.classList.remove("reduce-motion");updateSoundIcons()}
+function toggleSound(){settings.sound=!settings.sound;saveSettings();applySettingsToUI();updateSoundIcons();if(settings.sound)beep(true)}
+function updateSoundIcons(){const t=settings.sound?"🔊":"🔇";$("#soundBtn").textContent=t;$("#startSound").textContent=t}
+
+function selfTest(){const errors=[];for(let m=1;m<=10;m++){for(let i=0;i<100;i++){const q=generateQuestion(m);if(!q.prompt||!q.skill)errors.push(`Mission ${m}: missing prompt or skill`);if(q.choices.length!==4)errors.push(`Mission ${m}: expected 4 choices`);if(new Set(q.choices).size!==q.choices.length)errors.push(`Mission ${m}: duplicate choices`);if(q.correct<0||q.correct>=q.choices.length)errors.push(`Mission ${m}: invalid correct index`);if(q.choices[q.correct]!==q.correctText)errors.push(`Mission ${m}: correct text mismatch`)}}return errors}
+window.EvidenceLabTest={selfTest,generateQuestion,getState:()=>state,answerCorrect:()=>{state.selected=state.question.correct;checkAnswer()},answerWrong:()=>{state.selected=(state.question.correct+1)%4;checkAnswer()}};
+
+init();
+</script>
+</body>
+</html>
