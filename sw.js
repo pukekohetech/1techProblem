@@ -6,20 +6,39 @@ const CACHE_NAME = 'phs-techProblem';
 const CORE_ASSETS = [
   "./",
   "./index.html",
-  "./script.js",
-  "./styles.css",
+  "./script.js?v=15",
+  "./styles.css?v=14",
+  "./reading-comfort.js?v=2",
+  "./resource.html",
   "./questions.json",
+  "./questions-data.js?v=1",
+  "./blank.jpg",
+  "./woodq1.jpg",
+  "./assessment.pdf",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png",
 ];
 
+const OPTIONAL_PDF_ASSETS = [
+  "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+  "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+  "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js",
+  "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js",
+];
+
 // -------------------------------------
-// Install: cache core local assets only
+// Install: cache core assets and try to cache PDF libraries.
 // -------------------------------------
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await cache.addAll(CORE_ASSETS);
+      // The app must still install if the school network blocks a CDN.
+      await Promise.allSettled(OPTIONAL_PDF_ASSETS.map((url) => cache.add(url)));
+    })
   );
   self.skipWaiting();
 });
@@ -49,8 +68,24 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(req.url);
 
-  // ✅ Never touch cross-origin (fonts, cdnjs, etc.)
-  if (url.origin !== self.location.origin) return;
+  // Cache only the three approved PDF libraries across origins. Other
+  // cross-origin requests (fonts, unrelated CDNs, etc.) remain untouched.
+  if (url.origin !== self.location.origin) {
+    if (!OPTIONAL_PDF_ASSETS.includes(url.href)) return;
+
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req).then((res) => {
+          if (res && (res.ok || res.type === "opaque")) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, res.clone()));
+          }
+          return res;
+        });
+      })
+    );
+    return;
+  }
 
   // ✅ Navigation (page load): network first, fallback offline
   if (req.mode === "navigate") {
